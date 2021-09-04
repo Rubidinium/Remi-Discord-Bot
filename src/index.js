@@ -92,7 +92,7 @@ client.on("guildCreate", (guild) => {
 client.on("guildMemberAdd", (member) => {
   member.send(
     `Welcome to Programming Simplified, a bootcamp designed to help beginner programmers learn the necessary basic skills to start their own careers and projects! All new students are automatically placed on a waitlist, and will be notified through DMs once a bootcamp spot opens up.
-Average time on the waitlist is 1 week.`
+If you haven't already applied head to https://docs.google.com/forms/d/e/1FAIpQLScKdH-rJjGLkkl1fOUfUq15opl3L5Y3H04Vran5MiOXbmGlXQ/viewform`
   );
 });
 
