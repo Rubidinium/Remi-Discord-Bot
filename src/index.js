@@ -79,21 +79,21 @@ client.once("ready", async () => {
   client.registry
     .registerGroups([
       ["misc", "Misc commands"],
-      ["moderation", "Moderation commands"],
+      // ["moderation", "Moderation commands"],
     ])
     .registerDefaults()
     .registerCommandsIn(path.join(__dirname, "commands"));
 });
 
-client.on("guildCreate", (guild) => {
-  client.Mongo.getOrMakeGuild(guild.id);
-});
-
 client.on("guildMemberAdd", (member) => {
-  member.send(
-    `Welcome to Programming Simplified, a bootcamp designed to help beginner programmers learn the necessary basic skills to start their own careers and projects! All new students are automatically placed on a waitlist, and will be notified through DMs once a bootcamp spot opens up.
-If you haven't already applied head to https://docs.google.com/forms/d/e/1FAIpQLScKdH-rJjGLkkl1fOUfUq15opl3L5Y3H04Vran5MiOXbmGlXQ/viewform`
-  );
+  try {
+    member.send(
+      `Welcome to Programming Simplified, a bootcamp designed to help beginner programmers learn the necessary basic skills to start their own careers and projects! All new students are automatically placed on a waitlist, and will be notified through DMs once a bootcamp spot opens up.
+If you haven't already applied head to https://forms.gle/JeDsAbVitc47Tr9F7`
+    );
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 client.login(token);
