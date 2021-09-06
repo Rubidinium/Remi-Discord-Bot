@@ -73,7 +73,6 @@ const client = new Gary({
 });
 
 
-
 client.once("ready", async () => {
   client.user.setActivity(`${client.commandPrefix}help`, {
     type: "LISTENING",

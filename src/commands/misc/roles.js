@@ -1,4 +1,5 @@
 const Commando = require("discord.js-commando");
+const { Permissions } = require("discord.js");
 
 module.exports = class AddCommand extends Commando.Command {
   constructor(client) {
@@ -13,9 +14,8 @@ module.exports = class AddCommand extends Commando.Command {
   }
 
   async run(message, args) {
-    
-    if (!member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
-      return
+    if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+      return;
     }
 
     let teams = ["web", "game", "discord"]; // valid args for teams
@@ -23,13 +23,19 @@ module.exports = class AddCommand extends Commando.Command {
     let users = message.mentions.members; // users to add role to
 
     // declare role ids
-    let webRole = message.guild.roles.cache.find(r => r.id === "743531745714110484");
-    let gameRole = message.guild.roles.cache.find(r => r.id === "743531745714110484");
-    let discordRole = message.guild.roles.cache.find(r => r.id === "743531745714110484");
-    
+    let webRole = message.guild.roles.cache.find(
+      (r) => r.id === "877586225706459146"
+    );
+    let gameRole = message.guild.roles.cache.find(
+      (r) => r.id === "877586110165946418"
+    );
+    let discordRole = message.guild.roles.cache.find(
+      (r) => r.id === "884192778198851704"
+    );
+
     if (teams.includes(team.toLowerCase())) {
-      for (let member of users.values()) {
-        switch(team.toLowerCase()) {
+      for (const member of users.values()) {
+        switch (team.toLowerCase()) {
           case "web":
             member.roles.add(webRole);
             message.say("All roles added.");
@@ -47,7 +53,5 @@ module.exports = class AddCommand extends Commando.Command {
     } else {
       message.say(`Invalid team. Valid team options are ${teams}`);
     }
-
-    
   }
 };
