@@ -14,6 +14,10 @@ module.exports = class AddCommand extends Commando.Command {
 
   async run(message, args) {
     
+    if (!member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+      return
+    }
+
     let teams = ["web", "game", "discord"]; // valid args for teams
     let team = args[0];
     let users = message.mentions.members; // users to add role to
