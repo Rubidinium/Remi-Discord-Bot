@@ -45,6 +45,7 @@ module.exports = class BannerCommand extends Commando.Command {
         });
         const canvas = Canvas.createCanvas(700, 250);
         const context = canvas.getContext("2d");
+
         let background;
 
         if (!intentsNames.includes(args[0])) {
@@ -68,33 +69,35 @@ module.exports = class BannerCommand extends Commando.Command {
 };
 
 function basicCanvas(context, background, canvas, text) {
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    context.font = "60px Mont Bold";
-    context.textAlign = "center";
-    context.fillStyle = "rgba(255, 255, 255, .3)";
-    context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
-    context.fillStyle = "#FFFFFF";
-    context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
-    return new MessageAttachment(canvas.toBuffer(), "banner.png");
-}
 
-function getIntents() {
-    let names = readdirSync(resolve(__dirname, '../../../assets/intents'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(directory => {
-            return {
-                name: directory.name,
-                count: 0
-            }
-        });
-
-    for (let i = 0; i < names.length; i++) {
-        names[i].count = readdirSync(resolve(__dirname, "../../../assets/intents", names[i].name)).length
+    function basicCanvas(context, background, text, canvas) {
+        context.drawImage(background, 0, 0, canvas.width, canvas.height);
+        context.font = "70px Mont Bold";
+        context.textAlign = "center";
+        context.fillStyle = "rgba(255, 255, 255, .3)";
+        context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+        context.fillStyle = "#FFFFFF";
+        context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+        return new MessageAttachment(canvas.toBuffer(), "banner.png");
     }
 
-    return names;
-}
+    function getIntents() {
+        let names = readdirSync(resolve(__dirname, '../../../assets/intents'), { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(directory => {
+                return {
+                    name: directory.name,
+                    count: 0
+                }
+            });
 
-function getVariantCount(intent) {
-    return readdirSync(resolve(__dirname, "../../../assets/intents", intent)).length
-}
+        for (let i = 0; i < names.length; i++) {
+            names[i].count = readdirSync(resolve(__dirname, "../../../assets/intents", names[i].name)).length
+        }
+
+        return names;
+    }
+
+    function getVariantCount(intent) {
+        return readdirSync(resolve(__dirname, "../../../assets/intents", intent)).length
+    }
