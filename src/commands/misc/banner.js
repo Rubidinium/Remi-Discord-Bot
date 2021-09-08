@@ -49,8 +49,8 @@ module.exports = class BannerCommand extends Commando.Command {
 
     let background;
     let variant;
-    if (!intentsNames.includes(args[0])) {
-      text = args.join(" ");
+    if (!intentsNames.includes(args[0].slice(1)) && !intentsNames.includes(args[0]) || args[0].charAt(0) != '-') {
+      text = args.join(" ");  
       variant = Math.ceil(Math.random() * getVariantCount("default"));
       background = await Canvas.loadImage(
         `assets/intents/default/${variant}.png`
@@ -60,11 +60,11 @@ module.exports = class BannerCommand extends Commando.Command {
       });
       return;
     }
-    let intent = intents.filter((i) => i.name == args[0]);
+    let intent = intents.filter((i) => i.name == args[0].slice(1));
     variant = Math.ceil(Math.random() * intent.length);
 
     background = await Canvas.loadImage(
-      `assets/intents/${args[0]}/${variant}.png`
+      `assets/intents/${args[0].slice(1)}/${variant}.png`
     );
 
     message.reply({
