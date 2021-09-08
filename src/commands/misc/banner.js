@@ -33,32 +33,39 @@ module.exports = class BannerCommand extends Commando.Command {
     }
 
     const text = args.slice(1).join(" ");
-    const variant = Math.ceil(Math.random() * intents[args[0]]);
 
     Canvas.registerFont("assets\\font\\Mont.ttf", {
       family: "Mont Bold",
       weight: "bold",
     });
+
     const canvas = Canvas.createCanvas(700, 250);
     const context = canvas.getContext("2d");
+
     let background;
+    let variant;
+
     if (!intents.hasOwnProperty(args[0])) {
+      variant = Math.ceil(Math.random() * intents[args[0]]);
       background = await Canvas.loadImage(
-        `assets\\intents\\${args[0]}\\${variant}.png`
+        `assets\\intents\\default\\${variant}.png`
       );
-      message.reply({ files: [basicCanvas(context, background, canvas)] });
+      message.reply({
+        files: [basicCanvas(context, background, text, canvas)],
+      });
       return;
     }
+    variant = Math.ceil(Math.random() * intents[args[0]]);
 
     background = await Canvas.loadImage(
       `assets\\intents\\${args[0]}\\${variant}.png`
     );
 
-    message.reply({ files: [basicCanvas(context, background, canvas)] });
+    message.reply({ files: [basicCanvas(context, background, text, canvas)] });
   }
 };
 
-function basicCanvas(context, background, canvas) {
+function basicCanvas(context, background, text, canvas) {
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
   context.font = "60px Mont Bold";
   context.textAlign = "center";
