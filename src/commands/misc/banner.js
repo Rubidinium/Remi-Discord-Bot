@@ -80,7 +80,7 @@ module.exports = class BannerCommand extends Commando.Command {
 
 function basicCanvas(context, background, text, canvas) {
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
-  context.font = "70px Mont Bold";
+  context.font = "60px Mont Bold";
   context.textAlign = "center";
   context.fillStyle = "rgba(255, 255, 255, .3)";
   context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
