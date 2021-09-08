@@ -39,7 +39,7 @@ module.exports = class BannerCommand extends Commando.Command {
 
         const text = args.slice(1).join(" ");
 
-        Canvas.registerFont("assets\\font\\Mont.ttf", {
+        Canvas.registerFont("assets/font/Mont.ttf", {
             family: "Mont Bold",
             weight: "bold",
         });
@@ -51,7 +51,7 @@ module.exports = class BannerCommand extends Commando.Command {
         if (!intentsNames.includes(args[0])) {
             let variant = Math.ceil(Math.random() * getVariantCount("text"));
             background = await Canvas.loadImage(
-                `assets\\intents\\text\\${variant}.png`
+                `assets/intents/text/${variant}.png`
             );
             message.reply({ files: [basicCanvas(context, background, canvas, text)] });
             return;
@@ -61,43 +61,42 @@ module.exports = class BannerCommand extends Commando.Command {
 
 
         background = await Canvas.loadImage(
-            `assets\\intents\\${args[0]}\\${variant}.png`
+            `assets/intents/${args[0]}/${variant}.png`
         );
 
         message.reply({ files: [basicCanvas(context, background, canvas, text)] });
     }
 };
 
-function basicCanvas(context, background, canvas, text) {
 
-    function basicCanvas(context, background, text, canvas) {
-        context.drawImage(background, 0, 0, canvas.width, canvas.height);
-        context.font = "70px Mont Bold";
-        context.textAlign = "center";
-        context.fillStyle = "rgba(255, 255, 255, .3)";
-        context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
-        context.fillStyle = "#FFFFFF";
-        context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
-        return new MessageAttachment(canvas.toBuffer(), "banner.png");
+function basicCanvas(context, background, text, canvas) {
+    context.drawImage(background, 0, 0, canvas.width, canvas.height);
+    context.font = "70px Mont Bold";
+    context.textAlign = "center";
+    context.fillStyle = "rgba(255, 255, 255, .3)";
+    context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+    context.fillStyle = "#FFFFFF";
+    context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+    return new MessageAttachment(canvas.toBuffer(), "banner.png");
+}
+
+function getIntents() {
+    let names = readdirSync(resolve(__dirname, '../../../assets/intents'), { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(directory => {
+            return {
+                name: directory.name,
+                count: 0
+            }
+        });
+
+    for (let i = 0; i < names.length; i++) {
+        names[i].count = readdirSync(resolve(__dirname, "../../../assets/intents", names[i].name)).length
     }
 
-    function getIntents() {
-        let names = readdirSync(resolve(__dirname, '../../../assets/intents'), { withFileTypes: true })
-            .filter(dirent => dirent.isDirectory())
-            .map(directory => {
-                return {
-                    name: directory.name,
-                    count: 0
-                }
-            });
+    return names;
+}
 
-        for (let i = 0; i < names.length; i++) {
-            names[i].count = readdirSync(resolve(__dirname, "../../../assets/intents", names[i].name)).length
-        }
-
-        return names;
-    }
-
-    function getVariantCount(intent) {
-        return readdirSync(resolve(__dirname, "../../../assets/intents", intent)).length
-    }
+function getVariantCount(intent) {
+    return readdirSync(resolve(__dirname, "../../../assets/intents", intent)).length
+}
