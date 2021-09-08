@@ -3,6 +3,8 @@ const { token } = process.env;
 
 const path = require("path");
 const { CommandoClient } = require("discord.js-commando");
+const { MessageEmbed } = require("discord.js");
+
 // const { mongoUrl } = process.env,
 //   { connect, connection } = require("mongoose");
 // const { MongoGuild, createGuild } = require("./schemas/guild.js");
@@ -72,9 +74,8 @@ const client = new Gary({
   commandPrefix: "-",
 });
 
-
 client.once("ready", async () => {
-  console.log("Gary is ready :)")
+  console.log("Gary is ready :)");
   client.user.setActivity(`${client.commandPrefix}help`, {
     type: "LISTENING",
   });
@@ -87,16 +88,22 @@ client.once("ready", async () => {
     .registerCommandsIn(path.join(__dirname, "commands"));
 });
 
-client.on("guildMemberAdd", (member) => {
-  try {
-    member.send(
-      `Welcome to Programming Simplified, a bootcamp designed to help beginner programmers learn the necessary basic skills to start their own careers and projects! All new students are automatically placed on a waitlist, and will be notified through DMs once a bootcamp spot opens up.
-If you haven't already applied head to https://forms.gle/JeDsAbVitc47Tr9F7`
-    );
-  } catch (err) {
-    console.log(err);
-  }
+client.on("message", async (message) => {
+  if (message.author.bot) return;
+  if (message.channel.id != "885259801309876254") return;
+  const staffChannel = client.channels.cache.get("885263299908870174");
+  const embed = {
+    color: "#EF476F",
+    title: "Suggestion",
+    author: {
+      name: message.author.tag,
+      icon_url: message.author.avatarURL(),
+    },
+    description: message.content,
+    thumbnail: message.author.avatarURL(),
+  };
+  await staffChannel.send({ embed });
+  await message.delete();
 });
-
 
 client.login(token);
