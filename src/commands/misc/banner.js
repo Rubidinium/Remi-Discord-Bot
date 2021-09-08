@@ -20,7 +20,7 @@ module.exports = class BannerCommand extends Commando.Command {
   async run(message, args) {
     const intents = { text: 2, ss: 8, tech: 6, info: 8, hr: 3, general: 24 };
     if (
-      !message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES) &&
+      !message.member?.permissions?.has(Permissions.FLAGS.ATTACH_FILES) &&
       message.guild
     )
       return;
@@ -40,8 +40,8 @@ module.exports = class BannerCommand extends Commando.Command {
       return;
     }
 
-    let text = args.slice(1);
-    let variant = Math.ceil(Math.random() * intents[args[0]]);
+    const text = args.slice(1);
+    const variant = Math.ceil(Math.random() * intents[args[0]]);
 
     Canvas.registerFont("assets\\font\\Mont.ttf", {
       family: "Mont Bold",
