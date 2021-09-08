@@ -25,17 +25,9 @@ module.exports = class BannerCommand extends Commando.Command {
     )
       return;
 
-    if (args.length < 2) {
+    if (args.length < 1) {
       message.reply(
-        "Incorrect usage. Correct usage: `banner <intent> <message>`"
-      );
-      return;
-    }
-    if (!intents.hasOwnProperty(args[0])) {
-      message.reply(
-        `Incorrect usage. Intent was not one of \`${Object.keys(intents).join(
-          ", "
-        )}\``
+        "Incorrect usage. Correct usage: `banner [intent] <message>`"
       );
       return;
     }
@@ -47,31 +39,32 @@ module.exports = class BannerCommand extends Commando.Command {
       family: "Mont Bold",
       weight: "bold",
     });
-
     const canvas = Canvas.createCanvas(700, 250);
     const context = canvas.getContext("2d");
+    let background;
+    if (!intents.hasOwnProperty(args[0])) {
+      background = await Canvas.loadImage(
+        `assets\\intents\\${args[0]}\\${variant}.png`
+      );
+      message.reply({ files: [basicCanvas(context, background, canvas)] });
+      return;
+    }
 
-    const background = await Canvas.loadImage(
+    background = await Canvas.loadImage(
       `assets\\intents\\${args[0]}\\${variant}.png`
     );
 
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    context.font = "60px Mont Bold";
-    context.textAlign = "center";
-    context.fillStyle = "rgba(255, 255, 255, .3)";
-    context.fillText(
-      text,
-      canvas.width / 2 + 2,
-      canvas.height / 2 + 22
-    );
-    context.fillStyle = "#FFFFFF";
-    context.fillText(
-      text,
-      canvas.width / 2 - 2,
-      canvas.height / 2 + 18
-    );
-    const attachment = new MessageAttachment(canvas.toBuffer(), "banner.png");
-    message.reply({ files: [attachment] });
+    message.reply({ files: [basicCanvas(context, background, canvas)] });
   }
 };
+
+function basicCanvas(context, background, canvas) {
+  context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  context.font = "60px Mont Bold";
+  context.textAlign = "center";
+  context.fillStyle = "rgba(255, 255, 255, .3)";
+  context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+  context.fillStyle = "#FFFFFF";
+  context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+  return new MessageAttachment(canvas.toBuffer(), "banner.png");
+}
