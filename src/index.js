@@ -88,9 +88,4 @@ client.once("ready", async () => {
     .registerCommandsIn(path.join(__dirname, "commands"));
 });
 
-// client.on("message", async (message) => {
-//   if (message.author.bot) return;
-
-// });
-
 client.login(token);
