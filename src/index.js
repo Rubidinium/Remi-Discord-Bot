@@ -3,8 +3,8 @@ const { token } = process.env;
 
 const path = require("path");
 const { CommandoClient } = require("discord.js-commando");
-const { mongoUrl } = process.env,
-  { connect, connection } = require("mongoose");
+// const { mongoUrl } = process.env,
+//   { connect, connection } = require("mongoose");
 // const { MongoGuild, createGuild } = require("./schemas/guild.js");
 
 // class Mongo {

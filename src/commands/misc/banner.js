@@ -4,7 +4,7 @@ This is an incredible bot written in javascript (which is objectively better tha
 
 const Commando = require("discord.js-commando");
 const Canvas = require("canvas");
-const { Permissions } = require("discord.js");
+const { Permissions, MessageAttachment } = require("discord.js");
 
 module.exports = class BannerCommand extends Commando.Command {
   constructor(client) {
@@ -19,7 +19,11 @@ module.exports = class BannerCommand extends Commando.Command {
 
   async run(message, args) {
     const intents = { text: 2, ss: 8, tech: 6, info: 8, hr: 3, general: 24 };
-    if (!message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES)) return;
+    if (
+      !message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES) &&
+      message.guild
+    )
+      return;
 
     if (args.length < 2) {
       message.reply(
@@ -27,7 +31,6 @@ module.exports = class BannerCommand extends Commando.Command {
       );
       return;
     }
-    console.log(args);
     if (!intents.hasOwnProperty(args[0])) {
       message.reply(
         `Incorrect usage. Intent was not one of \`${Object.keys(intents).join(
