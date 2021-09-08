@@ -19,6 +19,7 @@ module.exports = class BannerCommand extends Commando.Command {
         });
     }
 
+<<<<<<< Updated upstream
     async run(message, args) {
         const intents = getIntents();
         let intentsNames = [];
@@ -29,6 +30,19 @@ module.exports = class BannerCommand extends Commando.Command {
             message.guild
         )
             return;
+=======
+  async run(message, args) {
+    const intents = getIntents();
+    let intentsNames = [];
+    intents.forEach((i) => {
+      intentsNames.push(i.name);
+    });
+    if (
+      !message.member.permissions.has(Permissions.FLAGS.ATTACH_FILES) &&
+      message.guild
+    )
+      return;
+>>>>>>> Stashed changes
 
         if (args.length < 1) {
             message.reply(
