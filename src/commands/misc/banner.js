@@ -14,7 +14,7 @@ module.exports = class BannerCommand extends Commando.Command {
       name: "banner",
       group: "misc",
       memberName: "banner",
-      description: "Sends a banner with text",
+      description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
       argsType: "multiple",
     });
   }
@@ -38,7 +38,7 @@ module.exports = class BannerCommand extends Commando.Command {
       return;
     }
 
-    const text = args.slice(1).join(" ");
+    let text = args.slice(1).join(" ");
 
     Canvas.registerFont("assets/font/Mont.ttf", {
       family: "Mont Bold",
@@ -50,6 +50,7 @@ module.exports = class BannerCommand extends Commando.Command {
     let background;
     let variant;
     if (!intentsNames.includes(args[0])) {
+      text = args.join(" ");
       variant = Math.ceil(Math.random() * getVariantCount("default"));
       background = await Canvas.loadImage(
         `assets/intents/default/${variant}.png`
