@@ -52,18 +52,18 @@ class Mongo {
 class Gary extends CommandoClient {
   constructor(options) {
     super(options);
-    this.Mongo = {
-      new: new Mongo(this),
-      MongoGuild,
-      getOrMakeGuild: async (id) => {
-        let guild = await MongoGuild.findOne({ _id: id });
-        if (!guild) {
-          const g = await this.guilds.fetch(id);
-          guild = new MongoGuild(await createGuild(id, g.name));
-        }
-        return guild;
-      },
-    };
+    // this.Mongo = {
+    //   new: new Mongo(this),
+    //   MongoGuild,
+    //   getOrMakeGuild: async (id) => {
+    //     let guild = await MongoGuild.findOne({ _id: id });
+    //     if (!guild) {
+    //       const g = await this.guilds.fetch(id);
+    //       guild = new MongoGuild(await createGuild(id, g.name));
+    //     }
+    //     return guild;
+    //   },
+    // };
   }
 }
 
@@ -74,6 +74,7 @@ const client = new Gary({
 
 
 client.once("ready", async () => {
+  console.log("Gary is ready :)")
   client.user.setActivity(`${client.commandPrefix}help`, {
     type: "LISTENING",
   });
