@@ -88,22 +88,9 @@ client.once("ready", async () => {
     .registerCommandsIn(path.join(__dirname, "commands"));
 });
 
-client.on("message", async (message) => {
-  if (message.author.bot) return;
-  if (message.channel.id != "885259801309876254") return;
-  const staffChannel = client.channels.cache.get("885263299908870174");
-  const embed = {
-    color: "#EF476F",
-    title: "Suggestion",
-    author: {
-      name: message.author.tag,
-      icon_url: message.author.avatarURL(),
-    },
-    description: message.content,
-    thumbnail: message.author.avatarURL(),
-  };
-  await staffChannel.send({ embed });
-  await message.delete();
-});
+// client.on("message", async (message) => {
+//   if (message.author.bot) return;
+
+// });
 
 client.login(token);
