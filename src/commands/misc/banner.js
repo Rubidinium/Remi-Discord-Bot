@@ -1,3 +1,7 @@
+/*
+This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
+*/
+
 const Commando = require("discord.js-commando");
 const Canvas = require("canvas");
 const { Permissions } = require("discord.js");
