@@ -7,6 +7,8 @@ const { mongoUrl } = process.env,
   { connect, connection } = require("mongoose");
 const { MongoGuild, createGuild } = require("./schemas/guild.js");
 
+const banner = require('./commands/misc/banner')
+
 class Mongo {
   constructor(client) {
     this.client = client;
@@ -97,5 +99,7 @@ If you haven't already applied head to https://forms.gle/JeDsAbVitc47Tr9F7`
     console.log(err);
   }
 });
+
+client.on('message', banner)
 
 client.login(token);
