@@ -7,9 +7,6 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
-  "engines": {
-    "node": "14.17"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

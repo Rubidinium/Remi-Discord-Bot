@@ -40,7 +40,7 @@ module.exports = class BannerCommand extends Commando.Command {
       return;
     }
 
-    const text = args.slice(1);
+    const text = args.slice(1).join(" ");
     const variant = Math.ceil(Math.random() * intents[args[0]]);
 
     Canvas.registerFont("assets\\font\\Mont.ttf", {
@@ -61,13 +61,13 @@ module.exports = class BannerCommand extends Commando.Command {
     context.textAlign = "center";
     context.fillStyle = "rgba(255, 255, 255, .3)";
     context.fillText(
-      text.join(" ").toUpperCase(),
+      text,
       canvas.width / 2 + 2,
       canvas.height / 2 + 22
     );
     context.fillStyle = "#FFFFFF";
     context.fillText(
-      text.join(" ").toUpperCase(),
+      text,
       canvas.width / 2 - 2,
       canvas.height / 2 + 18
     );
