@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { token } = process.env;
 
-const path = require("path");
+const {join} = require("path");
 const { CommandoClient } = require("discord.js-commando");
 
 const client = new CommandoClient({
@@ -11,7 +11,7 @@ const client = new CommandoClient({
 
 client.once("ready", async () => {
   console.log("Gary is ready :)");
-  console.log(path.join(__dirname, "commands"));
+  console.log(join(__dirname, "commands"));
   client.user.setActivity(`${client.commandPrefix}help`, {
     type: "LISTENING",
   });
@@ -21,7 +21,7 @@ client.once("ready", async () => {
       // ["moderation", "Moderation commands"],
     ])
     .registerDefaults()
-    .registerCommandsIn(path.join(__dirname, "commands"));
+    .registerCommandsIn(join(__dirname, "commands"));
 });
 
 client.login(token);
