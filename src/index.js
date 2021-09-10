@@ -3,6 +3,8 @@ const { token } = process.env;
 
 const path = require("path");
 const { CommandoClient } = require("discord.js-commando");
+const { MessageEmbed } = require("discord.js");
+
 // const { mongoUrl } = process.env,
 //   { connect, connection } = require("mongoose");
 // const { MongoGuild, createGuild } = require("./schemas/guild.js");
@@ -50,53 +52,40 @@ const { CommandoClient } = require("discord.js-commando");
 // }
 
 class Gary extends CommandoClient {
-  constructor(options) {
-    super(options);
-    // this.Mongo = {
-    //   new: new Mongo(this),
-    //   MongoGuild,
-    //   getOrMakeGuild: async (id) => {
-    //     let guild = await MongoGuild.findOne({ _id: id });
-    //     if (!guild) {
-    //       const g = await this.guilds.fetch(id);
-    //       guild = new MongoGuild(await createGuild(id, g.name));
-    //     }
-    //     return guild;
-    //   },
-    // };
-  }
+    constructor(options) {
+        super(options);
+        // this.Mongo = {
+        //   new: new Mongo(this),
+        //   MongoGuild,
+        //   getOrMakeGuild: async (id) => {
+        //     let guild = await MongoGuild.findOne({ _id: id });
+        //     if (!guild) {
+        //       const g = await this.guilds.fetch(id);
+        //       guild = new MongoGuild(await createGuild(id, g.name));
+        //     }
+        //     return guild;
+        //   },
+        // };
+    }
 }
 
 const client = new Gary({
-  owner: "682715516456140838",
-  commandPrefix: "-",
+    owner: "682715516456140838",
+    commandPrefix: "-",
 });
 
-
-client.once("ready", async () => {
-  console.log("Gary is ready :)")
-  client.user.setActivity(`${client.commandPrefix}help`, {
-    type: "LISTENING",
-  });
-  client.registry
-    .registerGroups([
-      ["misc", "Misc commands"],
-      // ["moderation", "Moderation commands"],
-    ])
-    .registerDefaults()
-    .registerCommandsIn(path.join(__dirname, "commands"));
+client.once("ready", async() => {
+    console.log("Gary is ready :)");
+    client.user.setActivity(`${client.commandPrefix}help`, {
+        type: "LISTENING",
+    });
+    client.registry
+        .registerGroups([
+            ["misc", "Misc commands"],
+            // ["moderation", "Moderation commands"],
+        ])
+        .registerDefaults()
+        .registerCommandsIn(path.join(__dirname, "commands"));
 });
-
-client.on("guildMemberAdd", (member) => {
-  try {
-    member.send(
-      `Welcome to Programming Simplified, a bootcamp designed to help beginner programmers learn the necessary basic skills to start their own careers and projects! All new students are automatically placed on a waitlist, and will be notified through DMs once a bootcamp spot opens up.
-If you haven't already applied head to https://forms.gle/JeDsAbVitc47Tr9F7`
-    );
-  } catch (err) {
-    console.error(err);
-  }
-});
-
 
 client.login(token);
