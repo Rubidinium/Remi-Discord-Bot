@@ -9,18 +9,18 @@ const client = new CommandoClient({
   commandPrefix: "-",
 });
 
-client.once("ready", async () => {
-  console.log("Gary is ready :)");
-  client.user.setActivity(`${client.commandPrefix}help`, {
-    type: "LISTENING",
-  });
-  client.registry
-    .registerGroups([
-      ["misc", "Misc commands"],
-      // ["moderation", "Moderation commands"],
-    ])
-    .registerDefaults()
-    .registerCommandsIn(path.join(__dirname, "commands"));
+client.once("ready", async() => {
+    console.log("Gary is ready :)");
+    client.user.setActivity(`${client.commandPrefix}help`, {
+        type: "LISTENING",
+    });
+    client.registry
+        .registerGroups([
+            ["misc", "Misc commands"],
+            // ["moderation", "Moderation commands"],
+        ])
+        .registerDefaults()
+        .registerCommandsIn(path.join(__dirname, "commands"));
 });
 
 client.login(token);
