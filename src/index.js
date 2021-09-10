@@ -11,6 +11,7 @@ const client = new CommandoClient({
 
 client.once("ready", async() => {
     console.log("Gary is ready :)");
+    console.log(path.join(__dirname, "commands"));
     client.user.setActivity(`${client.commandPrefix}help`, {
         type: "LISTENING",
     });
