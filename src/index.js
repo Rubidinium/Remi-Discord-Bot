@@ -94,7 +94,7 @@ client.on("guildMemberAdd", (member) => {
 If you haven't already applied head to https://forms.gle/JeDsAbVitc47Tr9F7`
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 });
 
