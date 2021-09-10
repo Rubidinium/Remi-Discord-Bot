@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { token } = process.env;
 
-const {join} = require("path");
+const { join } = require("path");
 const { CommandoClient } = require("discord.js-commando");
 
 const client = new CommandoClient({
@@ -16,10 +16,7 @@ client.once("ready", async () => {
     type: "LISTENING",
   });
   client.registry
-    .registerGroups([
-      ["misc", "Misc commands"],
-      // ["moderation", "Moderation commands"],
-    ])
+    .registerGroups([["misc", "Misc commands"]])
     .registerDefaults()
     .registerCommandsIn(join(__dirname, "commands"));
 });
