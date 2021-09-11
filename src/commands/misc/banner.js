@@ -66,7 +66,7 @@ module.exports = class BannerCommand extends Commando.Command {
       return;
     }
     let intent = intents.filter((i) => i.name == args[0].slice(1));
-    variant = Math.ceil(Math.random() * intents.length);
+    variant = Math.ceil(Math.random() * intent.length);
 
     background = await Canvas.loadImage(
       `assets/intents/${args[0].slice(1)}/${variant}.png`
