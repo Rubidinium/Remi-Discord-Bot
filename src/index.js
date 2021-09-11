@@ -12,9 +12,11 @@ const client = new CommandoClient({
 client.once("ready", async () => {
   console.log("Gary is ready :)");
   console.log(join(__dirname, "commands"));
+  
   client.user.setActivity(`${client.commandPrefix}help`, {
     type: "LISTENING",
   });
+
   client.registry
     .registerGroups([["misc", "Misc commands"]])
     .registerDefaults()
