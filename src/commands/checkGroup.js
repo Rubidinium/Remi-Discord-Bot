@@ -3,7 +3,7 @@ import csvParser from 'csv-parser';
 import fs from 'fs';
 
 const command = new SlashCommandBuilder()
-    .setName('checkGroup')
+    .setName('checkgroup')
     .setDescription('Checks what group you\'re in');
 
 export default {

@@ -18,12 +18,13 @@ const commands = new Collection();
 
 const commandFiles = fs
   .readdirSync("./src/commands")
-  .filter((file) => file.endsWith(".ts") && !(file == "deploy.js"));
+  .filter((file) => file.endsWith(".ts") && !file == "deploy.js");
 
 for (const file of commandFiles) {
-  import(`./commands/${file}`).then((command) =>
-    commands.set(command.data.name, command)
-  );
+  import(`./commands/${file}`).then((command) => {
+    console.log(command);
+    commands.set(command.data.name, command);
+  });
 }
 
 client.once("ready", () => {
@@ -36,4 +37,4 @@ client.on("interactionCreate", (interaction) => {
   commands.get(commandName).execute(interaction);
 });
 
-client.login(process.env.token);
+client.login(process.env.TOKEN);

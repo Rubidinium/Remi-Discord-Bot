@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 const command = new SlashCommandBuilder()
-    .setName('showGroups')
+    .setName('showgroups')
     .setDescription('Shows the members of the groups');
 
 export default {
