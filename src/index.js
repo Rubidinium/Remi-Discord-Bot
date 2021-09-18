@@ -1,35 +1,33 @@
-require("dotenv").config();
-const { token } = process.env;
+import { Client, Collection, Intents } from "discord.js";
+import fs from "fs";
 
-const { join } = require("path");
-const { CommandoClient } = require("discord.js-commando");
+// import dotenv from "dotenv";
+// dotenv.config();
 
-const client = new CommandoClient({
-    owner: "682715516456140838",
-    commandPrefix: "-",
+const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+  ],
 });
 
-client.once("ready", async() => {
-    console.log("Gary is ready :)");
+const commands = new Collection();
+const commandFiles = fs.readdirSync("./commands");
 
-    client.user.setActivity(`${client.commandPrefix}help`, {
-        type: "LISTENING",
-    });
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  commands.push(command.data.toJSON());
+}
 
-    client.registry
-        .registerGroups([
-            ["misc", "Misc commands"]
-        ])
-        .registerDefaults()
-        .registerCommandsIn(join(__dirname, "commands"));
+client.once("ready", () => {
+  console.log(`${client.name} is ready.`);
 });
 
-client.on("message", (message) => {
-    if (
-        message.channel.id == "885259801309876254" &&
-        !message.content.startsWith(`${client.commandPrefix}suggest`)
-    )
-        message.delete();
+client.on("interactionCreate", (interaction) => {
+  if (!interaction.isCommand()) return;
+  const { commandName } = interaction;
+  commands.get(commandName).execute(interaction);
 });
 
-client.login(token);
+client.login(process.env.token);
