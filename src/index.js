@@ -27,7 +27,7 @@ for (const file of commandFiles) {
 }
 
 client.once("ready", () => {
-  console.log("Bernard is ready.");
+  console.log(`${client.user.username} is ready.`);
 });
 
 client.on("interactionCreate", (interaction) => {
