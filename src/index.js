@@ -8,10 +8,49 @@ import {
   MessageActionRow,
   MessageSelectMenu,
 } from "discord.js";
+import Application from "./schemas/apps.js";
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+const { MONGO } = process.env,
+  { connect, connection, model, Schema, Types } = require("mongoose");
 
 import fs from "fs";
 
-const client = new Client({
+class Mongo {
+  constructor(client) {
+    this.client = client;
+
+    connect(MONGO, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      autoIndex: false,
+      connectTimeoutMS: 10000,
+      family: 4,
+    });
+
+    connection.on("connected", () => console.log("MongoDB connected"));
+    connection.on("disconnected", () =>
+      console.log("MongoDB disconnected! - - - - - - - - - - - - -")
+    );
+    connection.on("err", () =>
+      console.log("There was an error connecting to MongoDB")
+    );
+  }
+}
+
+class Gary extends Client {
+  constructor(options) {
+    super(options);
+    this.Mongo = {
+      new: new Mongo(this),
+      Application,
+    };
+  }
+}
+
+const client = new Gary({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
@@ -98,12 +137,12 @@ client.once("ready", async () => {
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isMessageComponent()) {
+    const user = interaction.user;
     if (interaction.customId === "register") {
       interaction.reply({
         content: "We have sent you an application form in your dms.",
         ephemeral: true,
       });
-      const user = interaction.user;
 
       let registerCourses = [];
       courses.forEach((course) => {
@@ -113,7 +152,11 @@ client.on("interactionCreate", async (interaction) => {
           }
         });
       });
-      const application = { user };
+      const application = new Application({
+        _id: Types.ObjectId(),
+      });
+      application.user = user;
+      application.application.courses = registerCourses;
 
       user.send(
         `Thank you for applying for programming simplified's courses.\n${registerCourses
@@ -154,24 +197,25 @@ client.on("interactionCreate", async (interaction) => {
           ])
       );
 
-      user.send({
+      application.application.dmMessage = await user.send({
+        content: "How old are you?",
         components: [row],
       });
 
-      client.on("interactionCreate", (interaction) => {
-        if (!interaction.isSelectMenu()) return;
-        if (interaction.customId === "age") {
-          application.age = interaction.values[0];
-        }
+      application.save();
+    }
+    if (interaction.customId === "age") {
+      const application = apps[user.id].application;
+      application.application.age = interaction.values[0];
+      application.application.dmMessage.edit({
+        content: "We have received your age",
+        components: [],
       });
 
-      // dmMessage.channel
-      //   .awaitMessages((msg) => true, { max: 1 })
-      //   .then((messages) => {
-      //     const msg = messages.first();
-      //   });
+      apps.save().then((result) => {
+        console.log(result);
+      });
     }
-    console.log("Message Component");
   }
 
   if (interaction.isCommand()) {
