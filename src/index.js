@@ -1,10 +1,8 @@
-import { Client, Collection, Intents } from "discord.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-import fs from "fs";
-
 import dotenv from "dotenv";
 dotenv.config();
+
+import { Client, Collection, Intents } from "discord.js";
+import fs from "fs";
 
 const client = new Client({
   intents: [
@@ -18,20 +16,21 @@ const commands = new Collection();
 
 const commandFiles = fs
   .readdirSync("./src/commands")
-  .filter((file) => file.endsWith(".ts") && !file == "deploy.js");
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-  import(`./commands/${file}`).then((command) => {
-    console.log(command);
+  await import(`./commands/${file}`).then(({ default: command }) => {
     commands.set(command.data.name, command);
   });
 }
 
-client.once("ready", () => {
+client.once("ready", async () => {
   console.log(`${client.user.username} is ready.`);
+  client.user.setActivity("with the code", { type: "PLAYING" });
 });
 
 client.on("interactionCreate", (interaction) => {
+  // console.log(interaction);
   if (!interaction.isCommand()) return;
   const { commandName } = interaction;
   commands.get(commandName).execute(interaction);

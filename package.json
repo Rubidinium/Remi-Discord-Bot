@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "deploy": "node src/commands/deploy.js"
+    "deploy": "node src/deploy.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,20 +1,23 @@
-import { REST } from "@discordjs/rest";
-import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
+import fs from "fs";
 const { TOKEN, CLIENTID, GUILDID } = process.env;
-const { Routes } = "discord-api-types";
 
 let commands = [];
 
 const commandFiles = fs
-  .readdirSync("./")
-  .filter((file) => file.endsWith(".js") && file !== "deploy.js");
+  .readdirSync("./src/commands")
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-  import(`./${file}`).then((command) => commands.push(command.data));
+  await import(`./commands/${file}`).then(({ default: command }) => {
+    commands.push(command.data);
+  });
 }
+
 const rest = new REST({ version: "9" }).setToken(TOKEN);
 
 (async () => {

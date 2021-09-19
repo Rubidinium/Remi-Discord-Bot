@@ -4,10 +4,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
       "@commands/*": ["commands/*"]
     }
-  },
-  "include": ["."]
+  }
 }
