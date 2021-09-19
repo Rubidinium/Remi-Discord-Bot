@@ -113,6 +113,7 @@ client.on("interactionCreate", async (interaction) => {
           }
         });
       });
+      const application = { user };
 
       user.send(
         `Thank you for applying for programming simplified's courses.\n${registerCourses
@@ -155,6 +156,13 @@ client.on("interactionCreate", async (interaction) => {
 
       user.send({
         components: [row],
+      });
+
+      client.on("interactionCreate", (interaction) => {
+        if (!interaction.isSelectMenu()) return;
+        if (interaction.customId === "age") {
+          application.age = interaction.values[0];
+        }
       });
 
       // dmMessage.channel
