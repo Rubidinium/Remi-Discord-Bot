@@ -8,7 +8,7 @@ import {
   MessageActionRow,
   MessageSelectMenu,
 } from "discord.js";
-import Application from "./schemas/apps.js";
+import { Application, getOrMakeApplication } from "./schemas/apps.js";
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -46,6 +46,13 @@ class Gary extends Client {
     this.Mongo = {
       new: new Mongo(this),
       Application,
+      getOrMakeApplication: async (id) => {
+        let application = await Application.findOne({ _id: id });
+        if (!application) {
+          application = new Application(await getOrMakeApplication(id));
+        }
+        return application;
+      },
     };
   }
 }
@@ -152,11 +159,13 @@ client.on("interactionCreate", async (interaction) => {
           }
         });
       });
-      const application = new Application({
+      const application = new client.Mongo.getOrMakeApplication({
         _id: Types.ObjectId(),
+        user: user,
+        application: {
+          courses: registerCourses,
+        },
       });
-      application.user = user;
-      application.application.courses = registerCourses;
 
       user.send(
         `Thank you for applying for programming simplified's courses.\n${registerCourses

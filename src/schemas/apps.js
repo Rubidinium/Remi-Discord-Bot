@@ -10,4 +10,19 @@ const applicationSchema = new Schema({
   application: Object,
 });
 
-export default model("application", applicationSchema);
+await Application.findOne({ _id: id });
+
+const createApplication = async (id) => {
+  const application = {
+    _id: id,
+  };
+  //
+  let applicationDocument = new applicationSchema(application);
+  applicationDocument = await applicationDocument.save();
+  return applicationDocument;
+};
+
+export default {
+  Application: model("application", applicationSchema),
+  createApplication,
+};
