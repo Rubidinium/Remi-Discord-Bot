@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from "@discordjs/builders";
 const command = new SlashCommandBuilder()
-    .setName('showgroups')
-    .setDescription('Shows the members of the groups');
+  .setName("showgroups")
+  .setDescription("Shows the members of the groups");
 
 export default {
-    data: command.toJSON(),
-    async execute(interaction) {
-        interaction;
-    }
+  data: command.toJSON(),
+  async execute(interaction) {
+    interaction;
+  },
 };

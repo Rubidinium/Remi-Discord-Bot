@@ -26,7 +26,7 @@ for (const file of commandFiles) {
 
 client.once("ready", async () => {
   console.log(`${client.user.username} is ready.`);
-  client.user.setActivity("with the code", { type: "PLAYING" });
+  client.user.setActivity("/help", { type: "LISTENING" });
 });
 
 client.on("interactionCreate", (interaction) => {
