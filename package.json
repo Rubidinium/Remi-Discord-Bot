@@ -1,16 +1,16 @@
 {
-  "name": "valorant",
+  "name": "gary",
   "version": "1.0.0",
   "description": "discord bot",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/deploy.js && node src/index.js",
     "dev": "nodemon src/index.js",
     "deploy": "node src/deploy.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "https://github.com/HazimAr",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",

@@ -6,7 +6,11 @@ const command = new SlashCommandBuilder()
 export default {
   data: command.toJSON(),
   async execute(interaction) {
-    console.log(interaction);
+
+    interaction.reply({
+      content: "You are now registered for the course",
+      ephemeral: true,
+    });
     // interaction;
   },
 };
