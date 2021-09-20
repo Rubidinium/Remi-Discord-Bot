@@ -7,9 +7,9 @@ export default class PaginationEmbed {
       .setColor("RANDOM")
       .setTitle(page.title)
       .setAuthor("Gary")
-      .setDescription('asdf')
+      .setDescription("asdf")
       .addFields(page.fields)
-      .setFooter(`Page 1/${courses.length}`);
+      .setFooter(`Page ${courses.indexOf(page) + 1}/${courses.length}`);
 
     this.row = new MessageActionRow().addComponents(
       new MessageButton()
