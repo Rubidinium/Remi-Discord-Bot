@@ -51,10 +51,9 @@ export default {
           fields: [
             { name: "Duration", value: courses[0].duration },
             { name: "Price", value: courses[0].price },
-			
           ],
         },
-        5
+        courses.length
       )
     );
   },
