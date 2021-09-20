@@ -27,7 +27,7 @@ const courses = [
     id: "bot",
     description: "Learn how to build a discord bot",
     price: "FREE",
-    duration: "4 weeks",
+    duration: "8 weeks",
     image: "https://i.imgur.com/qQqxQ8l.png",
   },
   {
