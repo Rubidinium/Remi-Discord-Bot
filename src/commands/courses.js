@@ -50,10 +50,9 @@ export default {
           description: courses[0].description,
           fields: [
             { name: "Duration", value: courses[0].duration },
-            { name: "Price", value: courses[0].price },
+            { name: "Price", value: courses[0].price, inline: true },
           ],
         },
-        courses.length
       )
     );
   },
