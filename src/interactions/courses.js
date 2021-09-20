@@ -26,7 +26,11 @@ buttons.set("forward", (interaction) => {
       title: courses[currentPage].name,
       description: courses[currentPage].description,
       fields: [
-        { name: "Duration", value: courses[currentPage].duration },
+        {
+          name: "Duration",
+          value: courses[currentPage].duration,
+          inline: true,
+        },
         { name: "Price", value: courses[currentPage].price, inline: true },
       ],
     })
