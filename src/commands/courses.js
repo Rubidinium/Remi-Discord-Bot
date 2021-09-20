@@ -46,9 +46,13 @@ export default {
     interaction.reply(
       new PaginationEmbed(
         {
-          title: "test",
-          description: "ksdjflksdf",
-          fields: [{ name: "Test field", value: "hahahhewhawhe" }],
+          title: courses[0].name,
+          description: courses[0].description,
+          fields: [
+            { name: "Duration", value: courses[0].duration },
+            { name: "Price", value: courses[0].price },
+			
+          ],
         },
         5
       )

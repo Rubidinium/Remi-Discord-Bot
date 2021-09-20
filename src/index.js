@@ -13,7 +13,7 @@ const { Application, getOrMakeApplication } = apps;
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-import { courses } from "./commands/courses";
+import { courses } from "./commands/courses.js";
 
 const { MONGO } = process.env,
   { connect, connection, model, Schema, Types } = require("mongoose");
