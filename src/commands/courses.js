@@ -52,8 +52,9 @@ export default {
             { name: "Duration", value: courses[0].duration },
             { name: "Price", value: courses[0].price, inline: true },
           ],
+		  course: courses[0],
         },
-        0, courses.length
+        1
       )
     );
   },
