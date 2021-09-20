@@ -49,10 +49,10 @@ export default {
           title: courses[0].name,
           description: courses[0].description,
           fields: [
-            { name: "Duration", value: courses[0].duration },
+            { name: "Duration", value: courses[0].duration, inline: true },
             { name: "Price", value: courses[0].price, inline: true },
           ],
-		  course: courses[0],
+          course: courses[0],
         },
         1
       )
