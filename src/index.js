@@ -10,6 +10,7 @@ import {
 } from "discord.js";
 import apps from "./schemas/apps.js";
 const { Application, getOrMakeApplication } = apps;
+
 import { createRequire } from "module";
 const require = createRequire(
     import.meta.url);
@@ -226,6 +227,13 @@ client.on("interactionCreate", async(interaction) => {
 					console.log(result);
 				});
 				break;
+
+            case 'back':
+            case 'forward':
+            case 'accept':
+            case 'reject':
+                
+            break;
 
 		}
 
