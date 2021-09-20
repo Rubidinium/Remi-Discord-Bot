@@ -15,7 +15,7 @@ buttons.set("back", (interaction) => {
 				{ name: "Duration", value: courses[currentPage - 1].duration },
 				{ name: "Price", value: courses[currentPage - 1].price, inline: true },
 			],
-		})
+		}, currentPage)
 	);
 });
 
@@ -33,7 +33,7 @@ buttons.set("forward", (interaction) => {
 				},
 				{ name: "Price", value: courses[currentPage].price, inline: true },
 			],
-		})
+		}, currentPage)
 	);
 });
 

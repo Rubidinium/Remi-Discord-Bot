@@ -53,6 +53,7 @@ export default {
             { name: "Price", value: courses[0].price, inline: true },
           ],
         },
+        0
       )
     );
   },
