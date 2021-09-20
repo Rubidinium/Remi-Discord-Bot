@@ -7,7 +7,7 @@ export default class PaginationEmbed {
       .setColor("RANDOM")
       .setTitle(page.title)
       .setAuthor("Gary")
-      .setDescription(page.description)
+      .setDescription('asdf')
       .addFields(page.fields)
       .setFooter(`Page 1/${courses.length}`);
 
