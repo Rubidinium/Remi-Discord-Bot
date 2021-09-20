@@ -1,6 +1,6 @@
 import { Socket } from 'net';
 import { appendFileSync } from 'fs';
-import { GuildChannel } from 'discord.js';
+import { GuildChannel, Collection } from 'discord.js';
 export default class Logger {
     constructor(config) {
         /*
@@ -10,7 +10,12 @@ export default class Logger {
             exitOnError: bool,
             lineNumber: bool,
             showLoggingLevel: bool
-            output: Socket | String | Channel,
+            targets: Array<{
+                value: Socket | String,
+                type: string, //e.g. 'socket' 'file' 'discordChannel'
+                handler?: (message) => void, // An optional method for writing the data
+            }>,
+
         }
         */
 
@@ -20,16 +25,32 @@ export default class Logger {
         this.output = config.output;
         this.exitOnError = config.exitOnError;
         this.showLoggingLevel = config.showLoggingLevel;
+
+        this.handlers = new Collection();
+        config.targets.forEach(i => {
+            switch (i.type) {
+                case 'discordChannel':
+                    this.handlers.set('discordChannel', { execute: discordChannel, value: i.value });
+                    break;
+                case 'file':
+                    this.handlers.set('file', { execute: file, value: i.value });
+                    break;
+                case 'socket':
+                    this.handlers.set('socket', { execute: socket, value: i.value });
+                    break;
+                default:
+                    this.handlers.set(i.type, { execute: i.handler, value: i.value })
+            }
+        });
+
+        this.targets = config.targets.map(i => i.type)
     }
 
     writeRaw(message) {
-        if (this.output instanceof Socket) {
-            this.output.write(message)
-        } else if(this.output instanceof String) {
-            appendFileSync(this.output, message, { encoding: 'utf-8' })
-        } else if(this.output instanceof GuildChannel) {
-            this.output.send(message)
-        }
+        this.targets.forEach(i => {
+            const handler = this.handlers.get(i);
+            handler.execute(message, handler.value)
+        });
     }
 
     info(strings, ..._) {
@@ -59,4 +80,16 @@ export default class Logger {
         this.writeRaw(`${this.showLoggingLevel ? 'error' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
         if (this.exitOnError) process.exit();
     }
+}
+
+export function discordChannel(message, channel) {
+    channel.send(message);
+}
+
+export function file(message, path) {
+    appendFileSync(path, message, { encoding: 'utf-8' })
+}
+
+export function socket(message, socket) {
+    socket.write(message);
 }
