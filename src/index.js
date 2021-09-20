@@ -122,9 +122,9 @@ client.on("interactionCreate", async (interaction) => {
       case "forward":
       case "accept":
       case "reject":
-        import('./interactions/courses.js').then(courses => {
-            courses.handle(interaction, client);
-        })
+        import("./interactions/courses.js").then((courses) => {
+          courses.handle(interaction, client);
+        });
         break;
     }
   }
