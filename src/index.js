@@ -111,93 +111,20 @@ client.once("ready", async () => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-  if (interaction.isMessageComponent()) {
+  if (interaction.isButton()) {
     const user = interaction.user;
     switch (interaction.customId) {
       case "register":
-        interaction.reply({
-          content: "We have sent you an application form in your dms.",
-          ephemeral: true,
-        });
-
-        let registerCourses = [];
-        courses.forEach((course) => {
-          interaction.values.forEach((value) => {
-            if (course.id === value) {
-              registerCourses.push(course);
-            }
-          });
-        });
-        const application = new client.Mongo.getOrMakeApplication({
-          _id: Types.ObjectId(),
-          user: user,
-          application: {
-            courses: registerCourses,
-          },
-        });
-
-        user.send(
-          `Thank you for applying for programming simplified's courses.\n${registerCourses
-            .map((registerCourse) => {
-              return `\n**${registerCourse.name}**`;
-            })
-            .join("")}\nPlease answer the following questions to apply`
-        );
-        const row = new MessageActionRow().addComponents(
-          new MessageSelectMenu()
-            .setCustomId("age")
-            .setPlaceholder("Select your age")
-            .addOptions([
-              {
-                label: "13",
-                value: "13",
-              },
-              {
-                label: "14",
-                value: "14",
-              },
-              {
-                label: "15",
-                value: "15",
-              },
-              {
-                label: "16",
-                value: "16",
-              },
-              {
-                label: "17",
-                value: "17",
-              },
-              {
-                label: "18+",
-                value: "18+",
-              },
-            ])
-        );
-
-        application.application.dmMessage = await user.send({
-          content: "How old are you?",
-          components: [row],
-        });
-
-        application.save();
       case "age":
-        const ageApplication = apps[user.id].application;
-        ageApplication.application.age = interaction.values[0];
-        ageApplication.application.dmMessage.edit({
-          content: "We have received your age",
-          components: [],
-        });
-
-        apps.save().then((result) => {
-          console.log(result);
-        });
         break;
 
       case "back":
       case "forward":
       case "accept":
       case "reject":
+        import('./interactions/courses.js').then(courses => {
+            courses.handle(interaction, client);
+        })
         break;
     }
   }
