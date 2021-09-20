@@ -18,7 +18,7 @@ buttons.set("back", (interaction) => {
   );
 });
 
-buttons.set("next", (interaction) => {
+buttons.set("forward", (interaction) => {
   console.log(interaction);
   const currentPage = 1;
   interaction.message.edit(
