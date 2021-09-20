@@ -1,445 +1,435 @@
-
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
-import Canvas from  'canvas';
+import Canvas from "canvas";
 import { resolve } from "path";
 import { readdirSync } from "fs";
 
 const command = new SlashCommandBuilder()
-    .setName('banner')
-    .setDescription('Generate a banner')
-    .addStringOption(option => 
-        option
-            .setName('text')
-            .setDescription('The text for the banner')
-            .setRequired(true))
-    .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+  .setName("banner")
+  .setDescription("Generate a banner")
+  .addStringOption((option) =>
+    option
+      .setName("text")
+      .setDescription("The text for the banner")
+      .setRequired(true)
+  )
+  .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES);
 
 export default {
-    data: command.toJSON(),
-    async execute(interaction) {
-        const row = new MessageActionRow() 
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('intent')
-                    .setPlaceholder('Default')
-                    .addOptions([
-                        {
-                            label: 'Default',
-                            value: 'default'
-                        },
-                        {
-                            label: 'HR',
-                            value: 'hr'
-                        },
-                        {
-                            label: 'Academics',
-                            value: 'academics'
-                        },
-                        {
-                            label: 'Special',
-                            value: 'special'
-                        },
-                        {
-                            label: 'Tech',
-                            value: 'tech'
-                        },
+  data: command.toJSON(),
+  async execute(interaction) {
+    const row = new MessageActionRow().addComponents(
+      new MessageSelectMenu()
+        .setCustomId("intent")
+        .setPlaceholder("Default")
+        .addOptions([
+          {
+            label: "Default",
+            value: "default",
+          },
+          {
+            label: "HR",
+            value: "hr",
+          },
+          {
+            label: "Academics",
+            value: "academics",
+          },
+          {
+            label: "Special",
+            value: "special",
+          },
+          {
+            label: "Tech",
+            value: "tech",
+          },
+        ])
+    );
+    client.on("interactionCreate", async (inter) => {
+      let intent = getIntents().filter((i) => i.name == inter.values[0])[0];
+      const variant = Math.ceil(Math.random() * intent.count);
 
-                    ])
-            );
-        client.on('interactionCreate', inter => {
+      const background = await Canvas.loadImage(
+        `assets/intents/${inter.values[0]}/${variant}.png`
+      );
 
-
-            let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
-        variant = Math.ceil(Math.random() * intent.count);
-
-        background = await Canvas.loadImage(
-            `assets/intents/${args[0].slice(1)}/${variant}.png`
-        );
-
-        message.reply({
-            files: [basicCanvas(context, background, text, canvas)],
-        });
-        })
-        
-        
-    }
-}
-
-/*
-This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
-*/
-
-const { resolve } = require("path");
-const { readdirSync } = require("fs");
-const Commando = require("discord.js-commando");
-
-const { Permissions, MessageAttachment } = require("discord.js");
-
-module.exports = class BannerCommand extends Commando.Command {
-    constructor(client) {
-        super(client, {
-            name: "banner",
-            group: "misc",
-            memberName: "banner",
-            description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
-            argsType: "multiple",
-        });
-    }
-
-    async run(message, args) {
-        
-        if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
-            message.guild
-        )
-            return;
-
-        if (args.length < 1) {
-            message.reply(
-                "Incorrect usage. Correct usage: `banner [intent] <message>`"
-            );
-            return;
-        }
-
-        let text = args.slice(1).join(" ");
-
-        Canvas.registerFont("assets/font/Mont.ttf", {
-            family: "Mont Bold",
-            weight: "bold",
-        });
-        
-    }
+      message.reply({
+        files: [basicCanvas(context, background, text, canvas)],
+      });
+    });
+  },
 };
 
 function basicCanvas(context, background, text, canvas) {
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    context.font = "60px Mont Bold";
-    context.textAlign = "center";
-    context.fillStyle = "rgba(255, 255, 255, .3)";
-    context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
-    context.fillStyle = "#FFFFFF";
-    context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
-    return new MessageAttachment(canvas.toBuffer(), "banner.png");
+  context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  context.font = "60px Mont Bold";
+  context.textAlign = "center";
+  context.fillStyle = "rgba(255, 255, 255, .3)";
+  context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+  context.fillStyle = "#FFFFFF";
+  context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+  return new MessageAttachment(canvas.toBuffer(), "banner.png");
 }
 
 function getIntents() {
-    let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
-            withFileTypes: true,
-        })
-        .filter((dirent) => dirent.isDirectory())
-        .map((directory) => {
-            return {
-                name: directory.name,
-                count: 0,
-            };
-        });
+  let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
+    withFileTypes: true,
+  })
+    .filter((dirent) => dirent.isDirectory())
+    .map((directory) => {
+      return {
+        name: directory.name,
+        count: 0,
+      };
+    });
 
-    for (let i = 0; i < names.length; i++) {
-        names[i].count = readdirSync(
-            resolve(__dirname, "../../../assets/intents", names[i].name)
-        ).length;
-    }
+  for (let i = 0; i < names.length; i++) {
+    names[i].count = readdirSync(
+      resolve(__dirname, "../../../assets/intents", names[i].name)
+    ).length;
+  }
 
-    return names;
+  return names;
 }
 
-function getVariantCount(intent) {
-    return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
-        .length;
-}
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
-import Canvas from  'canvas';
-import { resolve } from "path";
-import { readdirSync } from "fs";
+// /*
+// This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
+// */
 
-const command = new SlashCommandBuilder()
-    .setName('banner')
-    .setDescription('Generate a banner')
-    .addStringOption(option => 
-        option
-            .setName('text')
-            .setDescription('The text for the banner')
-            .setRequired(true))
-    .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+// const { resolve } = require("path");
+// const { readdirSync } = require("fs");
+// const Commando = require("discord.js-commando");
 
-export default {
-    data: command.toJSON(),
-    async execute(interaction) {
-        const row = new MessageActionRow() 
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('intent')
-                    .setPlaceholder('Default')
-                    .addOptions([
-                        {
-                            label: 'Default',
-                            value: 'default'
-                        },
-                        {
-                            label: 'HR',
-                            value: 'hr'
-                        },
-                        {
-                            label: 'Academics',
-                            value: 'academics'
-                        },
-                        {
-                            label: 'Special',
-                            value: 'special'
-                        },
-                        {
-                            label: 'Tech',
-                            value: 'tech'
-                        },
+// const { Permissions, MessageAttachment } = require("discord.js");
 
-                    ])
-            );
-        client.on('interactionCreate', inter => {
+// module.exports = class BannerCommand extends Commando.Command {
+//     constructor(client) {
+//         super(client, {
+//             name: "banner",
+//             group: "misc",
+//             memberName: "banner",
+//             description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
+//             argsType: "multiple",
+//         });
+//     }
 
+//     async run(message, args) {
 
-            let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
-        variant = Math.ceil(Math.random() * intent.count);
+//         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
+//             message.guild
+//         )
+//             return;
 
-        background = await Canvas.loadImage(
-            `assets/intents/${args[0].slice(1)}/${variant}.png`
-        );
+//         if (args.length < 1) {
+//             message.reply(
+//                 "Incorrect usage. Correct usage: `banner [intent] <message>`"
+//             );
+//             return;
+//         }
 
-        message.reply({
-            files: [basicCanvas(context, background, text, canvas)],
-        });
-        })
-        
-        
-    }
-}
+//         let text = args.slice(1).join(" ");
 
-/*
-This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
-*/
+//         Canvas.registerFont("assets/font/Mont.ttf", {
+//             family: "Mont Bold",
+//             weight: "bold",
+//         });
 
-const { resolve } = require("path");
-const { readdirSync } = require("fs");
-const Commando = require("discord.js-commando");
+//     }
+// };
 
-const { Permissions, MessageAttachment } = require("discord.js");
+// function getVariantCount(intent) {
+//     return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
+//         .length;
+// }
+// import { SlashCommandBuilder } from "@discordjs/builders";
+// import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
+// import Canvas from  'canvas';
+// import { resolve } from "path";
+// import { readdirSync } from "fs";
 
-module.exports = class BannerCommand extends Commando.Command {
-    constructor(client) {
-        super(client, {
-            name: "banner",
-            group: "misc",
-            memberName: "banner",
-            description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
-            argsType: "multiple",
-        });
-    }
+// const command = new SlashCommandBuilder()
+//     .setName('banner')
+//     .setDescription('Generate a banner')
+//     .addStringOption(option =>
+//         option
+//             .setName('text')
+//             .setDescription('The text for the banner')
+//             .setRequired(true))
+//     .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
 
-    async run(message, args) {
-        
-        if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
-            message.guild
-        )
-            return;
+// export default {
+//     data: command.toJSON(),
+//     async execute(interaction) {
+//         const row = new MessageActionRow()
+//             .addComponents(
+//                 new MessageSelectMenu()
+//                     .setCustomId('intent')
+//                     .setPlaceholder('Default')
+//                     .addOptions([
+//                         {
+//                             label: 'Default',
+//                             value: 'default'
+//                         },
+//                         {
+//                             label: 'HR',
+//                             value: 'hr'
+//                         },
+//                         {
+//                             label: 'Academics',
+//                             value: 'academics'
+//                         },
+//                         {
+//                             label: 'Special',
+//                             value: 'special'
+//                         },
+//                         {
+//                             label: 'Tech',
+//                             value: 'tech'
+//                         },
 
-        if (args.length < 1) {
-            message.reply(
-                "Incorrect usage. Correct usage: `banner [intent] <message>`"
-            );
-            return;
-        }
+//                     ])
+//             );
+//         client.on('interactionCreate', inter => {
 
-        let text = args.slice(1).join(" ");
+//             let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
+//         variant = Math.ceil(Math.random() * intent.count);
 
-        Canvas.registerFont("assets/font/Mont.ttf", {
-            family: "Mont Bold",
-            weight: "bold",
-        });
-        
-    }
-};
+//         background = await Canvas.loadImage(
+//             `assets/intents/${args[0].slice(1)}/${variant}.png`
+//         );
 
-function basicCanvas(context, background, text, canvas) {
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    context.font = "60px Mont Bold";
-    context.textAlign = "center";
-    context.fillStyle = "rgba(255, 255, 255, .3)";
-    context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
-    context.fillStyle = "#FFFFFF";
-    context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
-    return new MessageAttachment(canvas.toBuffer(), "banner.png");
-}
+//         message.reply({
+//             files: [basicCanvas(context, background, text, canvas)],
+//         });
+//         })
 
-function getIntents() {
-    let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
-            withFileTypes: true,
-        })
-        .filter((dirent) => dirent.isDirectory())
-        .map((directory) => {
-            return {
-                name: directory.name,
-                count: 0,
-            };
-        });
+//     }
+// }
 
-    for (let i = 0; i < names.length; i++) {
-        names[i].count = readdirSync(
-            resolve(__dirname, "../../../assets/intents", names[i].name)
-        ).length;
-    }
+// /*
+// This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
+// */
 
-    return names;
-}
+// const { resolve } = require("path");
+// const { readdirSync } = require("fs");
+// const Commando = require("discord.js-commando");
 
-function getVariantCount(intent) {
-    return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
-        .length;
-}
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
-import Canvas from  'canvas';
-import { resolve } from "path";
-import { readdirSync } from "fs";
+// const { Permissions, MessageAttachment } = require("discord.js");
 
-const command = new SlashCommandBuilder()
-    .setName('banner')
-    .setDescription('Generate a banner')
-    .addStringOption(option => 
-        option
-            .setName('text')
-            .setDescription('The text for the banner')
-            .setRequired(true))
-    .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+// module.exports = class BannerCommand extends Commando.Command {
+//     constructor(client) {
+//         super(client, {
+//             name: "banner",
+//             group: "misc",
+//             memberName: "banner",
+//             description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
+//             argsType: "multiple",
+//         });
+//     }
 
-export default {
-    data: command.toJSON(),
-    async execute(interaction) {
-        const row = new MessageActionRow() 
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('intent')
-                    .setPlaceholder('Default')
-                    .addOptions([
-                        {
-                            label: 'Default',
-                            value: 'default'
-                        },
-                        {
-                            label: 'HR',
-                            value: 'hr'
-                        },
-                        {
-                            label: 'Academics',
-                            value: 'academics'
-                        },
-                        {
-                            label: 'Special',
-                            value: 'special'
-                        },
-                        {
-                            label: 'Tech',
-                            value: 'tech'
-                        },
+//     async run(message, args) {
 
-                    ])
-            );
-        client.on('interactionCreate', inter => {
+//         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
+//             message.guild
+//         )
+//             return;
 
+//         if (args.length < 1) {
+//             message.reply(
+//                 "Incorrect usage. Correct usage: `banner [intent] <message>`"
+//             );
+//             return;
+//         }
 
-            let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
-        variant = Math.ceil(Math.random() * intent.count);
+//         let text = args.slice(1).join(" ");
 
-        background = await Canvas.loadImage(
-            `assets/intents/${args[0].slice(1)}/${variant}.png`
-        );
+//         Canvas.registerFont("assets/font/Mont.ttf", {
+//             family: "Mont Bold",
+//             weight: "bold",
+//         });
 
-        message.reply({
-            files: [basicCanvas(context, background, text, canvas)],
-        });
-        })
-        
-        
-    }
-}
+//     }
+// };
 
-/*
-This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
-*/
+// function basicCanvas(context, background, text, canvas) {
+//     context.drawImage(background, 0, 0, canvas.width, canvas.height);
+//     context.font = "60px Mont Bold";
+//     context.textAlign = "center";
+//     context.fillStyle = "rgba(255, 255, 255, .3)";
+//     context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+//     context.fillStyle = "#FFFFFF";
+//     context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+//     return new MessageAttachment(canvas.toBuffer(), "banner.png");
+// }
 
-const { resolve } = require("path");
-const { readdirSync } = require("fs");
-const Commando = require("discord.js-commando");
+// function getIntents() {
+//     let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
+//             withFileTypes: true,
+//         })
+//         .filter((dirent) => dirent.isDirectory())
+//         .map((directory) => {
+//             return {
+//                 name: directory.name,
+//                 count: 0,
+//             };
+//         });
 
-const { Permissions, MessageAttachment } = require("discord.js");
+//     for (let i = 0; i < names.length; i++) {
+//         names[i].count = readdirSync(
+//             resolve(__dirname, "../../../assets/intents", names[i].name)
+//         ).length;
+//     }
 
-module.exports = class BannerCommand extends Commando.Command {
-    constructor(client) {
-        super(client, {
-            name: "banner",
-            group: "misc",
-            memberName: "banner",
-            description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
-            argsType: "multiple",
-        });
-    }
+//     return names;
+// }
 
-    async run(message, args) {
-        
-        if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
-            message.guild
-        )
-            return;
+// function getVariantCount(intent) {
+//     return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
+//         .length;
+// }
+// import { SlashCommandBuilder } from "@discordjs/builders";
+// import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
+// import Canvas from  'canvas';
+// import { resolve } from "path";
+// import { readdirSync } from "fs";
 
-        if (args.length < 1) {
-            message.reply(
-                "Incorrect usage. Correct usage: `banner [intent] <message>`"
-            );
-            return;
-        }
+// const command = new SlashCommandBuilder()
+//     .setName('banner')
+//     .setDescription('Generate a banner')
+//     .addStringOption(option =>
+//         option
+//             .setName('text')
+//             .setDescription('The text for the banner')
+//             .setRequired(true))
+//     .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
 
-        let text = args.slice(1).join(" ");
+// export default {
+//     data: command.toJSON(),
+//     async execute(interaction) {
+//         const row = new MessageActionRow()
+//             .addComponents(
+//                 new MessageSelectMenu()
+//                     .setCustomId('intent')
+//                     .setPlaceholder('Default')
+//                     .addOptions([
+//                         {
+//                             label: 'Default',
+//                             value: 'default'
+//                         },
+//                         {
+//                             label: 'HR',
+//                             value: 'hr'
+//                         },
+//                         {
+//                             label: 'Academics',
+//                             value: 'academics'
+//                         },
+//                         {
+//                             label: 'Special',
+//                             value: 'special'
+//                         },
+//                         {
+//                             label: 'Tech',
+//                             value: 'tech'
+//                         },
 
-        Canvas.registerFont("assets/font/Mont.ttf", {
-            family: "Mont Bold",
-            weight: "bold",
-        });
-        
-    }
-};
+//                     ])
+//             );
+//         client.on('interactionCreate', inter => {
 
-function basicCanvas(context, background, text, canvas) {
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    context.font = "60px Mont Bold";
-    context.textAlign = "center";
-    context.fillStyle = "rgba(255, 255, 255, .3)";
-    context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
-    context.fillStyle = "#FFFFFF";
-    context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
-    return new MessageAttachment(canvas.toBuffer(), "banner.png");
-}
+//             let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
+//         variant = Math.ceil(Math.random() * intent.count);
 
-function getIntents() {
-    let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
-            withFileTypes: true,
-        })
-        .filter((dirent) => dirent.isDirectory())
-        .map((directory) => {
-            return {
-                name: directory.name,
-                count: 0,
-            };
-        });
+//         background = await Canvas.loadImage(
+//             `assets/intents/${args[0].slice(1)}/${variant}.png`
+//         );
 
-    for (let i = 0; i < names.length; i++) {
-        names[i].count = readdirSync(
-            resolve(__dirname, "../../../assets/intents", names[i].name)
-        ).length;
-    }
+//         message.reply({
+//             files: [basicCanvas(context, background, text, canvas)],
+//         });
+//         })
 
-    return names;
-}
+//     }
+// }
 
-function getVariantCount(intent) {
-    return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
-        .length;
-}
+// /*
+// This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
+// */
+
+// const { resolve } = require("path");
+// const { readdirSync } = require("fs");
+// const Commando = require("discord.js-commando");
+
+// const { Permissions, MessageAttachment } = require("discord.js");
+
+// module.exports = class BannerCommand extends Commando.Command {
+//     constructor(client) {
+//         super(client, {
+//             name: "banner",
+//             group: "misc",
+//             memberName: "banner",
+//             description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
+//             argsType: "multiple",
+//         });
+//     }
+
+//     async run(message, args) {
+
+//         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
+//             message.guild
+//         )
+//             return;
+
+//         if (args.length < 1) {
+//             message.reply(
+//                 "Incorrect usage. Correct usage: `banner [intent] <message>`"
+//             );
+//             return;
+//         }
+
+//         let text = args.slice(1).join(" ");
+
+//         Canvas.registerFont("assets/font/Mont.ttf", {
+//             family: "Mont Bold",
+//             weight: "bold",
+//         });
+
+//     }
+// };
+
+// function basicCanvas(context, background, text, canvas) {
+//     context.drawImage(background, 0, 0, canvas.width, canvas.height);
+//     context.font = "60px Mont Bold";
+//     context.textAlign = "center";
+//     context.fillStyle = "rgba(255, 255, 255, .3)";
+//     context.fillText(text, canvas.width / 2 + 2, canvas.height / 2 + 22);
+//     context.fillStyle = "#FFFFFF";
+//     context.fillText(text, canvas.width / 2 - 2, canvas.height / 2 + 18);
+//     return new MessageAttachment(canvas.toBuffer(), "banner.png");
+// }
+
+// function getIntents() {
+//     let names = readdirSync(resolve(__dirname, "../../../assets/intents"), {
+//             withFileTypes: true,
+//         })
+//         .filter((dirent) => dirent.isDirectory())
+//         .map((directory) => {
+//             return {
+//                 name: directory.name,
+//                 count: 0,
+//             };
+//         });
+
+//     for (let i = 0; i < names.length; i++) {
+//         names[i].count = readdirSync(
+//             resolve(__dirname, "../../../assets/intents", names[i].name)
+//         ).length;
+//     }
+
+//     return names;
+// }
+
+// function getVariantCount(intent) {
+//     return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
+//         .length;
+// }

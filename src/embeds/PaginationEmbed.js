@@ -11,7 +11,6 @@ export default class PaginationEmbed {
       .addFields(page.fields)
       .setFooter(`Page ${courses.indexOf(page.course) + 1}/${courses.length}`);
 
-    console.log(pageNumber);
     this.row = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId("back")
