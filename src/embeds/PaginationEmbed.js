@@ -17,14 +17,6 @@ export default class PaginationEmbed {
                     .setEmoji('889310059899797534')
                     .setStyle('PRIMARY'),
                 new MessageButton()
-                    .setCustomId('decline')
-                    .setEmoji('889310059975311380')
-                    .setStyle('DANGER'),
-                new MessageButton()
-                    .setCustomId('accept')
-                    .setEmoji('889310059501342751')
-                    .setStyle('SUCCESS'),
-                new MessageButton()
                     .setCustomId('forward')
                     .setEmoji('889310059903975495')
                     .setStyle('PRIMARY')
