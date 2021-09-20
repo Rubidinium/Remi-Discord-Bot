@@ -13,7 +13,7 @@ const { Application, getOrMakeApplication } = apps;
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-import { courses } from "./commands/courses.js";
+import { courses } from "./commands/courses";
 
 const { MONGO } = process.env,
     { connect, connection, model, Schema, Types } = require("mongoose");
@@ -114,7 +114,7 @@ client.on("interactionCreate", async (interaction) => {
     if (interaction.isMessageComponent()) {
         const user = interaction.user;
         switch (interaction.customId) {
-            case "register":
+            case 'register':
                 interaction.reply({
                     content: "We have sent you an application form in your dms.",
                     ephemeral: true,
@@ -181,8 +181,7 @@ client.on("interactionCreate", async (interaction) => {
                 });
 
                 application.save();
-                break;
-            case "age":
+            case 'age':
                 const ageApplication = apps[user.id].application;
                 ageApplication.application.age = interaction.values[0];
                 ageApplication.application.dmMessage.edit({
@@ -190,117 +189,34 @@ client.on("interactionCreate", async (interaction) => {
                     components: [],
                 });
 
-                client.on("interactionCreate", async (interaction) => {
-                    if (interaction.isMessageComponent()) {
-                        const user = interaction.user;
-                        switch (interaction.customId) {
-                            case 'register':
-                                interaction.reply({
-                                    content: "We have sent you an application form in your dms.",
-                                    ephemeral: true,
-                                });
-
-                                let registerCourses = [];
-                                courses.forEach((course) => {
-                                    interaction.values.forEach((value) => {
-                                        if (course.id === value) {
-                                            registerCourses.push(course);
-                                        }
-                                    });
-                                });
-                                const application = new client.Mongo.getOrMakeApplication({
-                                    _id: Types.ObjectId(),
-                                    user: user,
-                                    application: {
-                                        courses: registerCourses,
-                                    },
-                                });
-
-                                user.send(
-                                    `Thank you for applying for programming simplified's courses.\n${registerCourses
-                                        .map((registerCourse) => {
-                                            return `\n**${registerCourse.name}**`;
-                                        })
-                                        .join("")}\nPlease answer the following questions to apply`
-                                );
-                                const row = new MessageActionRow().addComponents(
-                                    new MessageSelectMenu()
-                                        .setCustomId("age")
-                                        .setPlaceholder("Select your age")
-                                        .addOptions([
-                                            {
-                                                label: "13",
-                                                value: "13",
-                                            },
-                                            {
-                                                label: "14",
-                                                value: "14",
-                                            },
-                                            {
-                                                label: "15",
-                                                value: "15",
-                                            },
-                                            {
-                                                label: "16",
-                                                value: "16",
-                                            },
-                                            {
-                                                label: "17",
-                                                value: "17",
-                                            },
-                                            {
-                                                label: "18+",
-                                                value: "18+",
-                                            },
-                                        ])
-                                );
-
-                                application.application.dmMessage = await user.send({
-                                    content: "How old are you?",
-                                    components: [row],
-                                });
-
-                                application.save();
-                                break;
-                            case 'age':
-                                const ageApplication = apps[user.id].application;
-                                ageApplication.application.age = interaction.values[0];
-                                ageApplication.application.dmMessage.edit({
-                                    content: "We have received your age",
-                                    components: [],
-                                });
-
-                                apps.save().then((result) => {
-                                    console.log(result);
-                                });
-                                break;
-
-                            case 'back':
-                            case 'forward':
-                            case 'accept':
-                            case 'reject':
-
-                                break;
-
-                        }
-
-                    }
-
-                    if (interaction.isCommand()) {
-                        const command = commands.get(interaction.commandName);
-                        try {
-                            await command.execute(interaction, client);
-                        } catch (e) {
-                            console.error(e);
-                            await interaction.reply({
-                                content:
-                                    "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
-                                ephemeral: true,
-                            });
-                        }
-                    }
+                apps.save().then((result) => {
+                    console.log(result);
                 });
+                break;
+
+            case 'back':
+            case 'forward':
+            case 'accept':
+            case 'reject':
+
+                break;
+
+        }
+
+    }
+
+    if (interaction.isCommand()) {
+        const command = commands.get(interaction.commandName);
+        try {
+            await command.execute(interaction, client);
+        } catch (e) {
+            console.error(e);
+            await interaction.reply({
+                content:
+                    "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
+                ephemeral: true,
+            });
         }
     }
 });
-    client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);
