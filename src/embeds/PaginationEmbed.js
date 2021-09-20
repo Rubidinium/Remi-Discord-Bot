@@ -2,7 +2,7 @@ import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
 import { courses } from "../commands/courses.js";
 
 export default class PaginationEmbed {
-  constructor(page, client, pageNumber) {
+  constructor(page, client, pageNumber, totalPages) {
     this.embed = new MessageEmbed()
       .setColor("RANDOM")
       .setTitle(page.title)
@@ -21,6 +21,8 @@ export default class PaginationEmbed {
         .setCustomId("forward")
         .setEmoji("889310059903975495")
         .setStyle("PRIMARY")
+        .setDisabled(pageNumber == totalPages - 1),
+
     );
     return {
       embeds: [this.embed],

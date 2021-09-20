@@ -28,7 +28,7 @@ buttons.set("back", (interaction) => {
         ],
         course: courses[currentPage - 1],
       },
-      currentPage
+      currentPage, courses.length
     )
   );
 });
@@ -56,7 +56,7 @@ buttons.set("forward", (interaction) => {
         ],
         course: courses[currentPage + 1],
       },
-      currentPage
+      currentPage, courses.length
     )
   );
 });
