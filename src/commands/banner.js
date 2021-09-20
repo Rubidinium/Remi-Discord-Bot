@@ -45,6 +45,11 @@ export default {
           },
         ])
     );
+    
+    interaction.message.edit({
+      components: [row],
+    });
+
     client.on("interactionCreate", async (inter) => {
       let intent = getIntents().filter((i) => i.name == inter.values[0])[0];
       const variant = Math.ceil(Math.random() * intent.count);
@@ -53,8 +58,9 @@ export default {
         `assets/intents/${inter.values[0]}/${variant}.png`
       );
 
-      message.reply({
+      inter.message.edit({
         files: [basicCanvas(context, background, text, canvas)],
+        components: [],
       });
     });
   },
