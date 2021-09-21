@@ -1,15 +1,18 @@
 import { Socket } from 'net';
 import { appendFileSync } from 'fs';
 import { GuildChannel, Collection } from 'discord.js';
+import moment from 'moment';
+
 export default class Logger {
     constructor(config) {
         /*
         config {
             name: String?,
-            timestamps: bool,
+            maxLoggingLevel: number,
+            showTimestamps: bool,
             exitOnError: bool,
-            lineNumber: bool,
-            showLoggingLevel: bool
+            showLineNumber: bool,
+            showLoggerLevel: bool
             targets: Array<{
                 value: Socket | String,
                 type: string, //e.g. 'socket' 'file' 'discordChannel'
@@ -20,11 +23,13 @@ export default class Logger {
         */
 
         this.name = config.name ? config.name : 'Logger';
-        this.showTimestamps = config.timestamps;
-        this.lineNumber = config.lineNumber;
+        this.maxLoggingLevel = config.maxLoggingLevel ? config.maxLoggingLevel : 3
+
+        this.showTimestamps = config.showTimestamps;
+        this.lineNumber = config.showLineNumber;
         this.output = config.output;
         this.exitOnError = config.exitOnError;
-        this.showLoggingLevel = config.showLoggingLevel;
+        this.showLoggingLevel = config.showLoggerLevel;
 
         this.handlers = new Collection();
         config.targets.forEach(i => {
@@ -53,22 +58,37 @@ export default class Logger {
         });
     }
 
+    sill(strings, ..._) {
+        if (this.maxLoggingLevel >= 4) {
+            let message = '';
+            strings.forEach((string, i) => {
+                message += string + _[i];
+            });
+            message = message.slice(0, -9);
+            this.writeRaw(`${this.showLoggingLevel ? 'sill' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
+        }
+    }
+
     info(strings, ..._) {
-        let message = '';
-        strings.forEach((string, i) => {
-            message += string + _[i];
-        });
-        message = message.slice(0, -9);
-        this.writeRaw(`${this.showLoggingLevel ? 'info' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
+        if (this.maxLoggingLevel >= 3) {
+            let message = '';
+            strings.forEach((string, i) => {
+                message += string + _[i];
+            });
+            message = message.slice(0, -9);
+            this.writeRaw(`${this.showLoggingLevel ? 'info' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
+        }
     }
 
     warn(strings, ..._) {
-        let message = '';
-        strings.forEach((string, i) => {
-            message += string + _[i];
-        });
-        message = message.slice(0, -9);
-        this.writeRaw(`${this.showLoggingLevel ? 'warn' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
+        if (this.maxLoggingLevel >= 2) {
+            let message = '';
+            strings.forEach((string, i) => {
+                message += string + _[i];
+            });
+            message = message.slice(0, -9);
+            this.writeRaw(`${this.showLoggingLevel ? 'warn' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
+        }
     }
 
     error(strings, ..._) {
@@ -78,7 +98,7 @@ export default class Logger {
         });
         message = message.slice(0, -9);
         this.writeRaw(`${this.showLoggingLevel ? 'error' : ''} ${this.showTimestamps ? `[${(new Date()).toUTCString()}]` : ``} ${message}`)
-        if (this.exitOnError) process.exit();
+        if (this.exitOnError) process.exit(-1);
     }
 }
 
