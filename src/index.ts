@@ -8,10 +8,10 @@ import {
 	CommandInteraction,
 	Intents,
 } from "discord.js";
-import apps from "./schemas/apps.js";
+import apps from "./schemas/apps";
 const { Application, createApplication} = apps;
 
-import { courses } from "./commands/courses.js";
+import { courses } from "./commands/courses";
 
 const { MONGO } = process.env,
 	{ connect, connection, Model } = require("mongoose");
@@ -76,7 +76,7 @@ const commands = new Collection<string, Command>();
 
 const commandFiles = fs
 	.readdirSync("./src/commands")
-	.filter((file) => file.endsWith(".js"));
+	.filter((file) => file.endsWith(".ts"));
 
 for (const file of commandFiles) {
 	import(`./commands/${file}`).then(({ default: command }) => {
@@ -129,7 +129,7 @@ client.on("interactionCreate", async (interaction) => {
 			case "forward":
 			case "accept":
 			case "reject":
-				import("./interactions/courses.js").then((courses) => {
+				import("./interactions/courses").then((courses) => {
 					courses.handle(interaction, client);
 				});
 				break;

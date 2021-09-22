@@ -75,13 +75,13 @@ export default class Logger {
         handlers.forEach((i: Handler) => {
             switch (i.type) {
                 case 'discordChannel':
-                    this.handlers.set('discordChannel', { execute: this.discordChannel, value: i.value });
+                    this.handlers.set('discordChannel', { execute: this.discordChannel, value: i.value, type: i.type });
                     break;
                 case 'file':
-                    this.handlers.set('file', { execute: this.file, value: i.value });
+                    this.handlers.set('file', { execute: this.file, value: i.value, type: i.type });
                     break;
                 case 'socket':
-                    this.handlers.set('socket', { execute: this.socket, value: i.value });
+                    this.handlers.set('socket', { execute: this.socket, value: i.value, type: i.type });
                     break;
                 default:
                     this.handlers.set(i.type, i)
@@ -148,7 +148,7 @@ export default class Logger {
             .setThumbnail('https://cdn.shopify.com/s/files/1/0052/6666/9639/files/be_gay_do_crime_io_ascarium_large.jpg?v=1580670163')
             .setDescription("smth happened")
             .addField(`ㅤ`, message, true)
-            .setColor(level.color);
+            .setColor(level ? level.color : 'ORANGE');
         channel.send({ embeds: [embed] });
     }
 

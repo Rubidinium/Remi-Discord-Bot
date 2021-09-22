@@ -1,8 +1,11 @@
-import { createRequire } from "module";
-const require = createRequire(
-    import.meta.url);
+// import { createRequire } from "module";
+// const require = createRequire(
+//     import.meta.url);
 
-const { MONGO } = process.env, { connect, connection, model, Schema } = require("mongoose");
+import { Schema } from "mongoose";
+
+const { MONGO } = process.env;
+const { connect, connection, model } = require("mongoose");
 
 const applicationSchema = new Schema({
     _id: Schema.Types.ObjectId,

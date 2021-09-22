@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageActionRow, MessageSelectMenu } from "discord.js";
+import { CommandInteraction, Interaction, MessageActionRow, MessageSelectMenu } from "discord.js";
 const command = new SlashCommandBuilder()
   .setName("test")
   .setDescription("test");
 
 export default {
   data: command.toJSON(),
-  async execute(interaction) {
+  async execute(interaction: CommandInteraction) {
     const row = new MessageActionRow().addComponents(
       new MessageSelectMenu()
         .setCustomId("select")

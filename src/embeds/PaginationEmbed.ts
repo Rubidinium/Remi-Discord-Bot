@@ -1,8 +1,20 @@
 import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
-import { courses } from "../commands/courses.js";
+import { courses, Course } from "../commands/courses";
+
+type Page = {
+  title: string,
+  description: string,
+  fields: [
+    { name: string, value: string, inline: boolean },
+    { name: string, value: string, inline: boolean },
+  ],
+  course: Course,
+}
 
 export default class PaginationEmbed {
-  constructor(page, pageNumber) {
+  private embed: MessageEmbed;
+  private row: MessageActionRow;
+  constructor(page: Page, pageNumber: number) {
     this.embed = new MessageEmbed()
       .setColor("RANDOM")
       .setTitle(page.title)
@@ -23,6 +35,11 @@ export default class PaginationEmbed {
         .setStyle("PRIMARY")
         .setDisabled(pageNumber == courses.length)
     );
+
+
+  }
+
+  get message() {
     return {
       embeds: [this.embed],
       components: [this.row],
