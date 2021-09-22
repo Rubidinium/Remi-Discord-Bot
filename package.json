@@ -17,6 +17,7 @@
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
+    "konva": "^8.1.4",
     "moment": "^2.29.1",
     "mongoose": "^6.0.7",
     "path": "^0.12.7"

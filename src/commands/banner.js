@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
-import Canvas from "canvas";
+import Konva from 'konva';
 import { resolve } from "path";
-import { readdirSync } from "fs";
+import { readdirSync, writeFileSync } from "fs";
 
 const command = new SlashCommandBuilder()
   .setName("banner")
@@ -51,17 +51,46 @@ export default {
     });
 
     client.on("interactionCreate", async (inter) => {
-      let intent = getIntents().filter((i) => i.name == inter.values[0])[0];
-      const variant = Math.ceil(Math.random() * intent.count);
+        let intent = getIntents().filter((i) => i.name == inter.values[0])[0];
+        const variant = Math.ceil(Math.random() * intent.count);
+ 
+        const background = await Canvas.loadImage(
+            `assets/intents/${inter.values[0]}/${variant}.png`
+        );
 
-      const background = await Canvas.loadImage(
-        `assets/intents/${inter.values[0]}/${variant}.png`
-      );
+        inter.update({
+            files: [basicCanvas(context, background, text, canvas)],
+            components: [],
+        });
+	
+		let stage = new Konva.Stage({
+			container: 'container',
+			width: 700,
+			height: 250
+		});
 
-      inter.message.edit({
-        files: [basicCanvas(context, background, text, canvas)],
-        components: [],
-      });
+    
+		
+
+		let background = new Konva.Layer();
+    stage.add(background)
+
+		let bgRect = new Konva.Rect({
+			x: 0, 
+			y: 0,
+			width: 700,
+			height: 250
+		});
+
+    Konva.Image.fromURL(resolve(__dirname, '../../assets/intents/default/1.png', image => {
+        background.add(image);
+        background.draw();
+
+        let data = stage.toDataURL({ pixelRatio: 3 });
+
+        writeFileSync('./out.png', data);
+    }))
+
     });
   },
 };
@@ -97,117 +126,3 @@ function getIntents() {
 
   return names;
 }
-
-// /*
-// This is an incredible bot written in javascript (which is objectively better than python) by max and zim.
-// */
-
-// const { resolve } = require("path");
-// const { readdirSync } = require("fs");
-// const Commando = require("discord.js-commando");
-
-// const { Permissions, MessageAttachment } = require("discord.js");
-
-// module.exports = class BannerCommand extends Commando.Command {
-//     constructor(client) {
-//         super(client, {
-//             name: "banner",
-//             group: "misc",
-//             memberName: "banner",
-//             description: "Sends a banner with text types of banners include (academics, default, hr, special, ss and tech)",
-//             argsType: "multiple",
-//         });
-//     }
-
-//     async run(message, args) {
-
-//         if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
-//             message.guild
-//         )
-//             return;
-
-//         if (args.length < 1) {
-//             message.reply(
-//                 "Incorrect usage. Correct usage: `banner [intent] <message>`"
-//             );
-//             return;
-//         }
-
-//         let text = args.slice(1).join(" ");
-
-//         Canvas.registerFont("assets/font/Mont.ttf", {
-//             family: "Mont Bold",
-//             weight: "bold",
-//         });
-
-//     }
-// };
-
-// function getVariantCount(intent) {
-//     return readdirSync(resolve(__dirname, "../../../assets/intents", intent))
-//         .length;
-// }
-// import { SlashCommandBuilder } from "@discordjs/builders";
-// import { Permissions, MessageActionRow, MessageSelectMenu } from "discord.js";
-// import Canvas from  'canvas';
-// import { resolve } from "path";
-// import { readdirSync } from "fs";
-
-// const command = new SlashCommandBuilder()
-//     .setName('banner')
-//     .setDescription('Generate a banner')
-//     .addStringOption(option =>
-//         option
-//             .setName('text')
-//             .setDescription('The text for the banner')
-//             .setRequired(true))
-//     .setDefaultPermission(Permissions.FLAGS.MANAGE_MESSAGES)
-
-// export default {
-//     data: command.toJSON(),
-//     async execute(interaction) {
-//         const row = new MessageActionRow()
-//             .addComponents(
-//                 new MessageSelectMenu()
-//                     .setCustomId('intent')
-//                     .setPlaceholder('Default')
-//                     .addOptions([
-//                         {
-//                             label: 'Default',
-//                             value: 'default'
-//                         },
-//                         {
-//                             label: 'HR',
-//                             value: 'hr'
-//                         },
-//                         {
-//                             label: 'Academics',
-//                             value: 'academics'
-//                         },
-//                         {
-//                             label: 'Special',
-//                             value: 'special'
-//                         },
-//                         {
-//                             label: 'Tech',
-//                             value: 'tech'
-//                         },
-
-//                     ])
-//             );
-//         client.on('interactionCreate', inter => {
-
-//             let intent = intents.filter((i) => i.name == args[0].slice(1))[0];
-//         variant = Math.ceil(Math.random() * intent.count);
-
-//         background = await Canvas.loadImage(
-//             `assets/intents/${args[0].slice(1)}/${variant}.png`
-//         );
-
-//         message.reply({
-//             files: [basicCanvas(context, background, text, canvas)],
-//         });
-//         })
-
-//     }
-// }
