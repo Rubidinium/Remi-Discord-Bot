@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "discord bot",
   "main": "src/index.js",
-  "type": "module",
   "scripts": {
-    "start": "node src/deploy.js && node src/index.js",
-    "dev": "nodemon src/index.js",
-    "deploy": "node src/deploy.js"
+    "start": "ts-node src/deploy.ts && ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
+    "deploy": "ts-node src/deploy.ts"
   },
   "author": "https://github.com/HazimAr",
   "license": "MIT",
@@ -20,7 +19,8 @@
     "konva": "^8.1.4",
     "moment": "^2.29.1",
     "mongoose": "^6.0.7",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "ts-node": "^10.2.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
