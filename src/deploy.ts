@@ -6,25 +6,26 @@ import { Routes } from "discord-api-types/v9";
 import fs from "fs";
 const { TOKEN, CLIENTID, GUILDID } = process.env;
 
-let commands = [];
+let commands: any[] = [];
 
 const commandFiles = fs
   .readdirSync("./src/commands")
   .filter((file) => file.endsWith(".js"));
 
-for (const file of commandFiles) {
-  await import(`./commands/${file}`).then(({ default: command }) => {
-    commands.push(command.data);
-  });
-}
 
-const rest = new REST({ version: "9" }).setToken(TOKEN);
+
+const rest = new REST({ version: "9" }).setToken(TOKEN?? 'shutup i want to drive a stake through ur heart typesccript');
 
 (async () => {
+  for (const file of commandFiles) {
+    await import(`./commands/${file}`).then(({ default: command }) => {
+      commands.push(command.data);
+    });
+  }
   try {
     console.log("Began registering slash commands");
 
-    await rest.put(Routes.applicationGuildCommands(CLIENTID, GUILDID), {
+    await rest.put(Routes.applicationGuildCommands(CLIENTID ?? 'shutup i want to drive a stake through ur heart typesccript', GUILDID?? 'shutup i want to drive a stake through ur heart typesccript'), {
       body: commands,
     });
 

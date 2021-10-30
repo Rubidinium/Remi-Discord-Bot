@@ -8,56 +8,19 @@ import {
 	CommandInteraction,
 	Intents,
 } from "discord.js";
-import apps from "./schemas/apps";
-const { Application, createApplication} = apps;
 
 import { courses } from "./commands/courses";
 
-const { MONGO } = process.env,
-	{ connect, connection, Model } = require("mongoose");
-
+const { MONGO } = process.env
+const { connect, connection, Model } = require("mongoose");
+import { Server } from './server'
 import fs from "fs";
-
-class Mongo {
-	public client: Client;
-
-	constructor(client: Client) {
-		this.client = client;
-
-		connect(MONGO, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-			autoIndex: false,
-			connectTimeoutMS: 10000,
-			family: 4,
-		});
-
-		connection.on("connected", () => console.log("MongoDB connected"));
-		connection.on("disconnected", () =>
-			console.log("MongoDB disconnected! - - - - - - - - - - - - -")
-		);
-		connection.on("err", () =>
-			console.log("There was an error connecting to MongoDB")
-		);
-	}
-}
 
 class Gary extends Client {
 	public courses = courses;
-	public Mongo: { new: Mongo; Application: any; getOrMakeApplication: (id: any) => Promise<any>; }
 	constructor(options: ClientOptions) {
 		super(options);
-		this.Mongo = {
-			new: new Mongo(this),
-			Application,
-			getOrMakeApplication: async (id) => {
-				let application = await Application.findOne({ _id: id });
-				if (!application) {
-					application = new Application(await createApplication(id));
-				}
-				return application;
-			},
-		};
+
 	}
 }
 
@@ -88,6 +51,12 @@ client.once("ready", async () => {
 	console.log(`${client.user?.username} is ready.`);
 	client.user?.setActivity("/help", { type: "LISTENING" });
 
+
+	new Server.Server(client, {
+		port: 8080
+	}).expressConfig({
+		port: 8080
+	})
 	// What the fuck is this?
 
 	// const registerMessage = await client.channels.cache
@@ -115,6 +84,8 @@ client.once("ready", async () => {
 	// 		"To register for one of our courses select from options in the dropdown menu",
 	// 	components: [row],
 	// });
+
+
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -134,6 +105,18 @@ client.on("interactionCreate", async (interaction) => {
 				});
 				break;
 		}
+
+		if(interaction.customId.startsWith('accept_')) {
+
+			let user  = await interaction.guild?.members.fetch(interaction.customId.split('_')[1])
+			let roles = interaction.customId.split('_')[2].split(',')
+			roles.forEach(r => {
+				let role = interaction.guild?.roles.cache.find(i => i.name == r)
+				console.log(role)
+				if(role) user?.roles.add(role)
+			})
+			interaction.reply({content: 'k', ephemeral: true})
+		} 
 	}
 
 	if (interaction.isCommand()) {
