@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, Interaction } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 import PaginationEmbed from "../embeds/PaginationEmbed";
 
 const command = new SlashCommandBuilder()
@@ -43,7 +43,7 @@ const courses = [
 
 export default {
 	data: command.toJSON(),
-	async execute(interaction: CommandInteraction, parent: Client) {
+	async execute(interaction: CommandInteraction, _: Client) {
 		interaction.reply(
 			new PaginationEmbed(
 				{
@@ -58,6 +58,8 @@ export default {
 				1
 			).message
 		);
+
+		_;
 	},
 };
 
