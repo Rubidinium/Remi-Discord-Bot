@@ -46,7 +46,6 @@ export class Server {
 	 */
 	private sendEmbed = async (req: Request, res: Response) => {
 		const body: ApplicationBody = req.body;
-		console.log(body);
 		const guild = this.client.guilds.cache.get("877584374521008199");
 		
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment

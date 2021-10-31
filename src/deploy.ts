@@ -4,10 +4,10 @@ dotenv.config();
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import fs from "fs";
-import { CommandType } from "types";
+import { Command } from "types";
 const { TOKEN, CLIENTID, GUILDID } = process.env;
 
-const commands: CommandType[] = [];
+const commands: Command[] = [];
 
 const commandFiles = fs
 	.readdirSync("./src/commands")
