@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/deploy.ts && ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "deploy": "ts-node src/deploy.ts"
+    "deploy": "ts-node src/deploy.ts",
+    "doc": "jsdoc src/server.ts"
   },
   "author": "https://github.com/HazimAr",
   "license": "MIT",

@@ -11,10 +11,20 @@ interface ApplicationBody {
 	id: string,
 	courses: string[],
 }
+
+/**
+ * The server class
+ */
 export class Server {
 	private client: Client;
 	private app: Express;
 	private port: number;
+
+	/**
+	 * @constructor
+	 * @param {Client} client the discord API client
+	 * @param {ServerOpts} options options (port etc)
+	 */
 	constructor(client: Client, options: ServerOpts) {
 		this.client = client;
 		this.port = options.port;
@@ -40,8 +50,8 @@ export class Server {
 	}
 	/**
 	 * @method sendEmbed send an embed for a role application
-	 * @param req the request object
-	 * @param res the response object (ew)
+	 * @param {Request} req the request object
+	 * @param {Response} res the response object (ew)
 	 */
 	private sendEmbed = async (req: Request, res: Response) => {
 		const body: ApplicationBody = req.body;
@@ -59,8 +69,8 @@ export class Server {
 
 	/**
 	 * @method buildEmbed builds the embed for the the moderator to accept
-	 * @param member the guild member to build the embed for
-	 * @param courses the courses for the member to be enrolled in
+	 * @param {GuildMember | undefined } member the guild member to build the embed for
+	 * @param {string[]} courses the courses for the member to be enrolled in
 	 * @returns the constructed embed
 	 */
 	private buildEmbed(member: GuildMember | undefined, courses: string[]): MessageEmbed {
@@ -79,8 +89,8 @@ export class Server {
 
 	/**
 	 * @method getRow get the MessageActionRow to add to the embed.
-	 * @param id the id of the user
-	 * @param courses the array of course names
+	 * @param {string} id the id of the user
+	 * @param {string[]} courses the array of course names
 	 * @returns the MessageActionRow to add to the embed
 	 */
 	private getRow(id: string, courses: string[]): MessageActionRow {
@@ -101,8 +111,8 @@ export class Server {
 
 	/**
 	 * @method getRoles the route to get the collection of student roles.
-	 * @param _ the request object, discarded
-	 * @param res the response object to send the information to
+	 * @param {Request} _ the request object, discarded
+	 * @param {Response} res the response object to send the information to
 	 */
 	private getRoles = (_: Request, res: Response) => {
 		res.send(JSON.stringify(getRoles(this.client), (_key, value) =>
