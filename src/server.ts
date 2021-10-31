@@ -1,6 +1,6 @@
 import { Client, EmbedField, GuildMember, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
-import getRoles from "util/getRoles";
+import getRoles from "./util/getRoles";
 import cors from "cors";
 
 interface ServerOpts {
@@ -62,7 +62,7 @@ export class Server {
 	private buildEmbed(member: GuildMember | undefined, courses: string[]): MessageEmbed {
 		const embed = new MessageEmbed()
 			.setTitle("a")
-			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im bored asf");
+			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn");
 		if (!member) {
 			console.log("gay");
 			return embed;
@@ -75,7 +75,7 @@ export class Server {
 
 	private getRow(id: string, courses: string[]): MessageActionRow {
 		const accept = new MessageButton()
-			.setLabel("Accept")
+			.setLabel("Accept") 
 			.setCustomId(`accept_${id}_${courses.toString()}`)
 			.setStyle("SUCCESS")
 			.setEmoji("889310059501342751");

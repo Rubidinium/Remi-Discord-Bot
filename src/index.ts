@@ -13,6 +13,7 @@ import { courses } from "./commands/courses";
 import { Server } from "./server";
 import fs from "fs";
 import { Command } from "types";
+import getRoles from "./util/getRoles";
 
 class Gary extends Client {
 	public courses = courses;
@@ -74,9 +75,9 @@ client.on("interactionCreate", async (interaction) => {
 
 			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
 			const roles = interaction.customId.split("_")[2].split(",");
+			const studentRoles = await getRoles(client);
 			roles.forEach(r => {
-				const role = interaction.guild?.roles.cache.find(i => i.name == r);
-				console.log(role);
+				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
 			interaction.reply({ content: "k", ephemeral: true });

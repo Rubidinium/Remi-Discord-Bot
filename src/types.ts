@@ -1,10 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 
 export interface Course {
 	name: string,
 	members: number,
-	roleId: string
+	roleId: string,
+	description: string
 }
 
 export interface Command {
