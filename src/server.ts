@@ -1,5 +1,6 @@
 import { Client, EmbedField, GuildMember, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
+import getRoles from "util/getRoles";
 import cors from "cors";
 
 interface ServerOpts {
@@ -90,12 +91,8 @@ export class Server {
 
 
 	private getRoles = async (_: Request, res: Response) => {
-		const all = await (await this.client.guilds.fetch("877584374521008199")).roles.fetch();
-		const bottomDiv = all.get("884289615719186442");
-		const topDiv = all.get("884289534366470197");
-		const courseRoles = all.filter(r => r.position > (bottomDiv?.position ?? 0) && r.position < (topDiv?.position ?? 69));
-
-		res.send(JSON.stringify(courseRoles, (_key, value) =>
+		
+		res.send(JSON.stringify(getRoles(this.client), (_key, value) =>
 			typeof value === "bigint" ? value.toString() : value
 		));
 	};
