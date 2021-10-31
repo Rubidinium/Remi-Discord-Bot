@@ -72,7 +72,6 @@ client.on("interactionCreate", async (interaction) => {
 		}
 
 		if (interaction.customId.startsWith("accept_")) {
-
 			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
 			const roles = interaction.customId.split("_")[2].split(",");
 			const studentRoles = await getRoles(client);
