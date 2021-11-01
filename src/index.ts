@@ -58,18 +58,11 @@ client.once("ready", async () => {
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isButton()) {
 		switch (interaction.customId) {
-		case "register":
-		case "age":
-			break;
-
-		case "back":
-		case "forward":
-		case "accept":
-		case "reject":
-			import("./interactions/courses").then((courses) => {
-				courses.handle(interaction, client);
-			});
-			break;
+			case "reject":
+				import("./interactions/courses").then((courses) => {
+					courses.handle(interaction, client);
+				});
+				break;
 		}
 
 		if (interaction.customId.startsWith("accept_")) {

@@ -1,4 +1,4 @@
-import { Client, EmbedField, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Client, EmbedField, Guild, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
@@ -56,11 +56,11 @@ export class Server {
 	private sendEmbed = async (req: Request, res: Response) => {
 		const body: ApplicationBody = req.body;
 		const guild = this.client.guilds.cache.get("877584374521008199");
-		
+
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
-		const embed = this.buildEmbed(await guild?.members.fetch(body.id).catch(), body.courses);
+		const embed = this.buildEmbed(guild, await guild?.members.fetch(body.id).catch(), body.courses);
 		const row = this.getRow(body.id, body.courses);
 		channel.send({ embeds: [embed], components: [row] });
 
@@ -73,17 +73,21 @@ export class Server {
 	 * @param {string[]} courses the courses for the member to be enrolled in
 	 * @returns the constructed embed
 	 */
-	private buildEmbed(member: GuildMember | undefined, courses: string[]): MessageEmbed {
+	private buildEmbed(guild: Guild | undefined, member: GuildMember | undefined, courses: string[]): MessageEmbed {
 		const embed = new MessageEmbed()
-			.setTitle("a")
+			.setTitle("New course Application")
 			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn");
 		if (!member) {
 			console.log("gay");
 			return embed;
 		}
+		const coursesWithNames = courses.map((course) => {
+			const role = guild?.roles.cache.get(course) ?? { name: "Role not found" };
+			return { name: role.name, value: course, inline: true };
+		});
 		embed
 			.setThumbnail(member.user.avatarURL() ?? "")
-			.addFields(...courses.map((i): EmbedField => ({ name: i, value: i, inline: false })));
+			.addFields(...coursesWithNames.map((course) => ({ name: course.name, value: course.value, inline: true })));
 		return embed;
 	}
 
@@ -95,7 +99,7 @@ export class Server {
 	 */
 	private getRow(id: Snowflake, courses: string[]): MessageActionRow {
 		const accept = new MessageButton()
-			.setLabel("Accept") 
+			.setLabel("Accept")
 			.setCustomId(`accept_${id}_${courses.toString()}`)
 			.setStyle("SUCCESS")
 			.setEmoji("889310059501342751");
@@ -114,9 +118,10 @@ export class Server {
 	 * @param {Request} _ the request object, discarded
 	 * @param {Response} res the response object to send the information to
 	 */
-	private getRoles = (_: Request, res: Response) => {
-		res.send(JSON.stringify(getRoles(this.client), (_key, value) =>
+	private getRoles = async (_: Request, res: Response) => {
+		res.send(JSON.stringify(await getRoles(this.client), (_, value) =>
 			typeof value === "bigint" ? value.toString() : value
-		));
+		)
+		);
 	};
 }
