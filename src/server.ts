@@ -60,7 +60,7 @@ export class Server {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
-		const embed = this.buildEmbed(guild, await guild?.members.fetch(body.id).catch(), body.courses);
+		const embed = await this.buildEmbed(guild, await guild?.members.fetch(body.id).catch(), body.courses);
 		const row = this.getRow(body.id, body.courses);
 		channel.send({ embeds: [embed], components: [row] });
 
@@ -73,7 +73,7 @@ export class Server {
 	 * @param {string[]} courses the courses for the member to be enrolled in
 	 * @returns the constructed embed
 	 */
-	private buildEmbed(guild: Guild | undefined, member: GuildMember | undefined, courses: string[]): MessageEmbed {
+	private async buildEmbed(guild: Guild | undefined, member: GuildMember | undefined, courses: string[]): Promise<MessageEmbed> {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
 			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn");
@@ -81,13 +81,13 @@ export class Server {
 			console.log("gay");
 			return embed;
 		}
-		const coursesWithNames = courses.map((course) => {
-			const role = guild?.roles.cache.get(course) ?? { name: "Role not found" };
-			return { name: role.name, value: course, inline: true };
-		});
+		const coursesWithNames = await Promise.all(courses.map(async (course) => {
+			const role = (await getRoles(this.client)).find(i => i.id == course);
+			return { name: role?.name, value: course, inline: true };
+		}));
 		embed
 			.setThumbnail(member.user.avatarURL() ?? "")
-			.addFields(...coursesWithNames.map((course) => ({ name: course.name, value: course.value, inline: true })));
+			.addFields(...coursesWithNames.map((course) => ({ name: course.name ?? '', value: course.value, inline: true })));
 		return embed;
 	}
 
