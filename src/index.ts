@@ -6,6 +6,7 @@ import {
 	ClientOptions,
 	Collection,
 	Intents,
+	MessageEmbed,
 } from "discord.js";
 
 import { courses } from "./commands/courses";
@@ -50,7 +51,7 @@ client.once("ready", async () => {
 	const server = new Server(client, {
 		port: 8080
 	});
-	
+
 	server.expressConfig();
 });
 
@@ -79,7 +80,26 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
+			interaction.update({ components: [], embeds: [new MessageEmbed()
+				.setTitle("Application Approved")
+				.setDescription(`Added the following roles to ${user?.user.username}: ${studentRoles.map(r => `**${r.name}**\n`)}`)
+				.setColor("GREYPLE")
+			] 
+			});
 			interaction.reply({ content: "k", ephemeral: true });
+		}
+
+		if(interaction.customId.startsWith("reject_")) {
+			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
+
+			interaction.update({ components: [], embeds: [new MessageEmbed()
+				.setTitle("Application Approved")
+				.setDescription(`${user?.user.username}'s application was rejected`)
+				.setColor("GREYPLE")
+			] 
+			});
+
+			user?.send("We are sorry to inform you that your application on Programming Simplified was rejected.");
 		}
 	}
 

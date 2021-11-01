@@ -1,4 +1,4 @@
-import { Client, EmbedField, GuildMember, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
+import { Client, EmbedField, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
@@ -93,7 +93,7 @@ export class Server {
 	 * @param {string[]} courses the array of course names
 	 * @returns the MessageActionRow to add to the embed
 	 */
-	private getRow(id: string, courses: string[]): MessageActionRow {
+	private getRow(id: Snowflake, courses: string[]): MessageActionRow {
 		const accept = new MessageButton()
 			.setLabel("Accept") 
 			.setCustomId(`accept_${id}_${courses.toString()}`)
