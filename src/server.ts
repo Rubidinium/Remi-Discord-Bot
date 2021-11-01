@@ -81,7 +81,10 @@ export class Server {
 			console.log("gay");
 			return embed;
 		}
-		const coursesWithNames = courses.map((course): EmbedField => ({ name: await guild?.roles.fetch(course)., value: course, inline: true })));
+		const coursesWithNames = courses.map(async (course) => {
+			const role = await guild?.roles.fetch(course) ?? { name: "Role not found" };
+			return { name: role.name, value: course, inline: true };
+		}));
 		embed
 			.setThumbnail(member.user.avatarURL() ?? "")
 			.addFields(...coursesWithNames.map((course) => ({ name: course.name, value: course.value, inline: true })));
