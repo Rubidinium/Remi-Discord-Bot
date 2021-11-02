@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Client, Collection, Guild, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
@@ -61,6 +62,7 @@ export class Server {
 	private sendEmbed = async (req: Request, res: Response) => {
 		this.rateLimitIpCache = purgeCache(this.rateLimitIpCache);
 
+		// @ts-ignore
 		const ip = req.clientIp;
 		if (typeof ip == "string") {
 			const ipTime = this.rateLimitIpCache.get(ip);
