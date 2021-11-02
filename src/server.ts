@@ -46,7 +46,7 @@ export class Server {
 	 * @method expressConfig the express configuration method
 	 */
 	public expressConfig() {
-		this.app.use(cors());
+		this.app.use(cors({origin: "*"}));
 		this.app.use(express.json());
 		this.app.use(requestIp.mw());
 		this.app.post("/api/applications", this.sendEmbed);
