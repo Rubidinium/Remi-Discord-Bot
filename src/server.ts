@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
 import purgeCache from "./util/purgeCache";
+import requestIp from "request-ip";
 
 export const _RATE_LIMIT_TIME = 10 * 60 * 5; // 5 minutes
 
@@ -45,6 +46,7 @@ export class Server {
 	public expressConfig() {
 		this.app.use(cors());
 		this.app.use(express.json());
+		this.app.use(requestIp.mw());
 		this.app.post("/api/applications", this.sendEmbed);
 		this.app.get("/api/roles", this.getRoles);
 		this.app.listen(this.port, () => {
@@ -59,12 +61,11 @@ export class Server {
 	private sendEmbed = async (req: Request, res: Response) => {
 		this.rateLimitIpCache = purgeCache(this.rateLimitIpCache);
 
-		const ip = req.headers["ratelimit-ip-verif"];
-		if (ip == undefined) return res.status(400).send("missing header 'ratelimit-ip-verif'");
-		if(typeof ip == "string"){
+		const ip = req.clientIp;
+		if (typeof ip == "string") {
 			const ipTime = this.rateLimitIpCache.get(ip);
-			
-			if(ipTime && new Date().getTime() - ipTime < _RATE_LIMIT_TIME) {
+
+			if (ipTime && new Date().getTime() - ipTime < _RATE_LIMIT_TIME) {
 				res.status(429);
 				res.send("stop spamming us nerd");
 				return;
