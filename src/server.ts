@@ -6,8 +6,8 @@ import cors from "cors";
 import purgeCache from "./util/purgeCache";
 import requestIp from "request-ip";
 
-// export const _RATE_LIMIT_TIME = 1000 * 60 * 5; // 5 minutes
-export const _RATE_LIMIT_TIME = 1000; // 1 second
+export const _RATE_LIMIT_TIME = 1000 * 60 * 5; // 5 minutes
+// export const _RATE_LIMIT_TIME = 1000; // 1 second
 
 interface ServerOpts {
 	port: number,
@@ -46,7 +46,7 @@ export class Server {
 	 * @method expressConfig the express configuration method
 	 */
 	public expressConfig() {
-		this.app.use(cors({origin: "*"}));
+		this.app.use(cors({ origin: "*" }));
 		this.app.use(express.json());
 		this.app.use(requestIp.mw());
 		this.app.post("/api/applications", this.sendEmbed);
@@ -100,7 +100,7 @@ export class Server {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
 			.setDescription(courses.toString())
-			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails, inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
+			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails || "none", inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
 		if (!member) {
 			return embed;
 		}
