@@ -64,6 +64,7 @@ export class Server {
 
 		// @ts-ignore
 		const ip = req.clientIp;
+		console.log(ip);
 		if (typeof ip == "string") {
 			const ipTime = this.rateLimitIpCache.get(ip);
 
