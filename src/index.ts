@@ -85,7 +85,7 @@ client.on("interactionCreate", async (interaction) => {
 			});
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
-					.setTitle("Application Approved")
+					.setTitle("Application Rejected")
 					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was rejected`)
 					.setColor("GREYPLE")
 				]
