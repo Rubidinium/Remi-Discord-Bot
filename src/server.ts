@@ -46,7 +46,7 @@ export class Server {
 	 * @method expressConfig the express configuration method
 	 */
 	public expressConfig() {
-		this.app.use(cors({ origin: "*" }));
+		this.app.use(cors());
 		this.app.use(express.json());
 		this.app.use(requestIp.mw());
 		this.app.post("/api/applications", this.sendEmbed);
@@ -70,8 +70,8 @@ export class Server {
 			const ipTime = this.rateLimitIpCache.get(ip);
 
 			if (ipTime && new Date().getTime() - ipTime < _RATE_LIMIT_TIME) {
-				res.status(429);
-				res.send("stop spamming us nerd");
+				res.status(429).send("Looks like you are sending us too many requests too quickly. Please try again in a few minutes");
+
 				return;
 			}
 			this.rateLimitIpCache.set(ip, new Date().getTime());
@@ -82,7 +82,11 @@ export class Server {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
-		const embed = await this.buildEmbed(await guild?.members.fetch(body.id).catch(), body.courses, body);
+		const user = await guild?.members.fetch(body.id).catch(
+			() => undefined
+		);
+		if (!user) return res.status(404).send("User not found. Please join the server before sending another application (programmingsimplified.org/discord)");
+		const embed = await this.buildEmbed(user, body.courses, body);
 		const row = this.getRow(body.id);
 		channel.send({ embeds: [embed], components: [row] });
 
@@ -100,7 +104,7 @@ export class Server {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
 			.setDescription(courses.toString())
-			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails || "none", inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
+			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails || "none", inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc || "None", inline: true }]);
 		if (!member) {
 			return embed;
 		}
@@ -109,7 +113,7 @@ export class Server {
 			return { name: role?.name, value: course, inline: true };
 		}));
 		embed
-			.setThumbnail(member.user.avatarURL() ?? "")
+			.setThumbnail(member?.user?.avatarURL() ?? "")
 			.addField("Courses", coursesWithNames.map(i => i.name).join("\n"));
 
 		return embed;
