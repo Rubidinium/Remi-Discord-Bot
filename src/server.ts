@@ -83,7 +83,7 @@ export class Server {
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
 		const embed = await this.buildEmbed(await guild?.members.fetch(body.id).catch(), body.courses, body);
-		const row = this.getRow(body.id, body.courses);
+		const row = this.getRow(body.id);
 		channel.send({ embeds: [embed], components: [row] });
 
 		res.send("gay amongus");
@@ -98,7 +98,7 @@ export class Server {
 	private async buildEmbed(member: GuildMember | undefined, courses: string[], body: any): Promise<MessageEmbed> {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
-			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn")
+			.setDescription(courses.toString())
 			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails, inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
 		if (!member) {
 			return embed;
@@ -120,16 +120,16 @@ export class Server {
 	 * @param {string[]} courses the array of course names
 	 * @returns the MessageActionRow to add to the embed
 	 */
-	private getRow(id: Snowflake, courses: string[]): MessageActionRow {
+	private getRow(id: Snowflake): MessageActionRow {
 		const accept = new MessageButton()
 			.setLabel("Accept")
-			.setCustomId(`accept_${id}_${courses.toString()}`)
+			.setCustomId(`accept_${id}`)
 			.setStyle("SUCCESS")
 			.setEmoji("889310059501342751");
 
 		const reject = new MessageButton()
 			.setLabel("Reject")
-			.setCustomId(`reject_${id}_${courses.toString()}`)
+			.setCustomId(`reject_${id}`)
 			.setStyle("DANGER")
 			.setEmoji("889310059975311380");
 		return new MessageActionRow()
