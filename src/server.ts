@@ -1,7 +1,10 @@
-import { Client, EmbedField, Guild, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Client, Collection, Guild, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
+import purgeCache from "./util/purgeCache";
+
+export const _RATE_LIMIT_TIME = 10 * 60 * 5; // 5 minutes
 
 interface ServerOpts {
 	port: number,
@@ -19,6 +22,7 @@ export class Server {
 	private client: Client;
 	private app: Express;
 	private port: number;
+	private rateLimitIpCache = new Collection<string, number>();
 
 	/**
 	 * @constructor
@@ -53,6 +57,20 @@ export class Server {
 	 * @param {Response} res the response object (ew)
 	 */
 	private sendEmbed = async (req: Request, res: Response) => {
+		this.rateLimitIpCache = purgeCache(this.rateLimitIpCache);
+
+		const ip = req.headers["ratelimit-ip-verif"];
+		if (ip == undefined) return res.status(400).send("missing header 'ratelimit-ip-verif'");
+		if(typeof ip == "string"){
+			const ipTime = this.rateLimitIpCache.get(ip);
+			
+			if(ipTime && new Date().getTime() - ipTime < _RATE_LIMIT_TIME) {
+				res.status(429);
+				res.send("stop spamming us nerd");
+				return;
+			}
+			this.rateLimitIpCache.set(ip, new Date().getTime());
+		}
 		const body: ApplicationBody = req.body;
 		const guild = this.client.guilds.cache.get("877584374521008199");
 
@@ -86,7 +104,7 @@ export class Server {
 		}));
 		embed
 			.setThumbnail(member.user.avatarURL() ?? "")
-			.addFields(...coursesWithNames.map((course) => ({ name: course.name ?? '', value: course.value, inline: true })));
+			.addFields(...coursesWithNames.map((course) => ({ name: course.name ?? "", value: course.value, inline: true })));
 		return embed;
 	}
 
