@@ -12,3 +12,9 @@ export interface Command {
 	data: SlashCommandBuilder,
 	execute: (interaction: CommandInteraction, parent: Client) => Promise<void>
 }
+
+export type ConfigObject = {
+	requires: string,
+	description: string,
+	config: ConfigObject
+}
