@@ -67,7 +67,7 @@ client.on("interactionCreate", async (interaction) => {
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
-					.setDescription(`Added the following roles to <@${user?.user.id}>: ${roles.map(r => { return `\n**${studentRoles.get(r)?.name}**` ?? "Invalid Role"; }).join("")}`)
+					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was accepted`)
 					.setColor("GREYPLE")
 				]
 			});
@@ -86,7 +86,7 @@ client.on("interactionCreate", async (interaction) => {
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
-					.setDescription(`${user?.user.username}'s application was rejected`)
+					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was rejected`)
 					.setColor("GREYPLE")
 				]
 			});
