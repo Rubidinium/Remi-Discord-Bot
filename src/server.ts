@@ -95,6 +95,7 @@ export class Server {
 	 * @param {string[]} courses the courses for the member to be enrolled in
 	 * @returns the constructed embed
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private async buildEmbed(member: GuildMember | undefined, courses: string[], body: any): Promise<MessageEmbed> {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
