@@ -67,7 +67,7 @@ client.on("interactionCreate", async (interaction) => {
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
-					.setDescription(`Added the following roles to <@${user?.user.id}>: ${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join("")}`)
+					.setDescription(`Added the following roles to <@${user?.user.id}>: ${roles.map(r => { return `\n**${studentRoles.get(r)?.name}**` ?? "Invalid Role"; }).join("")}`)
 					.setColor("GREYPLE")
 				]
 			});
