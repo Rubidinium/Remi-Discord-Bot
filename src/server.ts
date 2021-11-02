@@ -99,7 +99,7 @@ export class Server {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
 			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn")
-			.addFields([{ name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails, inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
+			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails, inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
 		if (!member) {
 			return embed;
 		}
