@@ -61,8 +61,13 @@ export class Server {
 	 * @param {Response} res the response object (ew)
 	 */
 	private sendEmbed = async (req: Request, res: Response) => {
+		const guild = this.client.guilds.cache.get("877584374521008199");
+		const body: ApplicationBody = req.body;
+		const user = await guild?.members.fetch(body.id).catch(
+			() => undefined
+		);
+		if (!user) return res.status(404).send("User not found. Please join the server before sending another application (programmingsimplified.org/discord)");
 		this.rateLimitIpCache = purgeCache(this.rateLimitIpCache);
-
 		// @ts-ignore
 		const ip = req.clientIp;
 		console.log(ip);
@@ -76,21 +81,15 @@ export class Server {
 			}
 			this.rateLimitIpCache.set(ip, new Date().getTime());
 		}
-		const body: ApplicationBody = req.body;
-		const guild = this.client.guilds.cache.get("877584374521008199");
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
-		const user = await guild?.members.fetch(body.id).catch(
-			() => undefined
-		);
-		if (!user) return res.status(404).send("User not found. Please join the server before sending another application (programmingsimplified.org/discord)");
 		const embed = await this.buildEmbed(user, body.courses, body);
 		const row = this.getRow(body.id);
 		channel.send({ embeds: [embed], components: [row] });
 
-		res.send("gay amongus");
+		res.send("Application Sent");
 	};
 
 	/**
