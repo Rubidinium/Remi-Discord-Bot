@@ -20,7 +20,6 @@ class Gary extends Client {
 	public courses = courses;
 	constructor(options: ClientOptions) {
 		super(options);
-
 	}
 }
 
@@ -57,14 +56,6 @@ client.once("ready", async () => {
 
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isButton()) {
-		switch (interaction.customId) {
-		case "reject":
-			import("./interactions/courses").then((courses) => {
-				courses.handle(interaction, client);
-			});
-			break;
-		}
-
 		if (interaction.customId.startsWith("accept_")) {
 			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
 			const roles = interaction.customId.split("_")[2].split(",");
@@ -73,26 +64,36 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
-			interaction.update({ components: [], embeds: [new MessageEmbed()
-				.setTitle("Application Approved")
-				.setDescription(`Added the following roles to ${user?.user.username}: ${studentRoles.map(r => `**${r.name}**\n`)}`)
-				.setColor("GREYPLE")
-			] 
+			interaction.update({
+				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
+					.setTitle("Application Approved")
+					.setDescription(`Added the following roles to <@${user?.user.id}>: ${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join("")}`)
+					.setColor("GREYPLE")
+				]
 			});
-			interaction.reply({ content: "k", ephemeral: true });
+			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`);
+			return;
 		}
 
-		if(interaction.customId.startsWith("reject_")) {
+		if (interaction.customId.startsWith("reject_")) {
 			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
-
-			interaction.update({ components: [], embeds: [new MessageEmbed()
-				.setTitle("Application Approved")
-				.setDescription(`${user?.user.username}'s application was rejected`)
-				.setColor("GREYPLE")
-			] 
+			const roles = interaction.customId.split("_")[2].split(",");
+			const studentRoles = await getRoles(client);
+			roles.forEach(r => {
+				const role = studentRoles.get(r);
+				if (role) user?.roles.add(role);
+			});
+			interaction.update({
+				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
+					.setTitle("Application Approved")
+					.setDescription(`${user?.user.username}'s application was rejected`)
+					.setColor("GREYPLE")
+				]
 			});
 
-			user?.send("We are sorry to inform you that your application on Programming Simplified was rejected.");
+			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`);
+			return;
+
 		}
 	}
 

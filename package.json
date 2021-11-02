@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "ts-node src/deploy.ts && ts-node src/index.ts",
+    "start-dev": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "deploy": "ts-node src/deploy.ts",
     "doc": "jsdoc src/server.ts"

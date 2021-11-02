@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Client, Collection, Guild, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Client, Collection, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
 import purgeCache from "./util/purgeCache";
 import requestIp from "request-ip";
 
-export const _RATE_LIMIT_TIME = 10 * 60 * 5; // 5 minutes
+// export const _RATE_LIMIT_TIME = 1000 * 60 * 5; // 5 minutes
+export const _RATE_LIMIT_TIME = 1000; // 1 second
 
 interface ServerOpts {
 	port: number,
@@ -81,7 +82,7 @@ export class Server {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const channel: TextChannel = guild?.channels.cache.get("903888105143173150");
-		const embed = await this.buildEmbed(guild, await guild?.members.fetch(body.id).catch(), body.courses);
+		const embed = await this.buildEmbed(await guild?.members.fetch(body.id).catch(), body.courses, body);
 		const row = this.getRow(body.id, body.courses);
 		channel.send({ embeds: [embed], components: [row] });
 
@@ -94,12 +95,12 @@ export class Server {
 	 * @param {string[]} courses the courses for the member to be enrolled in
 	 * @returns the constructed embed
 	 */
-	private async buildEmbed(guild: Guild | undefined, member: GuildMember | undefined, courses: string[]): Promise<MessageEmbed> {
+	private async buildEmbed(member: GuildMember | undefined, courses: string[], body: any): Promise<MessageEmbed> {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
-			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn");
+			.setDescription("welcome to squid game programming simplified edition but its nothing like squid game and im dying rn")
+			.addFields([{ name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails, inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc, inline: true }]);
 		if (!member) {
-			console.log("gay");
 			return embed;
 		}
 		const coursesWithNames = await Promise.all(courses.map(async (course) => {
@@ -108,7 +109,8 @@ export class Server {
 		}));
 		embed
 			.setThumbnail(member.user.avatarURL() ?? "")
-			.addFields(...coursesWithNames.map((course) => ({ name: course.name ?? "", value: course.value, inline: true })));
+			.addField("Courses", coursesWithNames.map(i => i.name).join("\n"));
+
 		return embed;
 	}
 
@@ -127,7 +129,7 @@ export class Server {
 
 		const reject = new MessageButton()
 			.setLabel("Reject")
-			.setCustomId(`reject_${id}`)
+			.setCustomId(`reject_${id}_${courses.toString()}`)
 			.setStyle("DANGER")
 			.setEmoji("889310059975311380");
 		return new MessageActionRow()
