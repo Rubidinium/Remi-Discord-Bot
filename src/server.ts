@@ -146,7 +146,7 @@ export class Server {
 	 * @param {Response} res the response object to send the information to
 	 */
 	private getRoles = async (_: Request, res: Response) => {
-		res.send(JSON.stringify(await getRoles(this.client), (_, value) =>
+		res.send(JSON.stringify(await getRoles(this.client), (_key, value) =>
 			typeof value === "bigint" ? value.toString() : value
 		)
 		);
