@@ -103,7 +103,7 @@ export class Server {
 		const embed = new MessageEmbed()
 			.setTitle("New course Application")
 			.setDescription(courses.toString())
-			.addFields([{ name: "User", value: `<@${member?.id}> / ${member?.id}`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails || "none", inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc || "None", inline: true }]);
+			.addFields([{ name: "User", value: `<@${member?.id}>`, inline: true }, { name: "Age", value: body.age, inline: true }, { name: "Experience", value: body.experienceDetails || "none", inline: true }, { name: "Time Dedication", value: body.timeDedication, inline: true }, { name: "Misc", value: body.misc || "None", inline: true }]);
 		if (!member) {
 			return embed;
 		}
