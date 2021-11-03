@@ -63,9 +63,13 @@ export class Server {
 	private sendEmbed = async (req: Request, res: Response) => {
 		const guild = this.client.guilds.cache.get("877584374521008199");
 		const body: ApplicationBody = req.body;
+		console.log(req);
+		console.log("before");
 		const user = await guild?.members.fetch(body.id).catch(
 			() => undefined
 		);
+		console.log("after");
+
 		if (!user) return res.status(404).send("User not found. Please join the server before sending another application (programmingsimplified.org/discord)");
 		this.rateLimitIpCache = purgeCache(this.rateLimitIpCache);
 		// @ts-ignore
