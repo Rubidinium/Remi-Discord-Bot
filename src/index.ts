@@ -54,7 +54,7 @@ client.once("ready", async () => {
 	server.expressConfig();
 });
 
-const dev = true;
+const dev = false;
 
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isButton()) {
@@ -70,7 +70,7 @@ client.on("interactionCreate", async (interaction) => {
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
-					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was accepted`)
+					.setDescription(`${user?.user.username} or ${user?.user}'s application was accepted by ${interaction.user} `)
 					.setColor("GREEN")
 				]
 			});
@@ -89,7 +89,7 @@ client.on("interactionCreate", async (interaction) => {
 			interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Rejected")
-					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was rejected`)
+					.setDescription(`${user?.user.username} or ${user?.user}'s application was rejected by ${interaction.user}`)
 					.setColor("RED")
 				]
 			});
