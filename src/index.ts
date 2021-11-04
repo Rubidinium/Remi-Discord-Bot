@@ -54,8 +54,11 @@ client.once("ready", async () => {
 	server.expressConfig();
 });
 
+const dev = true;
+
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isButton()) {
+		if (dev) return;
 		if (interaction.customId.startsWith("accept_")) {
 			const user = await interaction.guild?.members.fetch(interaction.customId.split("_")[1]);
 			const roles = (interaction.message.embeds[0].description ?? "").split(",");
@@ -71,7 +74,7 @@ client.on("interactionCreate", async (interaction) => {
 					.setColor("GREEN")
 				]
 			});
-			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`);
+			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch();
 			return;
 		}
 
@@ -91,9 +94,8 @@ client.on("interactionCreate", async (interaction) => {
 				]
 			});
 
-			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`);
+			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch();
 			return;
-
 		}
 	}
 

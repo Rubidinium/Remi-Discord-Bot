@@ -67,7 +67,7 @@ buttons.set("forward", (interaction: ButtonInteraction) => {
 });
 
 export const handle = (interaction: ButtonInteraction, client: Client) => {
-	let a = buttons.get(interaction.customId);
+	const a = buttons.get(interaction.customId);
 	if(a) {
 		a(interaction);
 	}
