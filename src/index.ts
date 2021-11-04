@@ -68,7 +68,7 @@ client.on("interactionCreate", async (interaction) => {
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
 					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was accepted`)
-					.setColor("GREYPLE")
+					.setColor("GREEN")
 				]
 			});
 			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`);
@@ -87,7 +87,7 @@ client.on("interactionCreate", async (interaction) => {
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Rejected")
 					.setDescription(`${user?.user.username} or <@${user?.user.id}>'s application was rejected`)
-					.setColor("GREYPLE")
+					.setColor("RED")
 				]
 			});
 
