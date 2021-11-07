@@ -11,11 +11,18 @@ export const _RATE_LIMIT_TIME = 1000 * 60 * 5; // 5 minutes
 
 interface ServerOpts {
 	port: number,
+	logChannel: Snowflake
 }
 
 interface ApplicationBody {
 	id: string,
 	courses: string[],
+}
+
+enum LoggingLevel {
+	LOG = "log",
+	WARNING = "warn",
+	ERROR = "error"
 }
 
 /**
@@ -25,6 +32,7 @@ export class Server {
 	private client: Client;
 	private app: Express;
 	private port: number;
+	private logChannel: TextChannel | null = null;
 	private rateLimitIpCache = new Collection<string, number>();
 
 	/**
@@ -35,12 +43,18 @@ export class Server {
 	constructor(client: Client, options: ServerOpts) {
 		this.client = client;
 		this.port = options.port;
-
+		this.asyncSetup(options);
 		/**
 		 * Express config
 		 */
 		this.app = express();
 	}
+
+	private async asyncSetup(options: ServerOpts) {
+		this.logChannel = await this.client.channels.fetch(options.logChannel) as TextChannel;
+	}
+
+
 
 	/**
 	 * @method expressConfig the express configuration method
@@ -51,6 +65,7 @@ export class Server {
 		this.app.use(requestIp.mw());
 		this.app.post("/api/applications", this.sendEmbed);
 		this.app.get("/api/roles", this.getRoles);
+		this.app.post("/api/log/:level", this.logger);
 		this.app.listen(this.port, () => {
 			console.log(`REST API listening on http://localhost:${this.port}`);
 		});
@@ -152,4 +167,29 @@ export class Server {
 		)
 		);
 	};
+
+	private logger = (req: Request<{ level: LoggingLevel }, { message: string, data: unknown }>, res: Response) => {
+		const logEmbed: MessageEmbed = new MessageEmbed()
+			.setTitle(req.params.level)
+			.setDescription(`${req.params.level}: ${req.body.message}\n\`\`\`json\n${JSON.stringify(req.body.data)}\n\`\`\``);
+		switch (req.params.level) {
+		case LoggingLevel.LOG:
+			logEmbed
+				.setColor("YELLOW");
+			break;
+		case LoggingLevel.WARNING:
+			logEmbed
+				.setColor("ORANGE");
+			break;
+		case LoggingLevel.ERROR:
+			logEmbed
+				.setColor("RED");
+			break;
+
+		}
+		// send the embed
+		this.logChannel?.send({ embeds: [logEmbed]});
+		// prevent request from timing out
+		res.send("SUCCESS");
+	}
 }

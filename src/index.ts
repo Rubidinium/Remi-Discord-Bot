@@ -48,7 +48,8 @@ client.once("ready", async () => {
 
 
 	const server = new Server(client, {
-		port: 8080
+		port: 8080,
+		logChannel: "890038962406703134"
 	});
 
 	server.expressConfig();
