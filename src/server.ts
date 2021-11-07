@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Client, Collection, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Client, Collection, ColorResolvable, GuildMember, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import express, { Express, Request, Response } from "express";
 import getRoles from "./util/getRoles";
 import cors from "cors";
@@ -8,6 +8,7 @@ import requestIp from "request-ip";
 
 export const _RATE_LIMIT_TIME = 1000 * 60 * 5; // 5 minutes
 // export const _RATE_LIMIT_TIME = 1000; // 1 second
+export const ANSI_RESET = "\u001b[0m";
 
 interface ServerOpts {
 	port: number,
@@ -24,6 +25,14 @@ enum LoggingLevel {
 	WARNING = "warn",
 	ERROR = "error"
 }
+
+const LoggerColors = new Map<LoggingLevel | string, {
+	ansi: string,
+	discord: ColorResolvable
+}>();
+LoggerColors.set(LoggingLevel.LOG, { ansi: "\u001b[34;1m", discord: "YELLOW" });
+LoggerColors.set(LoggingLevel.WARNING, { ansi: "\u001b[33;1m", discord: "ORANGE" });
+LoggerColors.set(LoggingLevel.ERROR, { ansi: "\u001b[31;1m", discord: "RED" });
 
 /**
  * The server class
@@ -53,8 +62,6 @@ export class Server {
 	private async asyncSetup(options: ServerOpts) {
 		this.logChannel = await this.client.channels.fetch(options.logChannel) as TextChannel;
 	}
-
-
 
 	/**
 	 * @method expressConfig the express configuration method
@@ -168,27 +175,20 @@ export class Server {
 		);
 	};
 
-	private logger = (req: Request<{ level: LoggingLevel }, { message: string, data: unknown }>, res: Response) => {
+	private logger = (req: Request<{ level: LoggingLevel }, unknown, { message: string, data: unknown }>, res: Response) => {
+		const colors = LoggerColors.get(req.params.level) ?? { discord: "LUMINOUS_VIVID_PINK", ansi: "" };
+
+		// Construct the logging embed
 		const logEmbed: MessageEmbed = new MessageEmbed()
 			.setTitle(req.params.level)
-			.setDescription(`${req.params.level}: ${req.body.message}\n\`\`\`json\n${JSON.stringify(req.body.data)}\n\`\`\``);
-		switch (req.params.level) {
-		case LoggingLevel.LOG:
-			logEmbed
-				.setColor("YELLOW");
-			break;
-		case LoggingLevel.WARNING:
-			logEmbed
-				.setColor("ORANGE");
-			break;
-		case LoggingLevel.ERROR:
-			logEmbed
-				.setColor("RED");
-			break;
+			.setDescription(`${req.params.level}: ${req.body.message}\n\`\`\`json\n${JSON.stringify(req.body.data)}\n\`\`\``)
+			.setColor(colors.discord);
+		// Send the embed
+		this.logChannel?.send({ embeds: [logEmbed] });
 
-		}
-		// send the embed
-		this.logChannel?.send({ embeds: [logEmbed]});
+		// Log to console
+		console.log(`${colors.ansi}${req.params.level}:${ANSI_RESET} ${req.body.message}\n${JSON.stringify(req.body.data)}`);
+
 		// prevent request from timing out
 		res.send("SUCCESS");
 	}
