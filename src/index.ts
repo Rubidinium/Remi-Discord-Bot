@@ -77,7 +77,7 @@ client.on("interactionCreate", async (interaction) => {
 			});
 
 			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch(() =>
-				interaction.update({
+				interaction.editReply({
 					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
 						, new MessageEmbed()
 							.setTitle("Notify Error")
@@ -109,7 +109,7 @@ client.on("interactionCreate", async (interaction) => {
 
 
 			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch(() =>
-				interaction.update({
+				interaction.editReply({
 					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
 						, new MessageEmbed()
 							.setTitle("Notify Error")
