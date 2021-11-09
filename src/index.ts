@@ -127,16 +127,11 @@ client.on("interactionCreate", async (interaction) => {
 
 	if (interaction.isCommand()) {
 		const command = commands.get(interaction.commandName);
-		try {
-			await command?.execute(interaction, client);
-		} catch (e) {
-			console.error(e);
-			await interaction.reply({
-				content:
-					"An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
-				ephemeral: true,
-			});
-		}
+		await command?.execute(interaction, client).catch(() => interaction.editReply({
+			content:
+				"An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
+		}));
+
 	}
 });
 client.login(process.env.TOKEN);
