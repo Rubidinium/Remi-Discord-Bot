@@ -75,7 +75,13 @@ client.on("interactionCreate", async (interaction) => {
 					.setColor("GREEN")
 				]
 			});
-			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch();
+			try {
+				user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch();
+
+			}
+			catch (e) {
+				console.log(e);
+			}
 			return;
 		}
 
@@ -95,7 +101,14 @@ client.on("interactionCreate", async (interaction) => {
 				]
 			});
 
-			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch();
+
+			try {
+				user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch();
+			}
+			catch (e) {
+				console.log(e);
+			}
+
 			return;
 		}
 	}
