@@ -68,7 +68,7 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
-			interaction.update({
+			await interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
 					.setDescription(`${user?.user.username} or ${user?.user}'s application was accepted by ${interaction.user} `)
@@ -76,9 +76,16 @@ client.on("interactionCreate", async (interaction) => {
 				]
 			});
 
-			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch((e) => {
-				console.log(e);
-			});
+			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch(() =>
+				interaction.update({
+					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
+						, new MessageEmbed()
+							.setTitle("Notify Error")
+							.setDescription(`${user?.user.username} or ${user?.user}'s could not be notified :(`)
+							.setColor("RED")
+					]
+				})
+			);
 
 			return;
 		}
@@ -91,7 +98,7 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
-			interaction.update({
+			await interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Rejected")
 					.setDescription(`${user?.user.username} or ${user?.user}'s application was rejected by ${interaction.user}`)
@@ -101,9 +108,16 @@ client.on("interactionCreate", async (interaction) => {
 
 
 
-			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch((e) => {
-				console.log(e);
-			});
+			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch(() =>
+				interaction.update({
+					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
+						, new MessageEmbed()
+							.setTitle("Notify Error")
+							.setDescription(`${user?.user.username} or ${user?.user}'s could not be notified :(`)
+							.setColor("RED")
+					]
+				})
+			);
 
 
 
