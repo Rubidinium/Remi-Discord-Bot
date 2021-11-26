@@ -26,6 +26,12 @@ enum LoggingLevel {
 	ERROR = "error"
 }
 
+interface BugReportBody {
+	title: string, 
+	type: "LESSON_GLITCH" | "SITE_CRASH" | string;
+	desc: string,
+}
+
 const LoggerColors = new Map<LoggingLevel | string, {
 	ansi: string,
 	discord: ColorResolvable
@@ -73,6 +79,7 @@ export class Server {
 		this.app.post("/api/applications", this.sendEmbed);
 		this.app.get("/api/roles", this.getRoles);
 		this.app.post("/api/log/:level", this.logger);
+		this.app.post("/feedback/bug", this.bug);
 		this.app.listen(this.port, () => {
 			console.log(`REST API listening on http://localhost:${this.port}`);
 		});
@@ -190,6 +197,15 @@ export class Server {
 		console.log(`${colors.ansi}${req.params.level}:${ANSI_RESET} ${req.body.message}\n${JSON.stringify(req.body.data)}`);
 
 		// prevent request from timing out
+		res.send("SUCCESS");
+	}
+
+	private bug = (req: Request<unknown, unknown, BugReportBody>, res: Response) => {
+		const embed = new MessageEmbed()
+			.setTitle(`${req.body.type}: ${req.body.title}`)
+			.setDescription(req.body.desc);
+
+		this.logChannel?.send({ embeds: [embed]});
 		res.send("SUCCESS");
 	}
 }
