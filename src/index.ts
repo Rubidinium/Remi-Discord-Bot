@@ -68,14 +68,25 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
-			interaction.update({
+			await interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Approved")
 					.setDescription(`${user?.user.username} or ${user?.user}'s application was accepted by ${interaction.user} `)
 					.setColor("GREEN")
 				]
 			});
-			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch();
+
+			user?.send(`We are happy to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was accepted.`).catch(() =>
+				interaction.editReply({
+					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
+						, new MessageEmbed()
+							.setTitle("Notify Error")
+							.setDescription(`${user?.user.username} or ${user?.user}'s could not be notified :(`)
+							.setColor("RED")
+					]
+				})
+			);
+
 			return;
 		}
 
@@ -87,7 +98,7 @@ client.on("interactionCreate", async (interaction) => {
 				const role = studentRoles.get(r);
 				if (role) user?.roles.add(role);
 			});
-			interaction.update({
+			await interaction.update({
 				components: [], embeds: [interaction.message.embeds[0], new MessageEmbed()
 					.setTitle("Application Rejected")
 					.setDescription(`${user?.user.username} or ${user?.user}'s application was rejected by ${interaction.user}`)
@@ -95,23 +106,32 @@ client.on("interactionCreate", async (interaction) => {
 				]
 			});
 
-			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch();
+
+
+			user?.send(`We are sorry to inform you that your application on Programming Simplified for roles \`${roles.map(r => { return studentRoles.get(r)?.name ?? "Invalid Role"; }).join(", ")} \` was rejected.`).catch(() =>
+				interaction.editReply({
+					components: [], embeds: [interaction.message.embeds[0], interaction.message.embeds[1]
+						, new MessageEmbed()
+							.setTitle("Notify Error")
+							.setDescription(`${user?.user.username} or ${user?.user}'s could not be notified :(`)
+							.setColor("RED")
+					]
+				})
+			);
+
+
+
 			return;
 		}
 	}
 
 	if (interaction.isCommand()) {
 		const command = commands.get(interaction.commandName);
-		try {
-			await command?.execute(interaction, client);
-		} catch (e) {
-			console.error(e);
-			await interaction.reply({
-				content:
-					"An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
-				ephemeral: true,
-			});
-		}
+		await command?.execute(interaction, client).catch(() => interaction.editReply({
+			content:
+				"An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
+		}));
+
 	}
 });
 client.login(process.env.TOKEN);
