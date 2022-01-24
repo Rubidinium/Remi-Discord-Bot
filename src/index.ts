@@ -24,8 +24,8 @@ const commandFiles =
 
 (async () => {
 	for (const file of commandFiles) {
-		const { default: commandClass } = await import(`./commands/${file}`);
-		const commandInstance: BaseCommand = new commandClass();
+		const { default: CommandClass } = await import(`./commands/${file}`);
+		const commandInstance: BaseCommand = new CommandClass();
 		commands.set(commandInstance.metadata.name, commandInstance);
 	}
 })().then(main);
