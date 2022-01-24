@@ -20,7 +20,7 @@ const commandFiles =
 	readdirSync("./src/commands")
 		.filter((file) => file.endsWith(".ts"));
 
-await (async () => {
+(async () => {
 	for (const file of commandFiles) {
 		await import(`./commands/${file}`).then(({ default: command }) => {
 			commands.set(command.metadata.name, command);
