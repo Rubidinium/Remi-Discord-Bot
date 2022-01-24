@@ -1,7 +1,5 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import { Client, Collection, Intents, } from "discord.js";
-import { readdirSync, lstatSync } from "fs";
-import { resolve } from "path";
+import { readdirSync } from "fs";
 import { config } from "dotenv";
 import { BaseCommand } from "./commands";
 config();
@@ -34,4 +32,4 @@ client.once("ready", () => {
 	});
 
 });
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN).then(() => console.log("logged in"));
