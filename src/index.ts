@@ -37,6 +37,9 @@ const commandFiles =
 	for (const file of commandFiles) {
 		const { default: CommandClass } = await import(`./commands/${file}`);
 		const commandInstance: BaseCommand = new CommandClass();
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		//@ts-ignore THIS IS A VALID USE OF TS-IGNORE
+		if (["MESSAGE", "USER"].includes(commandInstance.metadata.type as string)) delete commandInstance.metadata.description;
 		commands.set(commandInstance.metadata.name, commandInstance);
 	}
 })().then(main);
@@ -191,6 +194,11 @@ async function main() {
 			}
 		}
 
+		if (interaction.isContextMenu()) {
+			await interaction.deferReply({ ephemeral: false });
+			const command = commands.get(interaction.commandName);
+			await command.execute(interaction);
+		}
 	});
 
 	client.login(process.env.TOKEN);
