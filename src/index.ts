@@ -26,13 +26,8 @@ for (const file of commandFiles) {
 	});
 }
 
-<<<<<<< HEAD
 if (hasArg("register", "r")) {
 	await (async () => {
-=======
-if (process.argv[2] == "--register") {
-	(async () => {
->>>>>>> 4f53d30b6d50ec185edb0d2d7956ce4889305a95
 		const cmdDatas = commands.map(cmd => cmd.metadata);
 		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
