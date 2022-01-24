@@ -67,8 +67,8 @@ async function main() {
 		// });
 
 		client.user?.setActivity({
-			name: "with my code",
-			type: "COMPETING"
+			name: "/help",
+			type: "LISTENING"
 		});
 	});
 
