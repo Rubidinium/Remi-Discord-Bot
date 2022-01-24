@@ -4,6 +4,7 @@ import { BaseCommand } from "./commands";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
+import hasArg from "./lib/utils/hasArg";
 config();
 
 class Bot extends Client {
@@ -25,7 +26,7 @@ for (const file of commandFiles) {
 	});
 }
 
-if (process.argv[2] == "--register") {
+if (hasArg("register", "r")) {
 	await (async () => {
 		const cmdDatas = commands.map(cmd => cmd.metadata);
 		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
