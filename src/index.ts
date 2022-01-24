@@ -1,4 +1,4 @@
-import { Client, Collection, Intents, Interaction, } from "discord.js";
+import { Client, Collection, Intents, Interaction, MessageActionRow, TextChannel, MessageButton } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
@@ -6,6 +6,7 @@ import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
+import { Embed } from "@discordjs/builders";
 config();
 
 class Bot extends Client {
@@ -54,8 +55,15 @@ async function main() {
 
 	const client = new Bot();
 
-	client.once("ready", () => {
+	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
+		const channel = await client.channels.fetch("935078633427570739") as TextChannel;
+		channel.send({
+			embeds: [new Embed().setTitle("Bot is ready!").setTimestamp()], components: [new MessageActionRow().addComponents(new MessageButton()
+				.setCustomId('ticket_open')
+				.setLabel('Open Ticket')
+				.setStyle('SUCCESS'))]
+		});
 
 		client.user?.setActivity({
 			name: "with my code",
@@ -79,7 +87,7 @@ async function main() {
 
 		if (interaction.isButton()) {
 			if (interaction.customId == "ticket_open") {
-				
+
 			}
 		}
 
