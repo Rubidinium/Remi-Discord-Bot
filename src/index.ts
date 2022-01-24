@@ -1,8 +1,8 @@
 import { Client, Collection, Intents, } from "discord.js";
 import { readdirSync } from "fs";
 import { BaseCommand } from "./commands";
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/rest/v9';
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
 config();
 
@@ -26,25 +26,24 @@ for (const file of commandFiles) {
 }
 
 if (process.argv[2] == "--register") {
-	(() => {
-		let cmdDatas = commands.map(cmd => cmd.metadata);
-		let cmdNames = cmdDatas.map(cmdData => cmdData.name);
+	await (async () => {
+		const cmdDatas = commands.map(cmd => cmd.metadata);
+		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
 		console.log(
-			cmdNames.map(cmdName => `'${cmdName}'`).join(', ')
+			cmdNames.map(cmdName => `'${cmdName}'`).join(", ")
 		);
 
 		try {
-			let rest = new REST({ version: '9' }).setToken(Config.client.token);
-			await rest.put(Routes.applicationCommands(Config.client.id), { body: [] });
-			await rest.put(Routes.applicationGuildCommands(Config.client.id, '933233631390994492'), { body: cmdDatas });
+			const rest = new REST({ version: "9" }).setToken(process.env.TOKEN ?? "urmom");
+			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: cmdDatas });
 		} catch (error) {
 			console.error("Error registering commands:", error);
 			return;
 		}
 
 		console.log("Successfully registered commands!");
-	});
+	})();
 }
 
 const client = new Bot();

@@ -1,5 +1,5 @@
-import { ApplicationCommandData, CommandInteraction, PermissionString } from 'discord.js';
-import { RateLimiter } from 'discord.js-rate-limiter';
+import { ApplicationCommandData, CommandInteraction, PermissionString } from "discord.js";
+import { RateLimiter } from "discord.js-rate-limiter";
 
 export interface BaseCommand {
     metadata: ApplicationCommandData;
