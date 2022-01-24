@@ -58,13 +58,13 @@ async function main() {
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
 		const channel = await client.channels.fetch("935078633427570739") as TextChannel;
-		// channel.send({
-		// 	embeds: [new Embed().setTitle("Ticket Creation 🎟️").setDescription("Press the green button to open a ticket!")], components: [new MessageActionRow().addComponents(new MessageButton()
-		// 		.setCustomId('ticket_open')
-		// 		.setLabel('Open Ticket')
-		// 		.setStyle('SUCCESS')
-		// 		.setEmoji('✉️'))]
-		// });
+		channel.send({
+			embeds: [new Embed().setTitle("Ticket Creation 🎟️").setDescription("Press the green button to open a ticket!")], components: [new MessageActionRow().addComponents(new MessageButton()
+				.setCustomId('ticketOpen')
+				.setLabel('Open Ticket')
+				.setStyle('SUCCESS')
+				.setEmoji('✉️'))]
+		});
 
 		client.user?.setActivity({
 			name: "with my code",
@@ -87,21 +87,28 @@ async function main() {
 		}
 
 		if (interaction.isButton()) {
-			if (interaction.customId == "ticket_open") {
-				const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+			switch (interaction.customId) {
+				case "ticketOpen":
+					const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+						//@ts-ignore
+						type: "text",
+						parent: "935085260545339412",
+					});
 					//@ts-ignore
-					type: "text",
-					parent: "935085260545339412",
-				});
-				//@ts-ignore
-				await channel.send({content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
-					.setCustomId(`ticket_close_${channel.id}`)
-					.setLabel('Close Ticket')
-					.setEmoji('🗑️')
-					.setStyle('DANGER')
-					)]
-				});
-		}};
+					await channel.send({
+						content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
+							.setCustomId(`ticketClose`)
+							.setLabel('Close Ticket')
+							.setEmoji('🗑️')
+							.setStyle('DANGER')
+						)]
+					});
+					return;
+				case "ticketClose":
+					await interaction.channel.delete();
+					return;
+			}
+		}
 
 	});
 
