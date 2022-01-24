@@ -1,4 +1,4 @@
-import { Client, Collection, Intents, Interaction, MessageActionRow, TextChannel, MessageButton } from "discord.js";
+import { Client, Collection, Intents, Interaction, MessageActionRow, TextChannel, MessageButton, MessageSelectMenu } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
@@ -89,6 +89,7 @@ async function main() {
 		if (interaction.isButton()) {
 			switch (interaction.customId) {
 				case "ticketOpen":
+					
 					const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
 						//@ts-ignore
 						type: "text",
@@ -109,10 +110,61 @@ async function main() {
 							.setStyle('DANGER')
 						)]
 					});
+					//@ts-ignore
+					channel.send({embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you).").setColor(0xA020F0)], components: [new MessageActionRow().addComponents(new MessageSelectMenu()
+						.setCustomId('ticketType')
+						.setPlaceholder('Select a ticket type')
+						.setOptions([
+								{label: 'Python101', value: 'python101'}, 
+								{label: 'Javascript101', value: 'javascript101'},
+								{label: 'Java101', value: 'java101'},
+								{label: 'WebDev', value: 'webdev'},
+								{label: 'DiscordJS', value: 'discordjs'},
+								{label: 'SQL', value: 'sql'},
+								{label: 'Other', value: 'other'}
+							])
+						)],
+						ephemeral: true
+					})
 					interaction.reply({ content: `Ticket created!`, ephemeral: true });
 					return;
 				case "ticketClose":
 					await interaction.channel.delete();
+					return;
+			}
+		}
+
+		if (interaction.isSelectMenu()) {
+			switch (interaction.customId) {
+				case "ticketType":
+					//@ts-ignore
+					interaction.channel.edit({name: `ticket-${interaction.user.username}-${interaction.values[0]}`});
+					//@ts-ignore
+					interaction.message.delete();
+					switch (interaction.values[0]) {
+						case "python101":
+							await interaction.channel.send("<@&935091117966385173>");
+							break;
+						case "javascript101":
+							await interaction.channel.send("<@&935091142884724786>");
+							break;
+						case "java101":
+							await interaction.channel.send("<@&935091172672679976>");
+							break;
+						case "webdev":
+							await interaction.channel.send("<@&935091067437584384>");
+							break;
+						case "discordjs":
+							await interaction.channel.send("<@&935091084218998814>");
+							break;
+						case "sql":
+							await interaction.channel.send("<@&935091203198844950>");
+							break;
+						case "other":
+							break;
+					}
+					interaction.channel.send({embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)]});
+
 					return;
 			}
 		}
