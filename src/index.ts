@@ -2,8 +2,10 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { Client, Collection, Intents, } from "discord.js";
 import { readdirSync, lstatSync } from "fs";
 import { resolve } from "path";
-import { config } from "dotenv";
 import { BaseCommand } from "./commands";
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/rest/v9';
+import { config } from "dotenv";
 config();
 
 class Bot extends Client {
@@ -25,8 +27,30 @@ for (const file of commandFiles) {
 	});
 }
 
+if (process.argv[2] == "--register") {
+	(() => {
+		let cmdDatas = commands.map(cmd => cmd.metadata);
+		let cmdNames = cmdDatas.map(cmdData => cmdData.name);
+
+		console.log(
+			cmdNames.map(cmdName => `'${cmdName}'`).join(', ')
+		);
+
+		try {
+			let rest = new REST({ version: '9' }).setToken(Config.client.token);
+			await rest.put(Routes.applicationCommands(Config.client.id), { body: [] });
+			await rest.put(Routes.applicationGuildCommands(Config.client.id, '933233631390994492'), { body: cmdDatas });
+		} catch (error) {
+			console.error("Error registering commands:", error);
+			return;
+		}
+
+		console.log("Successfully registered commands!");
+	});
+}
 
 const client = new Bot();
+
 client.once("ready", () => {
 	console.log("ready");
 	client.user?.setActivity({
