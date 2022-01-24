@@ -5,10 +5,10 @@ import { Result } from "ts-results";
 export default interface BaseCommand {
     metadata: ApplicationCommandData;
     cooldown?: RateLimiter;
-    requireDev: boolean;
-    requireGuild: boolean;
-    requireClientPerms: PermissionString[];
-    requireUserPerms: PermissionString[];
+    requireDev?: boolean;
+    requireGuild?: boolean;
+    requireClientPerms?: PermissionString[];
+    requireUserPerms?: PermissionString[];
     execute(intr: CommandInteraction): Promise<Result<0, string>>;
 // eslint-disable-next-line semi
 }

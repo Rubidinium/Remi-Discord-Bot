@@ -5,6 +5,7 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
+import { RateLimiter } from "discord.js-rate-limiter";
 config();
 
 class Bot extends Client {
@@ -22,8 +23,9 @@ const commandFiles =
 
 (async () => {
 	for (const file of commandFiles) {
-		const { default: command } = await import(`./commands/${file}`) as { default: BaseCommand; };
-		commands.set(command.metadata.name, command);
+		const { default: commandClass } = await import(`./commands/${file}`);
+		const commandInstance: BaseCommand = new commandClass();
+		commands.set(commandInstance.metadata.name, commandInstance);
 	}
 })().then(main);
 
@@ -61,7 +63,12 @@ async function main() {
 		});
 	});
 
+	const rateLimiter = new RateLimiter(1, 5000);
 	client.on("interactionCreate", async (interaction: Interaction) => {
+		const limited = rateLimiter.take(interaction.user.id);
+		// TODO: reply with empheral message saying you got rate limited
+		if (limited) return;
+
 		if (interaction.isCommand()) {
 			const command = commands.get(interaction.commandName);
 			if (!command) return;
