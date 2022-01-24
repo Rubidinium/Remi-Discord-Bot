@@ -67,7 +67,7 @@ async function main() {
 	client.on("interactionCreate", async (interaction: Interaction) => {
 		const limited = rateLimiter.take(interaction.user.id);
 		//@ts-ignore
-		if (limited) return await interaction.reply({ content: "You've been rate limited.", ephemeral: true });
+		if (limited) return interaction.reply({ content: "You've been rate limited.", ephemeral: true });
 
 		if (interaction.isCommand()) {
 			const command = commands.get(interaction.commandName);
