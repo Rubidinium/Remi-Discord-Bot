@@ -6,9 +6,8 @@
   "scripts": {
     "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --fix --cache --ext .js,.jsx,.ts,.tsx",
-    "build": "tsc --project tsconfig.json",
     "register": "ts-node src/index.ts --register",
-    "start": "npm run build && node --enable-source-maps dist/index.js",
+    "start": "ts-node src/index.ts",
     "dev": "nodemon src/**/*.ts src/index.ts"
   },
   "repository": {

@@ -1,7 +1,7 @@
 import { ApplicationCommandData, CommandInteraction, PermissionString } from "discord.js";
 import { RateLimiter } from "discord.js-rate-limiter";
 
-export interface BaseCommand {
+export default interface BaseCommand {
     metadata: ApplicationCommandData;
     cooldown?: RateLimiter;
     requireDev: boolean;

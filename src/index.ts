@@ -1,6 +1,6 @@
 import { Client, Collection, Intents, } from "discord.js";
 import { readdirSync } from "fs";
-import { BaseCommand } from "./commands";
+import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
@@ -23,7 +23,8 @@ console.log(commandFiles);
 
 (async () => {
 	for (const file of commandFiles) {
-		const { default: command } = await import(`./commands/${file}`);
+		const { default: command } = await import(`./commands/${file}`) as { default: BaseCommand };
+		console.log(command);
 		commands.set(command.metadata.name, command);
 	}
 })().then(main);
