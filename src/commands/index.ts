@@ -9,6 +9,10 @@ export default interface BaseCommand {
     requireGuild?: boolean;
     requireClientPerms?: PermissionString[];
     requireUserPerms?: PermissionString[];
+<<<<<<< HEAD
     execute(intr: CommandInteraction | ContextMenuInteraction): Promise<Result<0, string>>;
 // eslint-disable-next-line semi
+=======
+    execute(intr: CommandInteraction): Promise<Result<0, string>>;
+>>>>>>> 100ed972581e1bf299dd1de4a617ae02bfa7bfb9
 }

@@ -1,12 +1,12 @@
-import { 
-	Client, 
-	Collection, 
-	Intents, 
-	MessageActionRow, 
-	MessageButton, 
-	MessageSelectMenu, 
-	ButtonInteraction, 
-	Message 
+import {
+	Client,
+	Collection,
+	Intents,
+	MessageActionRow,
+	MessageButton,
+	MessageSelectMenu,
+	ButtonInteraction,
+	Message
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -23,7 +23,6 @@ config();
 class Bot extends Client {
 	constructor() {
 		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
-
 	}
 }
 
@@ -89,7 +88,7 @@ async function main() {
 				}
 			]
 		});
-		
+
 		await channel.send({
 			content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
 				.setCustomId("ticketClose")
@@ -104,19 +103,19 @@ async function main() {
 				"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
 			)
 			.setColor(0xA020F0);
-		
-		const select =	new MessageSelectMenu()
+
+		const select = new MessageSelectMenu()
 			.setCustomId("ticketType")
 			.setPlaceholder("Select a ticket type")
 			.setOptions([
-				{label: "Python101", value: "python101"}, 
-				{label: "Javascript101", value: "javascript101"},
-				{label: "Java101", value: "java101"},
-				{label: "WebDev", value: "webdev"},
-				{label: "DiscordJS", value: "discordjs"},
-				{label: "SQL", value: "sql"},
-				{label: "Other", value: "other"}
-			]);	
+				{ label: "Python101", value: "python101" },
+				{ label: "Javascript101", value: "javascript101" },
+				{ label: "Java101", value: "java101" },
+				{ label: "WebDev", value: "webdev" },
+				{ label: "DiscordJS", value: "discordjs" },
+				{ label: "SQL", value: "sql" },
+				{ label: "Other", value: "other" }
+			]);
 
 		channel.send({
 			embeds: [embed], components: [new MessageActionRow().addComponents(
@@ -130,9 +129,9 @@ async function main() {
 
 	const rateLimiter = new RateLimiter(1, 3000);
 
-	
 
-	
+
+
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
 		const limited = rateLimiter.take(interaction.user.id);
@@ -163,7 +162,7 @@ async function main() {
 			case "ticketType":
 				// you absolute muppets
 				await (interaction.channel as ChannelKind).setName(`ticket-${interaction.user.username}-${interaction.values[0]}`);
-	
+
 				(interaction.message as Message).delete();
 
 				switch (interaction.values[0]) {
@@ -188,7 +187,7 @@ async function main() {
 				case "other":
 					break;
 				}
-				interaction.channel.send({embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)]});
+				interaction.channel.send({ embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
 
 				return;
 			}
