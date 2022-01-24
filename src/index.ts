@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Client, Intents, } from "discord.js";
+import { Client, Collection, Intents, } from "discord.js";
 import { readdirSync, lstatSync } from "fs";
 import { resolve } from "path";
 import { config } from "dotenv";
+import { BaseCommand } from "./commands";
 config();
 
 class Bot extends Client {
@@ -12,27 +13,18 @@ class Bot extends Client {
 	}
 }
 
-type Command = {
-	name: string,
-	command: SlashCommandBuilder,
-	group: string
+const commands = new Collection<string, BaseCommand>();
+
+const commandFiles =
+	readdirSync("./src/commands")
+		.filter((file) => file.endsWith(".ts"));
+
+for (const file of commandFiles) {
+	import(`./commands/${file}`).then(({ default: command }) => {
+		commands.set(command.metadata.name, command);
+	});
 }
 
-async function loadCommands(root) {
-	const commands: Map<string, Command> = new Map();
-	const files = readdirSync(resolve(__dirname, root));
-	for(const entry in files) {
-		if(lstatSync(resolve(__dirname, root, entry)).isDirectory()) {
-			commands.push(...await loadCommands(resolve(root, entry)));
-		} else {
-			commands.push({group: entry, ...await import(resolve(__dirname, root, entry))});
-		}
-	}
-
-	return commands;
-}
-
-const commands = loadCommands("commands");
 
 const client = new Bot();
 client.once("ready", () => {
