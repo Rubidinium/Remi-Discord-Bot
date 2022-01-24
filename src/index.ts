@@ -1,4 +1,23 @@
-import { Client, Collection, Intents, Interaction, MessageActionRow, TextChannel, MessageButton, MessageSelectMenu, ButtonInteraction, CommandInteraction, SelectMenuInteraction, ContextMenuInteraction, AutocompleteInteraction, BaseCommandInteraction, MessageComponentInteraction, StageChannel, VoiceChannel, CategoryChannel, ThreadChannel, GuildChannel, Message } from "discord.js";
+import { 
+	Client, 
+	Collection, 
+	Intents, 
+	MessageActionRow, 
+	TextChannel, 
+	MessageButton, 
+	MessageSelectMenu, 
+	ButtonInteraction, 
+	CommandInteraction, 
+	SelectMenuInteraction, 
+	ContextMenuInteraction, 
+	MessageComponentInteraction, 
+	StageChannel, 
+	VoiceChannel, 
+	CategoryChannel, 
+	ThreadChannel, 
+	GuildChannel, 
+	Message 
+} from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
@@ -57,14 +76,6 @@ async function main() {
 
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
-		const channel = await client.channels.fetch("935078633427570739") as TextChannel;
-		// channel.send({
-		// 	embeds: [new Embed().setTitle("Ticket Creation 🎟️").setDescription("Press the green button to open a ticket!")], components: [new MessageActionRow().addComponents(new MessageButton()
-		// 		.setCustomId('ticketOpen')
-		// 		.setLabel('Open Ticket')
-		// 		.setStyle('SUCCESS')
-		// 		.setEmoji('✉️'))]
-		// });
 
 		client.user?.setActivity({
 			name: "/help",
@@ -170,7 +181,7 @@ async function main() {
 				await (interaction.channel as ChannelKind).setName(`ticket-${interaction.user.username}-${interaction.values[0]}`);
 	
 				(interaction.message as Message).delete();
-				
+
 				switch (interaction.values[0]) {
 				case "python101":
 					await interaction.channel.send("<@&935091117966385173>");
