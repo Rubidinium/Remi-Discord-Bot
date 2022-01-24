@@ -25,11 +25,12 @@ const commandFiles =
 		const { default: command } = await import(`./commands/${file}`);
 		commands.set(command.metadata.name, command);
 	}
-})();
+})().then(main);
 
-if (hasArg("register", "r")) {
-	console.log("registering");
-	await (async () => {
+async function main() {
+	if (hasArg("register", "r")) {
+		console.log("registering");
+
 		const cmdDatas = commands.map(cmd => cmd.metadata);
 		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
@@ -46,19 +47,20 @@ if (hasArg("register", "r")) {
 		}
 
 		console.log("Successfully registered commands!");
-	})();
-	process.exit(0);
-}
+		process.exit(0);
+	}
 
-const client = new Bot();
+	const client = new Bot();
 
-client.once("ready", () => {
-	console.log("ready");
-	client.user?.setActivity({
-		type: "COMPETING"
+	client.once("ready", () => {
+		console.log("ready");
+		client.user?.setActivity({
+			type: "COMPETING"
+		});
+
 	});
 
-});
+	process.title = "bot";
+	client.login(process.env.TOKEN).then(() => console.log("logged in"));
 
-process.title = "bot";
-client.login(process.env.TOKEN).then(() => console.log("logged in"));
+}
