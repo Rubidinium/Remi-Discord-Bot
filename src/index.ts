@@ -26,7 +26,7 @@ for (const file of commandFiles) {
 }
 
 if (process.argv[2] == "--register") {
-	await (async () => {
+	(async () => {
 		const cmdDatas = commands.map(cmd => cmd.metadata);
 		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
@@ -44,6 +44,7 @@ if (process.argv[2] == "--register") {
 
 		console.log("Successfully registered commands!");
 	})();
+	process.exit(0);
 }
 
 const client = new Bot();
