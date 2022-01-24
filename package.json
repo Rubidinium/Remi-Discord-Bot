@@ -9,7 +9,7 @@
     "build": "tsc --project tsconfig.json",
     "register": "npm run build && node --enable-source-maps dist/start.js --register",
     "start": "npm run build && node --enable-source-maps dist/start.js",
-    "dev": "ts-node-dev --watch src/**/*.ts"
+    "dev": "ts-node-dev --watch src/**/*.ts src/index.ts"
   },
   "repository": {
     "type": "git",
