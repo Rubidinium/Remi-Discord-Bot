@@ -10,5 +10,4 @@ export default interface BaseCommand {
     requireClientPerms?: PermissionString[];
     requireUserPerms?: PermissionString[];
     execute(intr: CommandInteraction): Promise<Result<0, string>>;
-// eslint-disable-next-line semi
 }

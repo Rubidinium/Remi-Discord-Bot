@@ -1,12 +1,12 @@
-import { 
-	Client, 
-	Collection, 
-	Intents, 
-	MessageActionRow, 
-	MessageButton, 
-	MessageSelectMenu, 
-	ButtonInteraction, 
-	Message 
+import {
+	Client,
+	Collection,
+	Intents,
+	MessageActionRow,
+	MessageButton,
+	MessageSelectMenu,
+	ButtonInteraction,
+	Message
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -86,7 +86,7 @@ async function main() {
 				}
 			]
 		});
-		
+
 		await channel.send({
 			content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
 				.setCustomId("ticketClose")
@@ -101,19 +101,19 @@ async function main() {
 				"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
 			)
 			.setColor(0xA020F0);
-		
-		const select =	new MessageSelectMenu()
+
+		const select = new MessageSelectMenu()
 			.setCustomId("ticketType")
 			.setPlaceholder("Select a ticket type")
 			.setOptions([
-				{label: "Python101", value: "python101"}, 
-				{label: "Javascript101", value: "javascript101"},
-				{label: "Java101", value: "java101"},
-				{label: "WebDev", value: "webdev"},
-				{label: "DiscordJS", value: "discordjs"},
-				{label: "SQL", value: "sql"},
-				{label: "Other", value: "other"}
-			]);	
+				{ label: "Python101", value: "python101" },
+				{ label: "Javascript101", value: "javascript101" },
+				{ label: "Java101", value: "java101" },
+				{ label: "WebDev", value: "webdev" },
+				{ label: "DiscordJS", value: "discordjs" },
+				{ label: "SQL", value: "sql" },
+				{ label: "Other", value: "other" }
+			]);
 
 		channel.send({
 			embeds: [embed], components: [new MessageActionRow().addComponents(
@@ -127,9 +127,9 @@ async function main() {
 
 	const rateLimiter = new RateLimiter(1, 3000);
 
-	
 
-	
+
+
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
 		const limited = rateLimiter.take(interaction.user.id);
@@ -146,48 +146,48 @@ async function main() {
 
 		if (interaction.isButton()) {
 			switch (interaction.customId) {
-			case "ticketOpen":
-				ticketOpen(interaction);
-				break;
-			case "ticketClose":
-				await interaction.channel.delete();
-				break;
+				case "ticketOpen":
+					ticketOpen(interaction);
+					break;
+				case "ticketClose":
+					await interaction.channel.delete();
+					break;
 			}
 		}
 
 		if (interaction.isSelectMenu()) {
 			switch (interaction.customId) {
-			case "ticketType":
-				// you absolute muppets
-				await (interaction.channel as ChannelKind).setName(`ticket-${interaction.user.username}-${interaction.values[0]}`);
-	
-				(interaction.message as Message).delete();
+				case "ticketType":
+					// you absolute muppets
+					await (interaction.channel as ChannelKind).setName(`ticket-${interaction.user.username}-${interaction.values[0]}`);
 
-				switch (interaction.values[0]) {
-				case "python101":
-					await interaction.channel.send("<@&935091117966385173>");
-					break;
-				case "javascript101":
-					await interaction.channel.send("<@&935091142884724786>");
-					break;
-				case "java101":
-					await interaction.channel.send("<@&935091172672679976>");
-					break;
-				case "webdev":
-					await interaction.channel.send("<@&935091067437584384>");
-					break;
-				case "discordjs":
-					await interaction.channel.send("<@&935091084218998814>");
-					break;
-				case "sql":
-					await interaction.channel.send("<@&935091203198844950>");
-					break;
-				case "other":
-					break;
-				}
-				interaction.channel.send({embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)]});
+					(interaction.message as Message).delete();
 
-				return;
+					switch (interaction.values[0]) {
+						case "python101":
+							await interaction.channel.send("<@&935091117966385173>");
+							break;
+						case "javascript101":
+							await interaction.channel.send("<@&935091142884724786>");
+							break;
+						case "java101":
+							await interaction.channel.send("<@&935091172672679976>");
+							break;
+						case "webdev":
+							await interaction.channel.send("<@&935091067437584384>");
+							break;
+						case "discordjs":
+							await interaction.channel.send("<@&935091084218998814>");
+							break;
+						case "sql":
+							await interaction.channel.send("<@&935091203198844950>");
+							break;
+						case "other":
+							break;
+					}
+					interaction.channel.send({ embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
+
+					return;
 			}
 		}
 
