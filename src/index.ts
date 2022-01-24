@@ -19,13 +19,12 @@ const commands = new Collection<string, BaseCommand>();
 const commandFiles =
 	readdirSync("./src/commands")
 		.filter((file) => file.split(".command").length > 1);
-console.log(commandFiles);
 
 (async () => {
 	for (const file of commandFiles) {
-		const { default: command } = await import(`./commands/${file}`) as { default: BaseCommand };
-		console.log(command);
-		commands.set(command.metadata.name, command);
+		const f = await import(`./commands/${file}`) as BaseCommand;
+		console.log(f);
+		commands.set(f.metadata.name, f);
 	}
 })().then(main);
 
