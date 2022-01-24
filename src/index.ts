@@ -22,9 +22,8 @@ const commandFiles =
 
 await (async () => {
 	for (const file of commandFiles) {
-		await import(`./commands/${file}`).then(({ default: command }) => {
-			commands.set(command.metadata.name, command);
-		});
+		const { default: command } = await import(`./commands/${file}`);
+		commands.set(command.metadata.name, command);
 	}
 })();
 
