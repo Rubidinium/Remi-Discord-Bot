@@ -9,7 +9,6 @@ export default class TestCommand implements BaseCommand {
         name: "test",
         description: "test command",
     };
-    public cooldown = new RateLimiter(1, 5000);
 
     public async execute(intr: CommandInteraction): Promise<Result<0, string>> {
         await intr.reply("test commands works!");
