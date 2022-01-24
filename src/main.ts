@@ -1,5 +1,5 @@
-import { Client, Intents, } from 'discord.js';
-import { config } from 'dotenv';
+import { Client, Intents, } from "discord.js";
+import { config } from "dotenv";
 config();
 
 class Bot extends Client {
@@ -10,9 +10,9 @@ class Bot extends Client {
 }
 
 
-let client = new Bot();
-client.once('ready', () => {
-	console.log('ready');
+const client = new Bot();
+client.once("ready", () => {
+	console.log("ready");
 	client.user?.setActivity({
 
 		type: "COMPETING"
