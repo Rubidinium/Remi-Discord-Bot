@@ -196,6 +196,7 @@ async function main() {
 		if (interaction.isContextMenu()) {
 			await interaction.deferReply({ ephemeral: false });
 			const command = commands.get(interaction.commandName);
+			if (!command) return;
 			await command.execute(interaction);
 		}
 	});
