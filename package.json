@@ -9,7 +9,7 @@
     "build": "tsc --project tsconfig.json",
     "register": "npm run build && node --enable-source-maps dist/index.js --register",
     "start": "npm run build && node --enable-source-maps dist/index.js",
-    "dev": "ts-node-dev --watch src/**/*.ts src/index.ts"
+    "dev": "nodemon src/**/*.ts src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
+    "nodemon": "^2.0.15",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
   }

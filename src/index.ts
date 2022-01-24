@@ -20,19 +20,15 @@ const commandFiles =
 	readdirSync("./src/commands")
 		.filter((file) => file.endsWith(".ts"));
 
-for (const file of commandFiles) {
-	import(`./commands/${file}`).then(({ default: command }) => {
+await (async () => {for (const file of commandFiles) {
+	await import(`./commands/${file}`).then(({ default: command }) => {
 		commands.set(command.metadata.name, command);
 	});
-}
+}})();
 
-<<<<<<< HEAD
 if (hasArg("register", "r")) {
+	console.log("registering");
 	await (async () => {
-=======
-if (process.argv[2] == "--register") {
-	(async () => {
->>>>>>> 4f53d30b6d50ec185edb0d2d7956ce4889305a95
 		const cmdDatas = commands.map(cmd => cmd.metadata);
 		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
