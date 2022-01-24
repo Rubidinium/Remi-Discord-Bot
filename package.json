@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/main.ts",
-	"lint": "eslint src/**",
-	"lint-fix": "eslint src/** --fix"
+    "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --fix --cache --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "build": "tsc --project tsconfig.json",
+    "register": "npm run build && node --enable-source-maps dist/start.js --register",
+    "start": "npm run build && node --enable-source-maps dist/start.js",
+    "start:dev": "ts-node-dev --watch src/**/*.ts,config/**/*.json,lang/**/*.json src/start.ts"
   },
   "repository": {
     "type": "git",
