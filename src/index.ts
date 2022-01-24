@@ -36,7 +36,7 @@ if (process.argv[2] == "--register") {
 
 		try {
 			const rest = new REST({ version: "9" }).setToken(process.env.TOKEN);
-			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: cmdDatas });
+			await rest.put(Routes.applicationGuildCommands("883540250759163975", "924860504302821377"), { body: cmdDatas });
 		} catch (error) {
 			console.error("Error registering commands:", error);
 			return;
