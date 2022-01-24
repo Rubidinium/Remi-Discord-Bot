@@ -3,19 +3,9 @@ import {
 	Collection, 
 	Intents, 
 	MessageActionRow, 
-	TextChannel, 
 	MessageButton, 
 	MessageSelectMenu, 
 	ButtonInteraction, 
-	CommandInteraction, 
-	SelectMenuInteraction, 
-	ContextMenuInteraction, 
-	MessageComponentInteraction, 
-	StageChannel, 
-	VoiceChannel, 
-	CategoryChannel, 
-	ThreadChannel, 
-	GuildChannel, 
 	Message 
 } from "discord.js";
 import { readdirSync } from "fs";
@@ -26,6 +16,8 @@ import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
 import { Embed } from "@discordjs/builders";
+import { InteractionKind } from "./lib/types/interactionKind";
+import { ChannelKind } from "./lib/types/channelKind";
 config();
 
 class Bot extends Client {
@@ -135,20 +127,9 @@ async function main() {
 
 	const rateLimiter = new RateLimiter(1, 3000);
 
-	type InteractionKind = 
-		| CommandInteraction 
-		| ButtonInteraction 
-		| SelectMenuInteraction 
-		| ContextMenuInteraction 
-		| MessageComponentInteraction;
+	
 
-	type ChannelKind = 
-		| TextChannel
-		| StageChannel
-		| VoiceChannel
-		| CategoryChannel
-		| ThreadChannel
-		| GuildChannel
+	
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
 		const limited = rateLimiter.take(interaction.user.id);
