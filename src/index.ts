@@ -58,13 +58,13 @@ async function main() {
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
 		const channel = await client.channels.fetch("935078633427570739") as TextChannel;
-		channel.send({
-			embeds: [new Embed().setTitle("Ticket Creation 🎟️").setDescription("Press the green button to open a ticket!")], components: [new MessageActionRow().addComponents(new MessageButton()
-				.setCustomId('ticketOpen')
-				.setLabel('Open Ticket')
-				.setStyle('SUCCESS')
-				.setEmoji('✉️'))]
-		});
+		// channel.send({
+		// 	embeds: [new Embed().setTitle("Ticket Creation 🎟️").setDescription("Press the green button to open a ticket!")], components: [new MessageActionRow().addComponents(new MessageButton()
+		// 		.setCustomId('ticketOpen')
+		// 		.setLabel('Open Ticket')
+		// 		.setStyle('SUCCESS')
+		// 		.setEmoji('✉️'))]
+		// });
 
 		client.user?.setActivity({
 			name: "with my code",
@@ -72,7 +72,7 @@ async function main() {
 		});
 	});
 
-	const rateLimiter = new RateLimiter(1, 5000);
+	const rateLimiter = new RateLimiter(1, 3000);
 	client.on("interactionCreate", async (interaction: Interaction) => {
 		const limited = rateLimiter.take(interaction.user.id);
 		//@ts-ignore
@@ -93,6 +93,12 @@ async function main() {
 						//@ts-ignore
 						type: "text",
 						parent: "935085260545339412",
+						permissionOverwrites: [
+							{
+								id: interaction.user.id,
+								allow: ["VIEW_CHANNEL"],
+							}
+						]
 					});
 					//@ts-ignore
 					await channel.send({
@@ -103,6 +109,7 @@ async function main() {
 							.setStyle('DANGER')
 						)]
 					});
+					interaction.reply({ content: `Ticket created!`, ephemeral: true });
 					return;
 				case "ticketClose":
 					await interaction.channel.delete();
