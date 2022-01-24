@@ -18,7 +18,7 @@ const commands = new Collection<string, BaseCommand>();
 
 const commandFiles =
 	readdirSync("./src/commands")
-		.filter((file) => file.endsWith(".command.ts"));
+		.filter((file) => file.split(".command").length);
 console.log(commandFiles);
 
 (async () => {
