@@ -75,8 +75,14 @@ async function main() {
 			await command.execute(interaction).catch(() => interaction.editReply({
 				content: "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
 			}));
-
 		}
+
+		if (interaction.isButton()) {
+			if (interaction.customId == "ticket_open") {
+				
+			}
+		}
+
 	});
 
 	client.login(process.env.TOKEN);
