@@ -88,9 +88,20 @@ async function main() {
 
 		if (interaction.isButton()) {
 			if (interaction.customId == "ticket_open") {
-				const thread = await interaction.channel.createThread({
-			}
-		}
+				const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+					//@ts-ignore
+					type: "text",
+					parent: "935085260545339412",
+				});
+				//@ts-ignore
+				await channel.send({content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
+					.setCustomId(`ticket_close_${channel.id}`)
+					.setLabel('Close Ticket')
+					.setEmoji('🗑️')
+					.setStyle('DANGER')
+					)]
+				});
+		}};
 
 	});
 
