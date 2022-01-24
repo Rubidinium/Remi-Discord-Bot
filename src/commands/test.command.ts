@@ -1,22 +1,23 @@
-import { ApplicationCommandData, CommandInteraction, PermissionString } from "discord.js";
+import { CommandInteraction } from "discord.js";
 import { RateLimiter } from "discord.js-rate-limiter";
-import { Ok, Result } from "ts-results";
+import { Result, Ok } from "ts-results";
 
 import BaseCommand from ".";
 
-export default class TestCommand implements BaseCommand {
-	public metadata: ApplicationCommandData = {
-		name: "test",
-		description: "test command",
-	};
-	public cooldown = new RateLimiter(1, 5000);
-	public requireDev = false;
-	public requireGuild = false;
-	public requireClientPerms: PermissionString[] = [];
-	public requireUserPerms: PermissionString[] = [];
+const TestCommand: BaseCommand = {
+    metadata: {
+        name: "test",
+        description: "test",
+    },
+    cooldown: new RateLimiter(1, 5000),
+    requireDev: false,
+    requireGuild: false,
+    requireClientPerms: [],
+    requireUserPerms: [],
+    execute: async (intr: CommandInteraction): Promise<Result<0, string>> => {
+        intr.reply("test");
+        return Ok(0);
+    }
+};
 
-	public async execute(intr: CommandInteraction): Promise<Result<0, string>> {
-		await intr.reply("test commands works!");
-		return Ok(0);
-	}
-}
+export default TestCommand;

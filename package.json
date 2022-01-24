@@ -8,7 +8,7 @@
     "lint:fix": "eslint . --fix --cache --ext .js,.jsx,.ts,.tsx",
     "register": "ts-node src/index.ts --register",
     "start": "ts-node src/index.ts",
-    "dev": "nodemon src/**/*.ts src/index.ts"
+    "dev": "ts-node-dev --watch src/**/*.ts src/index.ts"
   },
   "repository": {
     "type": "git",

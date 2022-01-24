@@ -1,4 +1,4 @@
-import { Client, Collection, Intents, } from "discord.js";
+import { Client, Collection, Intents, Interaction, } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
@@ -22,9 +22,8 @@ const commandFiles =
 
 (async () => {
 	for (const file of commandFiles) {
-		const f = await import(`./commands/${file}`) as BaseCommand;
-		console.log(f);
-		commands.set(f.metadata.name, f);
+		const { default: command } = await import(`./commands/${file}`) as { default: BaseCommand; };
+		commands.set(command.metadata.name, command);
 	}
 })().then(main);
 
@@ -54,14 +53,25 @@ async function main() {
 	const client = new Bot();
 
 	client.once("ready", () => {
-		console.log("ready");
+		console.log(`${client.user.tag} is ready!`);
+
 		client.user?.setActivity({
+			name: "with my code",
 			type: "COMPETING"
 		});
-
 	});
 
-	process.title = "bot";
-	client.login(process.env.TOKEN).then(() => console.log("logged in"));
+	client.on("interactionCreate", async (interaction: Interaction) => {
+		if (interaction.isCommand()) {
+			const command = commands.get(interaction.commandName);
+			if (!command) return;
+			await command.execute(interaction).catch(() => interaction.editReply({
+				content: "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
+			}));
+
+		}
+	});
+
+	client.login(process.env.TOKEN);
 
 }
