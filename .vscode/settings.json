@@ -1,0 +1,35 @@
+{
+    "[json]": {
+        "editor.formatOnSave": true
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true
+    },
+    "[typescript]": {
+        "editor.formatOnSave": true
+    },
+    "cSpell.enabled": true,
+    "cSpell.words": [
+        "bot's",
+        "cmds",
+        "cooldown",
+        "cooldowns",
+        "datas",
+        "descs",
+        "discordbotlist",
+        "discordjs",
+        "discordlabs",
+        "filesize",
+        "luxon",
+        "millis",
+        "Novak",
+        "ondiscord",
+        "parens",
+        "pino",
+        "regexes",
+        "respawn",
+        "restjson",
+        "varchar"
+    ],
+    "typescript.preferences.importModuleSpecifierEnding": "js"
+}
