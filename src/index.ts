@@ -32,4 +32,6 @@ client.once("ready", () => {
 	});
 
 });
+
+process.title = "bot";
 client.login(process.env.TOKEN).then(() => console.log("logged in"));
