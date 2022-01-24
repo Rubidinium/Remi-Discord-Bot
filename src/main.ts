@@ -1,23 +1,22 @@
-import { Client, Intents, } from "discord.js";
-import { config } from "dotenv";
+import { Client, Intents, } from 'discord.js';
+import { config } from 'dotenv';
 config();
 
 class Bot extends Client {
 	constructor() {
-		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
-		this.once("ready", () => {
-			console.log("ready");
-			this.user?.setActivity({
-				name: "hazim is gay",
-				type: "COMPETING"
-			});
+		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
 
-		});
-		this.login(process.env.TOKEN || "urmom");
 	}
 }
 
-(() => {
-	const bot = new Bot();
-	
-})();
+
+let client = new Bot();
+client.once('ready', () => {
+	console.log('ready');
+	client.user?.setActivity({
+
+		type: "COMPETING"
+	});
+
+});
+client.login(process.env.TOKEN || "urmom");
