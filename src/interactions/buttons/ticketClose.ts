@@ -1,8 +1,7 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageEmbed, TextChannel } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
-	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)
-
+	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)	
 	const channel = interaction.channel as TextChannel;
 
 	channel.permissionOverwrites.edit(await interaction.client.users.fetch(channel.name.split("-")[1]), {

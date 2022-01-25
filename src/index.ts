@@ -19,6 +19,7 @@ import ticketClose from "./interactions/buttons/ticketClose";
 import ticketReopen from "./interactions/buttons/ticketReopen";
 import ticketDelete from "./interactions/buttons/ticketDelete";
 import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
+import ticketConfirm from "./interactions/buttons/ticketConfirm";
 config();
 
 class Bot extends Client {
@@ -118,13 +119,19 @@ async function main() {
 					ticketReopen(interaction);
 					break;
 				case "ticketClose":
-					ticketClose(interaction);
+					ticketConfirm(interaction);
 					break;
 				case "ticketDelete":
 					ticketDelete(interaction);
 					break;
 				case "ticketSaveTranscript":
 					ticketSaveTranscript(interaction);
+					break;
+				case "confirmClose":
+					ticketClose(interaction);
+					break;
+				case "cancelClose":
+					interaction.message.delete();
 					break;
 			}
 		}
