@@ -13,6 +13,8 @@ const template = fs.readFileSync(path.join(__dirname, "template.html"), "utf8");
 
 // copilot helped so much here
 // copilot smart 🧠
+// hazim dumb
+// unga bunga
 
 /**
  * 
