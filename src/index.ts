@@ -14,6 +14,7 @@ import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
 import ticketOpen from "./interactions/buttons/ticketOpen";
+import ticketArchive from "./interactions/buttons/ticketArchive";
 config();
 
 class Bot extends Client {
@@ -108,10 +109,10 @@ async function main() {
 		if (interaction.isButton()) {
 			switch (interaction.customId) {
 				case "ticketOpen":
-					ticketOpen(interaction);
+					await ticketOpen(interaction);
 					break;
 				case "ticketClose":
-					await interaction.channel.delete();
+					await ticketArchive(interaction);
 					// TODO: Archive instead we should use an archive function instead
 					break;
 			}
