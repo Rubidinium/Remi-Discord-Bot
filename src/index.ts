@@ -113,6 +113,7 @@ async function main() {
 					break;
 				case "ticketClose":
 					await ticketArchive(interaction.channel as GuildChannel);
+					interaction.reply({ content: "Ticket closed." , ephemeral: true });
 					break;
 			}
 		}
