@@ -18,6 +18,7 @@ import ticketOpen from "./interactions/buttons/ticketOpen";
 import ticketClose from "./interactions/buttons/ticketClose";
 import ticketReopen from "./interactions/buttons/ticketReopen";
 import ticketDelete from "./interactions/buttons/ticketDelete";
+import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
 config();
 
 class Bot extends Client {
@@ -121,6 +122,10 @@ async function main() {
 					break;
 				case "ticketDelete":
 					ticketDelete(interaction);
+					break;
+				case "ticketSaveTranscript":
+					ticketSaveTranscript(interaction);
+					break;
 			}
 		}
 		if (interaction.isSelectMenu()) {
