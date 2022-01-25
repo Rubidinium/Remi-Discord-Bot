@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import {
 	Client,
 	Collection,
@@ -148,24 +149,23 @@ async function main() {
 
 		if (interaction.isButton()) {
 			switch (interaction.customId) {
-			case "ticketOpen":
-				ticketOpen(interaction);
-				break;
-			case "ticketClose":
-				await interaction.channel.delete();
-				break;
+				case "ticketOpen":
+					ticketOpen(interaction);
+					break;
+				case "ticketClose":
+					await interaction.channel.delete();
+					break;
 			}
 		}
 
 		if (interaction.isSelectMenu()) {
-			switch (interaction.customId) {
-			case "ticketType":
-				// you absolute muppets
-				await (interaction.channel as ChannelKind).setName(`ticket-${interaction.user.username}-${interaction.values[0]}`);
+			if (interaction.customId != "ticketType") return;
+			const newTicketName = `Ticket-${interaction.user.username}-${interaction.values[0]}`;
+			await (interaction.channel as ChannelKind).setName(newTicketName);
 
-				(interaction.message as Message).delete();
+			(interaction.message as Message).delete();
 
-				switch (interaction.values[0]) {
+			switch (interaction.values[0]) {
 				case "python101":
 					await interaction.channel.send("<@&935091117966385173>");
 					break;
@@ -186,16 +186,14 @@ async function main() {
 					break;
 				case "other":
 					break;
-				}
-				interaction.channel.send({ embeds: [new Embed().setTitle(`Ticket-${interaction.user.username}`).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
-
-				return;
 			}
+			interaction.channel.send({ embeds: [new Embed().setTitle(newTicketName).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
 		}
 
 		if (interaction.isContextMenu()) {
 			await interaction.deferReply({ ephemeral: false });
 			const command = commands.get(interaction.commandName);
+			if (!command) return;
 			await command.execute(interaction);
 		}
 	});
