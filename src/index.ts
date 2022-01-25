@@ -38,7 +38,7 @@ const commandFiles =
 		const { default: CommandClass } = await import(`./commands/${file}`);
 		const commandInstance: BaseCommand = new CommandClass();
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore THIS IS A VALID USE OF TS-IGNORE
+		// @ts-ignore THIS IS A VALID USE OF TS-IGNORE
 		if (["MESSAGE", "USER"].includes(commandInstance.metadata.type as string)) delete commandInstance.metadata.description;
 		commands.set(commandInstance.metadata.name, commandInstance);
 	}
@@ -69,6 +69,13 @@ async function main() {
 
 	const client = new Bot();
 
+	const timers = new Collection<string, NodeJS.Timeout>();
+
+	const rateLimiter = new RateLimiter(1, 1000);
+
+	// 48 hours
+	const timeoutLimit = 1000 * 60 * 60 * 24 * 2;
+
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
 
@@ -78,61 +85,17 @@ async function main() {
 		});
 	});
 
-	async function ticketOpen(interaction: ButtonInteraction) {
-		const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
-			type: "GUILD_TEXT",
-			parent: "935085260545339412",
-			permissionOverwrites: [
-				{
-					id: interaction.user.id,
-					allow: ["VIEW_CHANNEL"],
-				}
-			]
-		});
+	client.on("messageCreate", (message) => {
+		if (timers.has(message.channel.id)) {
+			clearTimeout(timers.get(message.channel.id));
 
-		await channel.send({
-			content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
-				.setCustomId("ticketClose")
-				.setLabel("Close Ticket")
-				.setEmoji("🗑️")
-				.setStyle("DANGER")
-			)]
-		});
-		const embed = new Embed()
-			.setTitle(`Ticket-${interaction.user.username}`)
-			.setDescription(
-				"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
-			)
-			.setColor(0xA020F0);
+			timers.set(message.channel.id, setTimeout(async () => {
+				await message.channel.delete();
+				// TODO: Archive instead we should use an archive function instead
+			}, timeoutLimit));
 
-		const select = new MessageSelectMenu()
-			.setCustomId("ticketType")
-			.setPlaceholder("Select a ticket type")
-			.setOptions([
-				{ label: "Python101", value: "python101" },
-				{ label: "Javascript101", value: "javascript101" },
-				{ label: "Java101", value: "java101" },
-				{ label: "WebDev", value: "webdev" },
-				{ label: "DiscordJS", value: "discordjs" },
-				{ label: "SQL", value: "sql" },
-				{ label: "Other", value: "other" }
-			]);
-
-		channel.send({
-			embeds: [embed], components: [new MessageActionRow().addComponents(
-				select
-			)],
-			// mf if its ephemeral who will see it you wombat
-			// ephemeral: true
-		});
-		interaction.reply({ content: "Ticket created!", ephemeral: true });
-	}
-
-	const rateLimiter = new RateLimiter(1, 3000);
-
-
-
-
+		}
+	});
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
 		const limited = rateLimiter.take(interaction.user.id);
@@ -154,13 +117,14 @@ async function main() {
 					break;
 				case "ticketClose":
 					await interaction.channel.delete();
+					// TODO: Archive instead we should use an archive function instead
 					break;
 			}
 		}
 
 		if (interaction.isSelectMenu()) {
 			if (interaction.customId != "ticketType") return;
-			const newTicketName = `Ticket-${interaction.user.username}-${interaction.values[0]}`;
+			const newTicketName = `ticket-${interaction.user.username}-${interaction.values[0]}`;
 			await (interaction.channel as ChannelKind).setName(newTicketName);
 
 			(interaction.message as Message).delete();
@@ -200,4 +164,63 @@ async function main() {
 
 	client.login(process.env.TOKEN);
 
+	async function ticketOpen(interaction: ButtonInteraction) {
+		const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+			type: "GUILD_TEXT",
+			parent: "935085260545339412",
+			permissionOverwrites: [
+				{
+					id: interaction.user.id,
+					allow: ["VIEW_CHANNEL"],
+				}
+			]
+		});
+
+		await channel.send({
+			content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
+				.setCustomId("ticketClose")
+				.setLabel("Close Ticket")
+				.setEmoji("🗑️")
+				.setStyle("DANGER")
+			)]
+		});
+
+		const embed = new Embed()
+			.setTitle(`ticket-${interaction.user.username}`)
+			.setDescription(
+				"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
+			)
+			.setColor(0xA020F0);
+
+		const select = new MessageSelectMenu()
+			.setCustomId("ticketType")
+			.setPlaceholder("Select a ticket type")
+			.setOptions([
+				{ label: "Python101", value: "python101" },
+				{ label: "Javascript101", value: "javascript101" },
+				{ label: "Java101", value: "java101" },
+				{ label: "WebDev", value: "webdev" },
+				{ label: "DiscordJS", value: "discordjs" },
+				{ label: "SQL", value: "sql" },
+				{ label: "Other", value: "other" }
+			]);
+
+		channel.send({
+			embeds: [embed], components: [new MessageActionRow().addComponents(
+				select
+			)],
+			// mf if its ephemeral who will see it you wombat
+			// ephemeral: true
+		});
+
+		interaction.reply({ content: "Ticket created!", ephemeral: true });
+
+		timers.set(channel.id, setTimeout(async () => {
+			await channel.delete();
+			// TODO: Archive instead we should use an archive function instead
+			// }, 1000 * 60 * 60 * 24 * 2));
+		}, timeoutLimit));
+	}
+
 }
+
