@@ -1,5 +1,4 @@
-import { Embed } from "@discordjs/builders";
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageSelectMenu } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
 
 export default async function ticketOpen(interaction: ButtonInteraction) {
 	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
@@ -21,7 +20,7 @@ export default async function ticketOpen(interaction: ButtonInteraction) {
 			.setStyle("DANGER")
 		)]
 	});
-	const embed = new Embed()
+	const embed = new MessageEmbed()
 		.setTitle(`Ticket-${interaction.user.username}`)
 		.setDescription(
 			"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."

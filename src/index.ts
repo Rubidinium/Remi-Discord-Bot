@@ -15,7 +15,7 @@ import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
 import ticketOpen from "./interactions/buttons/ticketOpen";
-import ticketArchive from "./interactions/buttons/ticketArchive";
+import ticketClose from "./interactions/buttons/ticketClose";
 config();
 
 class Bot extends Client {
@@ -70,8 +70,8 @@ async function main() {
 
 	const rateLimiter = new RateLimiter(1, 1000);
 
-	// 48 hours
-	const timeoutLimit = 1000 * 60 * 60 * 24 * 2;
+	// 24 hours
+	const timeoutLimit = 1000 * 60 * 60 * 24;
 
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
@@ -87,7 +87,7 @@ async function main() {
 			clearTimeout(timers.get(message.channel.id));
 
 			timers.set(message.channel.id, setTimeout(async () => {
-				await ticketArchive(message.channel as GuildChannel);
+				await ticketClose(message.channel as GuildChannel);
 			}, timeoutLimit));
 
 		}
@@ -112,7 +112,7 @@ async function main() {
 					await ticketOpen(interaction);
 					break;
 				case "ticketClose":
-					await ticketArchive(interaction.channel as GuildChannel);
+					await ticketClose(interaction.channel as GuildChannel);
 					interaction.reply({ content: "Ticket closed." , ephemeral: true });
 					break;
 			}

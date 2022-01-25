@@ -1,9 +1,7 @@
 import { GuildChannel } from "discord.js";
 
-const ARCHIVE_CATEGORY = "935403023159689226";
-
 export default async function (channel: GuildChannel) {
-	await channel.setParent(ARCHIVE_CATEGORY);
+	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)
 	await channel.setName(`archive-${channel.name}`);
 
 
