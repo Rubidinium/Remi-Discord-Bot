@@ -2,6 +2,7 @@
 import {
 	Client,
 	Collection,
+	GuildChannel,
 	Intents,
 } from "discord.js";
 import { readdirSync } from "fs";
@@ -86,8 +87,7 @@ async function main() {
 			clearTimeout(timers.get(message.channel.id));
 
 			timers.set(message.channel.id, setTimeout(async () => {
-				await message.channel.delete();
-				// TODO: Archive instead we should use an archive function instead
+				await ticketArchive(message.channel as GuildChannel);
 			}, timeoutLimit));
 
 		}
@@ -112,15 +112,14 @@ async function main() {
 					await ticketOpen(interaction);
 					break;
 				case "ticketClose":
-					await ticketArchive(interaction);
-					// TODO: Archive instead we should use an archive function instead
+					await ticketArchive(interaction.channel as GuildChannel);
 					break;
 			}
 		}
 
 		if (interaction.isSelectMenu()) {
 			if (interaction.customId == "ticketType") ticketType(interaction);
-			}
+		}
 
 		if (interaction.isContextMenu()) {
 			await interaction.deferReply({ ephemeral: false });
