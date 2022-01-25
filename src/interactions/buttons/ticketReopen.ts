@@ -19,7 +19,6 @@ export default async function (interaction: ButtonInteraction) {
 
 	interaction.message.components.forEach((component) => {
 		(component as MessageActionRow).components.forEach((button: MessageButton) => {
-			console.log(button.customId);
 			button.setDisabled();
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
