@@ -3,11 +3,6 @@ import {
 	Client,
 	Collection,
 	Intents,
-	MessageActionRow,
-	MessageButton,
-	MessageSelectMenu,
-	ButtonInteraction,
-	Message
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -16,9 +11,9 @@ import { Routes } from "discord-api-types/rest/v9";
 import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
-import { Embed } from "@discordjs/builders";
 import { InteractionKind } from "./lib/types/interactionKind";
-import { ChannelKind } from "./lib/types/channelKind";
+import ticketType from "./interactions/selects/ticketType";
+import ticketOpen from "./interactions/buttons/ticketOpen";
 config();
 
 class Bot extends Client {
@@ -78,55 +73,7 @@ async function main() {
 		});
 	});
 
-	async function ticketOpen(interaction: ButtonInteraction) {
-		const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
-			type: "GUILD_TEXT",
-			parent: "935085260545339412",
-			permissionOverwrites: [
-				{
-					id: interaction.user.id,
-					allow: ["VIEW_CHANNEL"],
-				}
-			]
-		});
-
-		await channel.send({
-			content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
-				.setCustomId("ticketClose")
-				.setLabel("Close Ticket")
-				.setEmoji("🗑️")
-				.setStyle("DANGER")
-			)]
-		});
-		const embed = new Embed()
-			.setTitle(`Ticket-${interaction.user.username}`)
-			.setDescription(
-				"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
-			)
-			.setColor(0xA020F0);
-
-		const select = new MessageSelectMenu()
-			.setCustomId("ticketType")
-			.setPlaceholder("Select a ticket type")
-			.setOptions([
-				{ label: "Python101", value: "python101" },
-				{ label: "Javascript101", value: "javascript101" },
-				{ label: "Java101", value: "java101" },
-				{ label: "WebDev", value: "webdev" },
-				{ label: "DiscordJS", value: "discordjs" },
-				{ label: "SQL", value: "sql" },
-				{ label: "Other", value: "other" }
-			]);
-
-		channel.send({
-			embeds: [embed], components: [new MessageActionRow().addComponents(
-				select
-			)],
-			// mf if its ephemeral who will see it you wombat
-			// ephemeral: true
-		});
-		interaction.reply({ content: "Ticket created!", ephemeral: true });
-	}
+	
 
 	const rateLimiter = new RateLimiter(1, 3000);
 
@@ -159,36 +106,8 @@ async function main() {
 		}
 
 		if (interaction.isSelectMenu()) {
-			if (interaction.customId != "ticketType") return;
-			const newTicketName = `Ticket-${interaction.user.username}-${interaction.values[0]}`;
-			await (interaction.channel as ChannelKind).setName(newTicketName);
-
-			(interaction.message as Message).delete();
-
-			switch (interaction.values[0]) {
-				case "python101":
-					await interaction.channel.send("<@&935091117966385173>");
-					break;
-				case "javascript101":
-					await interaction.channel.send("<@&935091142884724786>");
-					break;
-				case "java101":
-					await interaction.channel.send("<@&935091172672679976>");
-					break;
-				case "webdev":
-					await interaction.channel.send("<@&935091067437584384>");
-					break;
-				case "discordjs":
-					await interaction.channel.send("<@&935091084218998814>");
-					break;
-				case "sql":
-					await interaction.channel.send("<@&935091203198844950>");
-					break;
-				case "other":
-					break;
+			if (interaction.customId == "ticketType") ticketType(interaction);
 			}
-			interaction.channel.send({ embeds: [new Embed().setTitle(newTicketName).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
-		}
 
 		if (interaction.isContextMenu()) {
 			await interaction.deferReply({ ephemeral: false });
