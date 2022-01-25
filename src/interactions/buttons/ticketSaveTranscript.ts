@@ -7,6 +7,6 @@ export default async function (interaction: ButtonInteraction) {
 
 	interaction.reply({
 		content: "Transcript has been saved.",
-		attachments: [transcriptFile]
+		files: [transcriptFile]
 	});
 }
