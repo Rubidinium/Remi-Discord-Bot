@@ -2,9 +2,7 @@
 import {
 	Client,
 	Collection,
-	GuildChannel,
 	Intents,
-	Message,
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -21,6 +19,7 @@ import ticketReopen from "./interactions/buttons/ticketReopen";
 import ticketDelete from "./interactions/buttons/ticketDelete";
 import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
 import ticketConfirm from "./interactions/buttons/ticketConfirm";
+import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
 config();
 
 class Bot extends Client {
@@ -132,7 +131,7 @@ async function main() {
 					ticketClose(interaction);
 					break;
 				case "cancelClose":
-					(interaction.message as Message).delete();
+					ticketCancelClose(interaction);
 					break;
 			}
 		}
