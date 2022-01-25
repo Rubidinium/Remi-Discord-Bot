@@ -1,7 +1,7 @@
 import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
 
-export default async function ticketOpen(interaction: ButtonInteraction) {
-	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+export default async function (interaction: ButtonInteraction) {
+	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.id}`, {
 		type: "GUILD_TEXT",
 		parent: "935085260545339412",
 		permissionOverwrites: [
@@ -20,6 +20,7 @@ export default async function ticketOpen(interaction: ButtonInteraction) {
 			.setStyle("DANGER")
 		)]
 	});
+	
 	const embed = new MessageEmbed()
 		.setTitle(`Ticket-${interaction.user.username}`)
 		.setDescription(
@@ -41,11 +42,7 @@ export default async function ticketOpen(interaction: ButtonInteraction) {
 		]);
 
 	channel.send({
-		embeds: [embed], components: [new MessageActionRow().addComponents(
-			select
-		)],
-		// mf if its ephemeral who will see it you wombat
-		// ephemeral: true
+		embeds: [embed], components: [new MessageActionRow().addComponents(select)],
 	});
-	interaction.reply({ content: "Ticket created!", ephemeral: true });
+	interaction.reply({ content: `${interaction.user} Ticket created! <#${channel.id}>`, ephemeral: true });
 }

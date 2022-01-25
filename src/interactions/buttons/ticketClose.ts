@@ -1,8 +1,47 @@
-import { GuildChannel } from "discord.js";
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
 
-export default async function (channel: GuildChannel) {
+export default async function (interaction: ButtonInteraction) {
 	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)
-	await channel.setName(`archive-${channel.name}`);
+
+	const channel = interaction.channel as TextChannel;
+
+	channel.permissionOverwrites.edit(await interaction.client.users.fetch(channel.name.split("-")[1]), {
+		VIEW_CHANNEL: false
+	});
+
+	await interaction.reply({
+		content: `${interaction.user} closed the ticket!`,
+		components: [
+			new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId("ticketReopen")
+					.setLabel("Re-Open Ticket")
+					.setEmoji("🍍")
+					.setStyle("SUCCESS")
+				,
+				new MessageButton()
+					.setCustomId("ticketSaveTranscript")
+					.setLabel("Save Transcript")
+					.setEmoji("📝")
+					.setStyle("PRIMARY")
+				,
+				new MessageButton()
+					.setCustomId("ticketDelete")
+					.setLabel("Delete Ticket")
+					.setEmoji("🗑️")
+					.setStyle("DANGER")
+			),
+		]
+	});
 
 
+	interaction.message.components.forEach((component) => {
+		(component as MessageActionRow).components.forEach((button: MessageButton) => {
+			console.log(button.customId);
+			button.setDisabled();
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			(interaction.message as Message).edit({ components: interaction.message.components });
+		});
+	});
 }

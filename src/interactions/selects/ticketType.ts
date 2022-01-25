@@ -2,7 +2,7 @@ import { Embed } from "@discordjs/builders";
 import { GuildChannel, Message } from "discord.js";
 
 export default async function ticketType(interaction) {
-	const newTicketName = `Ticket-${interaction.user.username}-${interaction.values[0]}`;
+	const newTicketName = `Ticket-${interaction.user.id}-${interaction.values[0]}`;
 	await (interaction.channel as GuildChannel).setName(newTicketName);
 
 	(interaction.message as Message).delete();

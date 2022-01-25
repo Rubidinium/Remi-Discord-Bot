@@ -16,6 +16,8 @@ import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
 import ticketOpen from "./interactions/buttons/ticketOpen";
 import ticketClose from "./interactions/buttons/ticketClose";
+import ticketReopen from "./interactions/buttons/ticketReopen";
+import ticketDelete from "./interactions/buttons/ticketDelete";
 config();
 
 class Bot extends Client {
@@ -87,7 +89,7 @@ async function main() {
 			clearTimeout(timers.get(message.channel.id));
 
 			timers.set(message.channel.id, setTimeout(async () => {
-				await ticketClose(message.channel as GuildChannel);
+				// await ticketClose(message.channel as GuildChannel);
 			}, timeoutLimit));
 
 		}
@@ -109,27 +111,22 @@ async function main() {
 		if (interaction.isButton()) {
 			switch (interaction.customId) {
 				case "ticketOpen":
-					await ticketOpen(interaction);
+					ticketOpen(interaction);
+					break;
+				case "ticketReopen":
+					ticketReopen(interaction);
 					break;
 				case "ticketClose":
-					await ticketClose(interaction.channel as GuildChannel);
-					interaction.reply({ content: "Ticket closed." , ephemeral: true });
+					ticketClose(interaction);
 					break;
+				case "ticketDelete":
+					ticketDelete(interaction);
 			}
 		}
-
 		if (interaction.isSelectMenu()) {
 			if (interaction.customId == "ticketType") ticketType(interaction);
-		}
-
-		if (interaction.isContextMenu()) {
-			await interaction.deferReply({ ephemeral: false });
-			const command = commands.get(interaction.commandName);
-			if (!command) return;
-			await command.execute(interaction);
 		}
 	});
 
 	client.login(process.env.TOKEN);
 }
-
