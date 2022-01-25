@@ -6,8 +6,6 @@ export default async function (interaction: ButtonInteraction) {
 	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
 
 	interaction.reply({
-		files: [
-			new MessageAttachment(transcriptFile.attachment, (interaction.channel as TextChannel).name + ".html")
-		]
+		files: [new MessageAttachment(transcriptFile.attachment, (interaction.channel as TextChannel).name + ".html")]
 	});
 }
