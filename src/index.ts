@@ -4,6 +4,7 @@ import {
 	Collection,
 	GuildChannel,
 	Intents,
+	Message,
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -131,7 +132,7 @@ async function main() {
 					ticketClose(interaction);
 					break;
 				case "cancelClose":
-					interaction.message.delete();
+					(interaction.message as Message).delete();
 					break;
 			}
 		}
