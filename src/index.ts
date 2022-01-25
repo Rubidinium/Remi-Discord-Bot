@@ -33,7 +33,7 @@ const commandFiles =
 		const { default: CommandClass } = await import(`./commands/${file}`);
 		const commandInstance: BaseCommand = new CommandClass();
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore THIS IS A VALID USE OF TS-IGNORE
+		// @ts-ignore THIS IS A VALID USE OF TS-IGNORE
 		if (["MESSAGE", "USER"].includes(commandInstance.metadata.type as string)) delete commandInstance.metadata.description;
 		commands.set(commandInstance.metadata.name, commandInstance);
 	}
@@ -64,6 +64,13 @@ async function main() {
 
 	const client = new Bot();
 
+	const timers = new Collection<string, NodeJS.Timeout>();
+
+	const rateLimiter = new RateLimiter(1, 1000);
+
+	// 48 hours
+	const timeoutLimit = 1000 * 60 * 60 * 24 * 2;
+
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
 
@@ -73,13 +80,17 @@ async function main() {
 		});
 	});
 
-	
+	client.on("messageCreate", (message) => {
+		if (timers.has(message.channel.id)) {
+			clearTimeout(timers.get(message.channel.id));
 
-	const rateLimiter = new RateLimiter(1, 3000);
+			timers.set(message.channel.id, setTimeout(async () => {
+				await message.channel.delete();
+				// TODO: Archive instead we should use an archive function instead
+			}, timeoutLimit));
 
-
-
-
+		}
+	});
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
 		const limited = rateLimiter.take(interaction.user.id);
@@ -101,6 +112,7 @@ async function main() {
 					break;
 				case "ticketClose":
 					await interaction.channel.delete();
+					// TODO: Archive instead we should use an archive function instead
 					break;
 			}
 		}
@@ -118,5 +130,5 @@ async function main() {
 	});
 
 	client.login(process.env.TOKEN);
-
 }
+
