@@ -1,6 +1,8 @@
 import { ButtonInteraction, Message } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
+	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't close this ticket!", ephemeral: true});
+
 	await (interaction.message as Message).delete();
 	const messageHistory = await interaction.channel.messages.fetch();
 
@@ -8,7 +10,6 @@ export default async function (interaction: ButtonInteraction) {
 		let passes = false;
 		msg.components.forEach((row) => {
 			row?.components?.forEach(component => {
-				console.log(component);
 				if (component?.customId == "ticketClose") {
 					passes = true;
 				}
