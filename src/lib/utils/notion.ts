@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Client } from "@notionhq/client";
 import { config } from "dotenv";
 config();
@@ -22,6 +23,10 @@ export async function getLastTranscriptId(category) {
 		},
 
 	});
-	console.log(response);
+
+    const page_id = response?.results?.[0]?.id;
+    const page = await notion.pages.retrieve({ page_id });
+
+	return page?.properties?.Name?.title?.[0]?.text?.content || "0";
 }
 
