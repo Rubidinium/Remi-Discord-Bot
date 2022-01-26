@@ -8,7 +8,7 @@ export default async function (interaction: ButtonInteraction) {
 	});
 
 	interaction.reply({
-		content: `<@${channel.name.split("-")[1]}> The ticket has been re-opened and is now available to you again.`, 
+		content: `<@${channel.name.split("-")[1]}> The ticket has been re-opened and is now available to you again.`,
 		components: [new MessageActionRow().addComponents(new MessageButton()
 			.setCustomId("ticketClose")
 			.setLabel("Close Ticket")

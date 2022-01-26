@@ -1,10 +1,11 @@
 import { Embed } from "@discordjs/builders";
 import { GuildChannel, Message } from "discord.js";
+import { getLastTranscriptId } from "../../lib/utils/notion";
 
 export default async function ticketType(interaction) {
 	// TODO: Database implementation for ticket counter (Temporarily at 0)
 	
-	const newTicketName = `${interaction.values[0]}-${interaction.user.id}-${0}`;
+	const newTicketName = `${interaction.values[0]}-${interaction.user.id}-${parseInt(await getLastTranscriptId(interaction.values[0])) + 1}`;
 	await (interaction.channel as GuildChannel).setName(newTicketName);
 
 	(interaction.message as Message).delete();
