@@ -20,7 +20,11 @@ import ticketDelete from "./interactions/buttons/ticketDelete";
 import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
 import ticketConfirm from "./interactions/buttons/ticketConfirm";
 import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
+import { getLastTranscriptId } from "./lib/utils/notion";
 config();
+
+console.log(process.env.NOTION_TOKEN)
+getLastTranscriptId("webdev");
 
 class Bot extends Client {
 	constructor() {
