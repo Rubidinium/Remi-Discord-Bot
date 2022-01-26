@@ -2,7 +2,9 @@ import { Embed } from "@discordjs/builders";
 import { GuildChannel, Message } from "discord.js";
 
 export default async function ticketType(interaction) {
-	const newTicketName = `Ticket-${interaction.user.id}-${interaction.values[0]}`;
+	// TODO: Database implementation for ticket counter (Temporarily at 0)
+	
+	const newTicketName = `${interaction.values[0]}-${interaction.user.id}-${0}`;
 	await (interaction.channel as GuildChannel).setName(newTicketName);
 
 	(interaction.message as Message).delete();
@@ -29,6 +31,10 @@ export default async function ticketType(interaction) {
 	case "other":
 		break;
 	}
+	interaction.channel.permissionOverwrites.edit(interaction.user.id, {
+		SEND_MESSAGES: true,
+	});
+
 	interaction.channel.send({ embeds: [new Embed().setTitle(newTicketName).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
 		
 }

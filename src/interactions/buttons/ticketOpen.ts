@@ -4,12 +4,9 @@ export default async function (interaction: ButtonInteraction) {
 	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.id}`, {
 		type: "GUILD_TEXT",
 		parent: "935085260545339412",
-		permissionOverwrites: [
-			{
-				id: interaction.user.id,
-				allow: ["VIEW_CHANNEL"],
-			}
-		]
+	});
+	channel.permissionOverwrites.edit(interaction.user.id, {
+		VIEW_CHANNEL: true,
 	});
 
 	await channel.send({
@@ -22,7 +19,7 @@ export default async function (interaction: ButtonInteraction) {
 	});
 	
 	const embed = new MessageEmbed()
-		.setTitle(`Ticket-${interaction.user.username}`)
+		.setTitle(`Select a ticket type`)
 		.setDescription(
 			"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
 		)
