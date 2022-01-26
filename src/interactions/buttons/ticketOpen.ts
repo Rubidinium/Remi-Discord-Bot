@@ -19,7 +19,7 @@ export default async function (interaction: ButtonInteraction) {
 	});
 	
 	const embed = new MessageEmbed()
-		.setTitle(`Select a ticket type`)
+		.setTitle("Select a ticket type")
 		.setDescription(
 			"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
 		)

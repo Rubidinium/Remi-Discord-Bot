@@ -21,7 +21,6 @@ export async function getLastTranscriptId(category) {
 				}
 			]
 		},
-
 	});
 
     const page_id = response?.results?.[0]?.id;
