@@ -96,45 +96,50 @@ async function main() {
 	});
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
-		const limited = rateLimiter.take(interaction.user.id);
+		try {
+			const limited = rateLimiter.take(interaction.user.id);
 
-		if (limited) return interaction.reply({ content: "You've been rate limited.", ephemeral: true });
+			if (limited) return await interaction.reply({ content: "You've been rate limited.", ephemeral: true });
 
-		if (interaction.isCommand()) {
-			const command = commands.get(interaction.commandName);
-			if (!command) return;
-			await command.execute(interaction).catch(() => interaction.editReply({
-				content: "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
-			}));
-		}
+			if (interaction.isCommand()) {
+				const command = commands.get(interaction.commandName);
+				if (!command) return;
+				await command.execute(interaction);
+			}
 
-		if (interaction.isButton()) {
-			switch (interaction.customId) {
-				case "ticketOpen":
-					ticketOpen(interaction);
-					break;
-				case "ticketReopen":
-					ticketReopen(interaction);
-					break;
-				case "ticketClose":
-					ticketConfirm(interaction);
-					break;
-				case "ticketDelete":
-					ticketDelete(interaction);
-					break;
-				case "ticketSaveTranscript":
-					ticketSaveTranscript(interaction);
-					break;
-				case "confirmClose":
-					ticketClose(interaction);
-					break;
-				case "cancelClose":
-					ticketCancelClose(interaction);
-					break;
+			if (interaction.isButton()) {
+				switch (interaction.customId) {
+					case "ticketOpen":
+						await ticketOpen(interaction);
+						break;
+					case "ticketReopen":
+						await ticketReopen(interaction);
+						break;
+					case "ticketClose":
+						await ticketConfirm(interaction);
+						break;
+					case "ticketDelete":
+						await ticketDelete(interaction);
+						break;
+					case "ticketSaveTranscript":
+						await ticketSaveTranscript(interaction);
+						break;
+					case "confirmClose":
+						await ticketClose(interaction);
+						break;
+					case "cancelClose":
+						await ticketCancelClose(interaction);
+						break;
+				}
+			}
+			if (interaction.isSelectMenu()) {
+				if (interaction.customId == "ticketType") ticketType(interaction);
 			}
 		}
-		if (interaction.isSelectMenu()) {
-			if (interaction.customId == "ticketType") ticketType(interaction);
+		catch (error) {
+			const msg = { content: `There was an error with this interaction. Please try again later. If the issue persists, please contact the bot owner\n${error}`, ephemeral: true };
+			try { await interaction.reply(msg); }
+			catch (e) { await interaction.editReply(msg); }
 		}
 	});
 
