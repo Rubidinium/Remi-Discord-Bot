@@ -49,8 +49,8 @@ const commandFiles =
 export const timers = new Collection<string, NodeJS.Timeout>();
 export const rateLimiter = new RateLimiter(2, 1000);
 // 24 hours
-// export const timeoutLimit = 1000 * 60 * 60 * 24;
-export const timeoutLimit = 5000;
+export const timeoutLimit = 1000 * 60 * 60 * 24;
+// export const timeoutLimit = 5000;
 async function main() {
 	if (hasArg("register", "r")) {
 		console.log("registering");
