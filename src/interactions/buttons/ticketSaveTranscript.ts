@@ -20,7 +20,7 @@ export default async function (interaction: ButtonInteraction) {
 
 		const url = `https://transcripts.programmingsimplified.org/${block_id}`;
 		interaction.editReply(`The transcript has been saved\n${url}`);
-		(await interaction.client.users.fetch(channel.name.split("-")[1])).send(`An admin has saved your ticket and can be viewed here:\n${url}`);
+		(await interaction.client.users.fetch(channel.name.split("-")[1])).send(`Here is your ticket transcript:\n${url}`);
 	}
 	catch (e) {
 		console.error(e);
