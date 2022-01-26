@@ -12,7 +12,7 @@ export default async function (interaction: ButtonInteraction) {
 		components: [new MessageActionRow().addComponents(new MessageButton()
 			.setCustomId("ticketClose")
 			.setLabel("Close Ticket")
-			.setEmoji("👽")
+			.setEmoji("❌")
 			.setStyle("DANGER")
 		)]
 	});
