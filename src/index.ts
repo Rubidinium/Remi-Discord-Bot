@@ -14,7 +14,7 @@ import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
 import ticketOpen, { resetInactivityTimer } from "./interactions/buttons/ticketOpen";
-import ticketClose, { staffButtons } from "./interactions/buttons/ticketClose";
+import ticketClose from "./interactions/buttons/ticketClose";
 import ticketReopen from "./interactions/buttons/ticketReopen";
 import ticketDelete from "./interactions/buttons/ticketDelete";
 import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
@@ -51,6 +51,7 @@ export const rateLimiter = new RateLimiter(2, 1000);
 // 24 hours
 export const timeoutLimit = 1000 * 60 * 60 * 24;
 // export const timeoutLimit = 5000;
+
 async function main() {
 	if (hasArg("register", "r")) {
 		console.log("registering");

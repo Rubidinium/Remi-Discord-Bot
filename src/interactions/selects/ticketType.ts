@@ -1,12 +1,11 @@
 import { Embed } from "@discordjs/builders";
-import { GuildChannel, Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextChannel } from "discord.js";
+import { Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextChannel } from "discord.js";
 import { createTranscriptEntry } from "../../lib/utils/notion";
 
 export default async function ticketType(interaction: SelectMenuInteraction) {
 	const transcript = {
 		title: interaction.user.tag,
 		category: interaction.values[0],
-		htmlString: "" // transcriptFile.attachment.toString()
 	};
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
