@@ -42,7 +42,7 @@ export async function deleteTranscriptEntry(block_id) {
     const page = await notion.blocks.children.list({
         block_id,
     });
-    console.log(page);
+
     // @ts-ignore
     if (page.results.length) return;
     return notion.blocks.delete({
