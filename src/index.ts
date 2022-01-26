@@ -8,7 +8,6 @@ import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/rest/v9";
-import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
@@ -21,9 +20,10 @@ import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
 import ticketConfirm from "./interactions/buttons/ticketConfirm";
 import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
 import { getLastTranscriptId } from "./lib/utils/notion";
+import { config } from "dotenv";
 config();
 
-console.log(process.env.NOTION_TOKEN)
+console.log(process.env.NOTION_TOKEN);
 getLastTranscriptId("webdev");
 
 class Bot extends Client {
