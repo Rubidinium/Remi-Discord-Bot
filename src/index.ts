@@ -23,7 +23,6 @@ import { getLastTranscriptId } from "./lib/utils/notion";
 import { config } from "dotenv";
 config();
 
-console.log(process.env.NOTION_TOKEN);
 getLastTranscriptId("webdev");
 
 class Bot extends Client {
