@@ -16,19 +16,19 @@ export default async function (interaction: ButtonInteraction) {
 				new MessageButton()
 					.setCustomId("ticketReopen")
 					.setLabel("Re-Open Ticket")
-					.setEmoji("🍍")
+					.setEmoji("🧁")
 					.setStyle("SUCCESS")
 				,
 				new MessageButton()
 					.setCustomId("ticketSaveTranscript")
 					.setLabel("Save Transcript")
-					.setEmoji("📝")
+					.setEmoji("😭")
 					.setStyle("PRIMARY")
 				,
 				new MessageButton()
 					.setCustomId("ticketDelete")
 					.setLabel("Delete Ticket")
-					.setEmoji("🗑️")
+					.setEmoji("😎")
 					.setStyle("DANGER")
 			),
 		]

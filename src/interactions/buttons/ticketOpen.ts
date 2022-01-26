@@ -9,7 +9,7 @@ export default async function (interaction: ButtonInteraction) {
 		VIEW_CHANNEL: true,
 	});
 
-	
+
 	const embed = new MessageEmbed()
 		.setTitle("Select a ticket type")
 		.setDescription(
@@ -21,13 +21,13 @@ export default async function (interaction: ButtonInteraction) {
 		.setCustomId("ticketType")
 		.setPlaceholder("Select a ticket type")
 		.setOptions([
-			{ label: "Python101", value: "python101" },
-			{ label: "Javascript101", value: "javascript101" },
-			{ label: "Java101", value: "java101" },
+			{ label: "Other", value: "other" },
 			{ label: "WebDev", value: "webdev" },
-			{ label: "DiscordJS", value: "discordjs" },
 			{ label: "SQL", value: "sql" },
-			{ label: "Other", value: "other" }
+			{ label: "Python101", value: "python101" },
+			{ label: "DiscordJS", value: "discordjs" },
+			{ label: "Java101", value: "java101" },
+			{ label: "Javascript101", value: "javascript101" },
 		]);
 
 	channel.send({

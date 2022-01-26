@@ -4,6 +4,7 @@ import { createTranscriptNotion } from "../../lib/utils/notion";
 
 
 export default async function (interaction: ButtonInteraction) {
+	interaction.deferReply();
 	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
 
 	const channel = interaction.channel as TextChannel;
@@ -15,13 +16,12 @@ export default async function (interaction: ButtonInteraction) {
 
 	try {
 		await createTranscriptNotion(options);
-
 		const url = `https://transcripts.programmingsimplified.org/${block_id}`;
-		interaction.reply(`The transcript has been saved\n${url}`);
+		interaction.editReply(`The transcript has been saved\n${url}`);
 		(await interaction.client.users.fetch(channel.name.split("-")[1])).send(`An admin has saved your ticket and can be viewed here:\n${url}`);
 	}
 	catch (e) {
 		console.error(e);
-		interaction.reply({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner.", ephemeral: true });
+		interaction.editReply({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner." });
 	}
 }
