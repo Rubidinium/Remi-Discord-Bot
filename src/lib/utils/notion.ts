@@ -38,7 +38,9 @@ export async function createTranscriptEntry(transcript: { title: string, categor
     });
 }
 
-export async function deleteTranscriptEntry(block_id) {
+export async function deleteTranscriptEntry(block_id: string) {
+    if (!block_id.match(/[a-zA-Z]/g)) return;
+
     const page = await notion.blocks.children.list({
         block_id,
     });

@@ -1,14 +1,30 @@
-import { ButtonInteraction, MessageActionRow, MessageEmbed, MessageSelectMenu } from "discord.js";
+import { ButtonInteraction, Client, MessageActionRow, MessageEmbed, MessageSelectMenu, TextChannel } from "discord.js";
+import { timeoutLimit, timers } from "../..";
+import { staffButtons } from "./ticketClose";
+
+export function resetInactivityTimer(channel: TextChannel, client: Client) {
+	clearTimeout(timers.get(channel.id));
+	timers.set(channel.id, setTimeout(async () => {
+		channel.permissionOverwrites.edit(await client.users.fetch(channel.name.split("-")[1]), {
+			VIEW_CHANNEL: false
+		});
+		channel.send({ content: "This ticket has been closed due to inactivity.", components: [staffButtons] });
+		clearTimeout(timers.get(channel.id));
+	}, timeoutLimit));
+
+}
 
 export default async function (interaction: ButtonInteraction) {
 	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.id}`, {
 		type: "GUILD_TEXT",
 		parent: "935085260545339412",
 	});
+
 	channel.permissionOverwrites.edit(interaction.user.id, {
 		VIEW_CHANNEL: true,
 	});
 
+	resetInactivityTimer(channel, interaction.client);
 
 	const embed = new MessageEmbed()
 		.setTitle("Select a ticket type")

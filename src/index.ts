@@ -3,6 +3,7 @@ import {
 	Client,
 	Collection,
 	Intents,
+	TextChannel,
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
@@ -12,8 +13,8 @@ import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
-import ticketOpen from "./interactions/buttons/ticketOpen";
-import ticketClose from "./interactions/buttons/ticketClose";
+import ticketOpen, { resetInactivityTimer } from "./interactions/buttons/ticketOpen";
+import ticketClose, { staffButtons } from "./interactions/buttons/ticketClose";
 import ticketReopen from "./interactions/buttons/ticketReopen";
 import ticketDelete from "./interactions/buttons/ticketDelete";
 import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
@@ -45,6 +46,11 @@ const commandFiles =
 	}
 })().then(main);
 
+export const timers = new Collection<string, NodeJS.Timeout>();
+export const rateLimiter = new RateLimiter(2, 1000);
+// 24 hours
+export const timeoutLimit = 1000 * 60 * 60 * 24;
+// export const timeoutLimit = 5000;
 async function main() {
 	if (hasArg("register", "r")) {
 		console.log("registering");
@@ -70,12 +76,7 @@ async function main() {
 
 	const client = new Bot();
 
-	const timers = new Collection<string, NodeJS.Timeout>();
 
-	const rateLimiter = new RateLimiter(2, 1000);
-
-	// 24 hours
-	const timeoutLimit = 1000 * 60 * 60 * 24;
 
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
@@ -87,13 +88,9 @@ async function main() {
 	});
 
 	client.on("messageCreate", (message) => {
+		if (message.author.bot) return;
 		if (timers.has(message.channel.id)) {
-			clearTimeout(timers.get(message.channel.id));
-
-			timers.set(message.channel.id, setTimeout(async () => {
-				// await ticketClose(message.channel as GuildChannel);
-			}, timeoutLimit));
-
+			resetInactivityTimer(message.channel as TextChannel, client);
 		}
 	});
 

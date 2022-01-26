@@ -1,7 +1,27 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, TextChannel  } from "discord.js";
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
+
+export const staffButtons = new MessageActionRow().addComponents(
+	new MessageButton()
+		.setCustomId("ticketReopen")
+		.setLabel("Re-Open Ticket")
+		.setEmoji("🧁")
+		.setStyle("SUCCESS")
+	,
+	new MessageButton()
+		.setCustomId("ticketSaveTranscript")
+		.setLabel("Save Transcript")
+		.setEmoji("😭")
+		.setStyle("PRIMARY")
+	,
+	new MessageButton()
+		.setCustomId("ticketDelete")
+		.setLabel("Delete Ticket")
+		.setEmoji("😎")
+		.setStyle("DANGER")
+);
 
 export default async function (interaction: ButtonInteraction) {
-	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't interact here.", ephemeral: true});
+	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({ content: "You can't interact here.", ephemeral: true });
 	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)	
 	const channel = interaction.channel as TextChannel;
 
@@ -12,28 +32,9 @@ export default async function (interaction: ButtonInteraction) {
 	await interaction.reply({
 		content: `${interaction.user} closed the ticket!`,
 		components: [
-			new MessageActionRow().addComponents(
-				new MessageButton()
-					.setCustomId("ticketReopen")
-					.setLabel("Re-Open Ticket")
-					.setEmoji("🧁")
-					.setStyle("SUCCESS")
-				,
-				new MessageButton()
-					.setCustomId("ticketSaveTranscript")
-					.setLabel("Save Transcript")
-					.setEmoji("😭")
-					.setStyle("PRIMARY")
-				,
-				new MessageButton()
-					.setCustomId("ticketDelete")
-					.setLabel("Delete Ticket")
-					.setEmoji("😎")
-					.setStyle("DANGER")
-			),
+			staffButtons
 		]
 	});
-
 
 	interaction.message.components.forEach((component) => {
 		(component as MessageActionRow).components.forEach((button: MessageButton) => {
