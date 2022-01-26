@@ -8,7 +8,6 @@ const notion = new Client({
 
 export async function getLastTranscriptId(category) {
 	const database_id = "81dd715531a34aa89063179bc427b0b6";
-	//@ts-ignore
 	const response = await notion.databases.query({
 		database_id,
 		filter: {
