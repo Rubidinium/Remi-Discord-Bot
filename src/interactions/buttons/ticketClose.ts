@@ -1,7 +1,7 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton, TextChannel  } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
-	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't close this ticket!", ephemeral: true});
+	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't interact here.", ephemeral: true});
 	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)	
 	const channel = interaction.channel as TextChannel;
 

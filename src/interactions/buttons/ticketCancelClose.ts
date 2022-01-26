@@ -1,7 +1,7 @@
 import { ButtonInteraction, Message } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
-	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't close this ticket!", ephemeral: true});
+	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't interact here.", ephemeral: true});
 
 	await (interaction.message as Message).delete();
 	const messageHistory = await interaction.channel.messages.fetch();
