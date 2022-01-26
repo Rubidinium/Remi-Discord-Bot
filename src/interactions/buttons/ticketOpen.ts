@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageEmbed, MessageSelectMenu } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
 	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.id}`, {
@@ -9,14 +9,6 @@ export default async function (interaction: ButtonInteraction) {
 		VIEW_CHANNEL: true,
 	});
 
-	await channel.send({
-		content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
-			.setCustomId("ticketClose")
-			.setLabel("Close Ticket")
-			.setEmoji("🗑️")
-			.setStyle("DANGER")
-		)]
-	});
 	
 	const embed = new MessageEmbed()
 		.setTitle("Select a ticket type")

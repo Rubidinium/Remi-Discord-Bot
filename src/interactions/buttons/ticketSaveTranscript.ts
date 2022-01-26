@@ -1,20 +1,19 @@
 import { ButtonInteraction, MessageAttachment, TextChannel } from "discord.js";
 import { createTranscript } from "../../lib/transcripts";
-import { createTranscriptEntry } from "../../lib/utils/notion";
+import { createTranscriptNotion } from "../../lib/utils/notion";
 
 
 export default async function (interaction: ButtonInteraction) {
 	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
 
 	const channel = interaction.channel as TextChannel;
-	const transcript = {
-		title: channel.name.split("-")[channel.name.split("-").length - 1],
-		category: channel.name.split("-")[0] != "other" && channel.name.split("-")[0],
-		htmlString: "" // transcriptFile.attachment.toString()
+	const options = {
+		block_id: channel.name.split("-")[channel.name.split("-").length - 1],
+		htmlString: transcriptFile.attachment.toString()
 	};
 
 	try {
-		await createTranscriptEntry(transcript);
+		await createTranscriptNotion(options);
 
 		interaction.reply({
 			files: [new MessageAttachment(transcriptFile.attachment, (interaction.channel as TextChannel).name + ".html")]

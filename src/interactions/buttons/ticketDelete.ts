@@ -1,5 +1,9 @@
-import { ButtonInteraction } from "discord.js";
+import { ButtonInteraction, TextChannel } from "discord.js";
+import { deleteTranscriptEntry } from "../../lib/utils/notion";
 
-export default function (interaction: ButtonInteraction) {
+export default async function (interaction: ButtonInteraction) {
+	const channel = interaction.channel as TextChannel;
+	await deleteTranscriptEntry((channel.name.split("-"))[channel.name.split("-").length - 1]);
 	interaction.channel.delete();
+
 }

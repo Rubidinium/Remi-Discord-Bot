@@ -9,28 +9,6 @@ const notion = new Client({
 
 const database_id = "81dd715531a34aa89063179bc427b0b6";
 
-export async function getLastTranscriptId(category) {
-    const response = await notion.databases.query({
-        database_id,
-        filter: {
-            "and": [
-                {
-                    property: "category",
-                    select: {
-                        equals: category
-                    }
-                }
-            ]
-        },
-    });
-
-    const page_id = response?.results?.[0]?.id;
-    if (!page_id) return "-1";
-
-    // @ts-ignore
-    return (await notion.pages.retrieve({ page_id }))?.properties?.Name?.title?.[0]?.text?.content || "-1";
-}
-
 export async function createTranscriptEntry(transcript: { title: string, category?: string; }) {
     const properties = {
         Name: {
@@ -57,13 +35,22 @@ export async function createTranscriptEntry(transcript: { title: string, categor
         },
         // @ts-ignore
         properties,
-        // @ts-ignore
-        children
     });
 }
 
+export async function deleteTranscriptEntry(block_id) {
+    const page = await notion.blocks.children.list({
+        block_id,
+    });
+    console.log(page);
+    // @ts-ignore
+    if (page.results.length) return;
+    return notion.blocks.delete({
+        block_id,
+    });
+}
 
-export async function createTranscript({ block_id, htmlString }: { block_id: string, htmlString: string; }) {
+export async function createTranscriptNotion({ block_id, htmlString }: { block_id: string, htmlString: string; }) {
     const children = [];
     if (htmlString) {
         children.push({

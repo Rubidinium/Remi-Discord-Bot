@@ -1,6 +1,6 @@
 import { Embed } from "@discordjs/builders";
-import { GuildChannel, Message, SelectMenuInteraction, TextChannel } from "discord.js";
-import { createTranscriptEntry, getLastTranscriptId } from "../../lib/utils/notion";
+import { GuildChannel, Message, MessageActionRow, MessageButton, SelectMenuInteraction, TextChannel } from "discord.js";
+import { createTranscriptEntry } from "../../lib/utils/notion";
 
 export default async function ticketType(interaction: SelectMenuInteraction) {
 	const transcript = {
@@ -44,6 +44,15 @@ export default async function ticketType(interaction: SelectMenuInteraction) {
 		SEND_MESSAGES: true,
 	});
 
-	interaction.channel.send({ embeds: [new Embed().setTitle(newTicketName).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)] });
+	interaction.channel.send({
+		embeds: [new Embed().setTitle(newTicketName).setDescription("Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary.").setColor(0xA020F0)],
+		components: [new MessageActionRow().addComponents(new MessageButton()
+			.setCustomId("ticketClose")
+			.setLabel("Close Ticket")
+			.setEmoji("🗑️")
+			.setStyle("DANGER")
+		)]
+
+	});
 
 }

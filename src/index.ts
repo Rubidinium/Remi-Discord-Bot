@@ -72,7 +72,7 @@ async function main() {
 
 	const timers = new Collection<string, NodeJS.Timeout>();
 
-	const rateLimiter = new RateLimiter(1, 1000);
+	const rateLimiter = new RateLimiter(2, 1000);
 
 	// 24 hours
 	const timeoutLimit = 1000 * 60 * 60 * 24;
