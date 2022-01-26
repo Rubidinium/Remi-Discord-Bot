@@ -13,7 +13,7 @@ export default async function ticketType(interaction: SelectMenuInteraction) {
 	// @ts-ignore
 	const notionPage = await createTranscriptEntry(transcript);
 	const newTicketName = `${interaction.values[0]}-${interaction.user.id}-${notionPage.id.split("-").join("")}`;
-	await (interaction.channel as GuildChannel).setName(newTicketName);
+	await (interaction.channel as TextChannel)?.setName(newTicketName);
 
 	(interaction.message as Message).delete();
 

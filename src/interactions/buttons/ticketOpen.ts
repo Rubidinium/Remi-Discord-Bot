@@ -2,7 +2,7 @@ import { ButtonInteraction, Client, MessageActionRow, MessageEmbed, MessageSelec
 import { timeoutLimit, timers } from "../..";
 import { staffButtons } from "./ticketClose";
 
-export function resetInactivityTimer(channel: TextChannel, client: Client) {
+export async function resetInactivityTimer(channel: TextChannel, client: Client) {
 	clearTimeout(timers.get(channel.id));
 	timers.set(channel.id, setTimeout(async () => {
 		channel.permissionOverwrites.edit(await client.users.fetch(channel.name.split("-")[1]), {
@@ -10,7 +10,29 @@ export function resetInactivityTimer(channel: TextChannel, client: Client) {
 		});
 		channel.send({ content: "This ticket has been closed due to inactivity.", components: [staffButtons] });
 		clearTimeout(timers.get(channel.id));
+		const messages = (await channel.messages.fetch()).filter(msg => {
+			let passes = false;
+			msg.components.forEach((row) => {
+				row?.components?.forEach(component => {
+					if (component) {
+						passes = true;
+					}
+				});
+			});
+			return passes;
+		}).values();
+
+		[...messages].forEach(msg => {
+			msg.components.forEach((row) => {
+				row.components.forEach(component => {
+					component.setDisabled();
+				});
+			});
+			msg.edit({ components: msg.components });
+		}
+		);
 	}, timeoutLimit));
+
 
 }
 

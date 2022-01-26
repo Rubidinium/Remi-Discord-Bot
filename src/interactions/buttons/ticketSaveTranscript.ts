@@ -4,7 +4,7 @@ import { createTranscriptNotion } from "../../lib/utils/notion";
 
 
 export default async function (interaction: ButtonInteraction) {
-	interaction.deferReply();
+	await interaction.deferReply();
 	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
 
 	const channel = interaction.channel as TextChannel;
@@ -15,7 +15,9 @@ export default async function (interaction: ButtonInteraction) {
 	};
 
 	try {
-		await createTranscriptNotion(options);
+		const res = await createTranscriptNotion(options);
+		if (!res) return interaction.editReply("There were no results to save. Please delete this ticket immediately.");
+
 		const url = `https://transcripts.programmingsimplified.org/${block_id}`;
 		interaction.editReply(`The transcript has been saved\n${url}`);
 		(await interaction.client.users.fetch(channel.name.split("-")[1])).send(`An admin has saved your ticket and can be viewed here:\n${url}`);

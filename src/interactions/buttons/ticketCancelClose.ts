@@ -1,12 +1,12 @@
 import { ButtonInteraction, Message } from "discord.js";
 
 export default async function (interaction: ButtonInteraction) {
-	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({content: "You can't interact here.", ephemeral: true});
+	if (interaction.message.embeds[0].footer.text != interaction.user.tag) return interaction.reply({ content: "You can't interact here.", ephemeral: true });
 
 	await (interaction.message as Message).delete();
 	const messageHistory = await interaction.channel.messages.fetch();
 
-	const firstMessage: Message = messageHistory.filter(msg => {
+	const messages = messageHistory.filter(msg => {
 		let passes = false;
 		msg.components.forEach((row) => {
 			row?.components?.forEach(component => {
@@ -16,13 +16,16 @@ export default async function (interaction: ButtonInteraction) {
 			});
 		});
 		return passes;
-	}).first();
+	}).values();
 
-	firstMessage.components.forEach((row) => {
-		row.components.forEach(component => {
-			component.setDisabled(false);
+	[...messages].forEach(msg => {
+		msg.components.forEach((row) => {
+			row.components.forEach(component => {
+				component.setDisabled(false);
+			});
 		});
-	});
+		msg.edit({ components: msg.components });
+		}
+	);
 
-	firstMessage.edit({ components: firstMessage.components });
 }

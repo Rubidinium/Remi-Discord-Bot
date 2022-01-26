@@ -39,20 +39,21 @@ export async function createTranscriptEntry(transcript: { title: string, categor
 }
 
 export async function deleteTranscriptEntry(block_id: string) {
-    if (!block_id.match(/[a-zA-Z]/g)) return;
+    if (!block_id.match(/[a-zA-Z]/g)) return null;
 
     const page = await notion.blocks.children.list({
         block_id,
     });
 
     // @ts-ignore
-    if (page.results.length) return;
+    if (page.results.length) return null;
     return notion.blocks.delete({
         block_id,
     });
 }
 
 export async function createTranscriptNotion({ block_id, htmlString }: { block_id: string, htmlString: string; }) {
+    if (!block_id.match(/[a-zA-Z]/g)) return null;
     const children = [];
     if (htmlString) {
         children.push({
