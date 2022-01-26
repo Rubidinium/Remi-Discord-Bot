@@ -7,17 +7,18 @@ export default async function (interaction: ButtonInteraction) {
 	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
 
 	const channel = interaction.channel as TextChannel;
+	const block_id = channel.name.split("-")[channel.name.split("-").length - 1];
 	const options = {
-		block_id: channel.name.split("-")[channel.name.split("-").length - 1],
+		block_id,
 		htmlString: transcriptFile.attachment.toString()
 	};
 
 	try {
 		await createTranscriptNotion(options);
 
-		interaction.reply({
-			files: [new MessageAttachment(transcriptFile.attachment, (interaction.channel as TextChannel).name + ".html")]
-		});
+		const url = `https://transcripts.programmingsimplified.org/${block_id}`;
+		interaction.reply(`The transcript has been saved\n${url}`);
+		(await interaction.client.users.fetch(channel.name.split("-")[1])).send(`An admin has saved your ticket and can be viewed here:\n${url}`);
 	}
 	catch (e) {
 		console.error(e);
