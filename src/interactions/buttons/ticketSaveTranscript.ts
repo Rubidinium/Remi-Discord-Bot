@@ -1,11 +1,20 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageAttachment, TextChannel } from "discord.js";
-import { createTranscript } from "../../lib/transcripts";
+import { ButtonInteraction, Message, MessageActionRow, MessageAttachment, MessageButton, TextChannel } from "discord.js";
+import { createTranscript } from "discord-transcripts";
 import { createTranscriptNotion } from "../../lib/utils/notion";
 
 
 export default async function (interaction: ButtonInteraction) {
 	await interaction.deferReply();
-	const transcriptFile = await createTranscript(interaction.channel) as MessageAttachment;
+	let saved = false;
+	interaction.message.components.forEach((component) => {
+		(component as MessageActionRow).components.forEach((button: MessageButton) => {
+			if (button.customId == "ticketSaveTranscript" && button.disabled) saved = true;
+		});
+	});
+
+	if (saved) return;
+
+	const transcriptFile = await createTranscript(interaction.channel as TextChannel) as MessageAttachment;
 
 	const channel = interaction.channel as TextChannel;
 	const block_id = channel.name.split("-")[channel.name.split("-").length - 1];
@@ -49,4 +58,4 @@ export default async function (interaction: ButtonInteraction) {
 		console.error(e);
 		interaction.followUp({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner.", ephemeral: true });
 	}
-}
+};
