@@ -15,7 +15,7 @@ export const staffButtons = new MessageActionRow().addComponents(
 	,
 	new MessageButton()
 		.setCustomId("ticketDelete")
-		.setLabel("Delete Ticket")
+		.setLabel("Delete Ticket & Save Transcript")
 		.setEmoji("🗑️")
 		.setStyle("DANGER")
 );
@@ -25,7 +25,7 @@ export default async function (interaction: ButtonInteraction) {
 	// TODO: Remove users perms to see channel | Add buttons (re-open, delete and save transcript, save transcript)	
 	const channel = interaction.channel as TextChannel;
 
-	channel.permissionOverwrites.edit(await interaction.client.users.fetch(channel.name.split("-")[1]), {
+	await channel.permissionOverwrites.edit(await interaction.client.users.fetch(channel.name.split("-")[1]), {
 		VIEW_CHANNEL: false
 	});
 
