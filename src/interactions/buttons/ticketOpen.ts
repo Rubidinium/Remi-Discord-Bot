@@ -1,28 +1,55 @@
-import { Embed } from "@discordjs/builders";
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageSelectMenu } from "discord.js";
+import { ButtonInteraction, Client, MessageActionRow, MessageEmbed, MessageSelectMenu, TextChannel } from "discord.js";
+import { timeoutLimit, timers } from "../..";
+import { staffButtons } from "./ticketClose";
 
-export default async function ticketOpen(interaction: ButtonInteraction) {
-	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.username}`, {
+export async function resetInactivityTimer(channel: TextChannel, client: Client) {
+	clearTimeout(timers.get(channel.id));
+	timers.set(channel.id, setTimeout(async () => {
+		channel.permissionOverwrites.edit(await client.users.fetch(channel.name.split("-")[1]), {
+			VIEW_CHANNEL: false
+		});
+		channel.send({ content: "This ticket has been closed due to inactivity.", components: [staffButtons] });
+		clearTimeout(timers.get(channel.id));
+		const messages = (await channel.messages.fetch()).filter(msg => {
+			let passes = false;
+			msg.components.forEach((row) => {
+				row?.components?.forEach(component => {
+					if (component) {
+						passes = true;
+					}
+				});
+			});
+			return passes;
+		}).values();
+
+		[...messages].forEach(msg => {
+			msg.components.forEach((row) => {
+				row.components.forEach(component => {
+					component.setDisabled();
+				});
+			});
+			msg.edit({ components: msg.components });
+		}
+		);
+	}, timeoutLimit));
+
+
+}
+
+export default async function (interaction: ButtonInteraction) {
+	const channel = await interaction.guild.channels.create(`ticket-${interaction.user.id}`, {
 		type: "GUILD_TEXT",
 		parent: "935085260545339412",
-		permissionOverwrites: [
-			{
-				id: interaction.user.id,
-				allow: ["VIEW_CHANNEL"],
-			}
-		]
 	});
 
-	await channel.send({
-		content: `${interaction.user}`, components: [new MessageActionRow().addComponents(new MessageButton()
-			.setCustomId("ticketClose")
-			.setLabel("Close Ticket")
-			.setEmoji("🗑️")
-			.setStyle("DANGER")
-		)]
+	channel.permissionOverwrites.edit(interaction.user.id, {
+		VIEW_CHANNEL: true,
 	});
-	const embed = new Embed()
-		.setTitle(`Ticket-${interaction.user.username}`)
+
+	resetInactivityTimer(channel, interaction.client);
+
+	const embed = new MessageEmbed()
+		.setTitle("Select a ticket type")
 		.setDescription(
 			"Please choose the course that corresponds with your inquiry (choose other if this doesn't apply to you)."
 		)
@@ -32,21 +59,17 @@ export default async function ticketOpen(interaction: ButtonInteraction) {
 		.setCustomId("ticketType")
 		.setPlaceholder("Select a ticket type")
 		.setOptions([
-			{ label: "Python101", value: "python101" },
-			{ label: "Javascript101", value: "javascript101" },
-			{ label: "Java101", value: "java101" },
+			{ label: "Other", value: "other" },
 			{ label: "WebDev", value: "webdev" },
-			{ label: "DiscordJS", value: "discordjs" },
 			{ label: "SQL", value: "sql" },
-			{ label: "Other", value: "other" }
+			{ label: "Python101", value: "python101" },
+			{ label: "DiscordJS", value: "discordjs" },
+			{ label: "Java101", value: "java101" },
+			{ label: "Javascript101", value: "javascript101" },
 		]);
 
 	channel.send({
-		embeds: [embed], components: [new MessageActionRow().addComponents(
-			select
-		)],
-		// mf if its ephemeral who will see it you wombat
-		// ephemeral: true
+		embeds: [embed], components: [new MessageActionRow().addComponents(select)],
 	});
-	interaction.reply({ content: "Ticket created!", ephemeral: true });
+	interaction.reply({ content: `${interaction.user} Ticket created! <#${channel.id}>`, ephemeral: true });
 }

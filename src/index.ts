@@ -2,20 +2,25 @@
 import {
 	Client,
 	Collection,
-	GuildChannel,
 	Intents,
+	TextChannel,
 } from "discord.js";
 import { readdirSync } from "fs";
 import BaseCommand from "./commands";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/rest/v9";
-import { config } from "dotenv";
 import hasArg from "./lib/utils/hasArg";
 import { RateLimiter } from "discord.js-rate-limiter";
 import { InteractionKind } from "./lib/types/interactionKind";
 import ticketType from "./interactions/selects/ticketType";
-import ticketOpen from "./interactions/buttons/ticketOpen";
-import ticketArchive from "./interactions/buttons/ticketArchive";
+import ticketOpen, { resetInactivityTimer } from "./interactions/buttons/ticketOpen";
+import ticketClose from "./interactions/buttons/ticketClose";
+import ticketReopen from "./interactions/buttons/ticketReopen";
+import ticketDelete from "./interactions/buttons/ticketDelete";
+import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
+import ticketConfirm from "./interactions/buttons/ticketConfirm";
+import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
+import { config } from "dotenv";
 config();
 
 class Bot extends Client {
@@ -40,6 +45,12 @@ const commandFiles =
 		commands.set(commandInstance.metadata.name, commandInstance);
 	}
 })().then(main);
+
+export const timers = new Collection<string, NodeJS.Timeout>();
+export const rateLimiter = new RateLimiter(2, 1000);
+// 24 hours
+export const timeoutLimit = 1000 * 60 * 60 * 24;
+// export const timeoutLimit = 5000;
 
 async function main() {
 	if (hasArg("register", "r")) {
@@ -66,12 +77,7 @@ async function main() {
 
 	const client = new Bot();
 
-	const timers = new Collection<string, NodeJS.Timeout>();
 
-	const rateLimiter = new RateLimiter(1, 1000);
-
-	// 48 hours
-	const timeoutLimit = 1000 * 60 * 60 * 24 * 2;
 
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
@@ -83,53 +89,59 @@ async function main() {
 	});
 
 	client.on("messageCreate", (message) => {
+		if (message.author.bot) return;
 		if (timers.has(message.channel.id)) {
-			clearTimeout(timers.get(message.channel.id));
-
-			timers.set(message.channel.id, setTimeout(async () => {
-				await ticketArchive(message.channel as GuildChannel);
-			}, timeoutLimit));
-
+			resetInactivityTimer(message.channel as TextChannel, client);
 		}
 	});
 
 	client.on("interactionCreate", async (interaction: InteractionKind) => {
-		const limited = rateLimiter.take(interaction.user.id);
+		try {
+			const limited = rateLimiter.take(interaction.user.id);
 
-		if (limited) return interaction.reply({ content: "You've been rate limited.", ephemeral: true });
+			if (limited) return await interaction.reply({ content: "You've been rate limited.", ephemeral: true });
 
-		if (interaction.isCommand()) {
-			const command = commands.get(interaction.commandName);
-			if (!command) return;
-			await command.execute(interaction).catch(() => interaction.editReply({
-				content: "An error occurred while executing this command.\nIf this keeps happening please contact the owner.",
-			}));
-		}
+			if (interaction.isCommand()) {
+				const command = commands.get(interaction.commandName);
+				if (!command) return;
+				await command.execute(interaction);
+			}
 
-		if (interaction.isButton()) {
-			switch (interaction.customId) {
-				case "ticketOpen":
-					await ticketOpen(interaction);
-					break;
-				case "ticketClose":
-					await ticketArchive(interaction.channel as GuildChannel);
-					interaction.reply({ content: "Ticket closed." , ephemeral: true });
-					break;
+			if (interaction.isButton()) {
+				switch (interaction.customId) {
+					case "ticketOpen":
+						await ticketOpen(interaction);
+						break;
+					case "ticketReopen":
+						await ticketReopen(interaction);
+						break;
+					case "ticketClose":
+						await ticketConfirm(interaction);
+						break;
+					case "ticketDelete":
+						await ticketDelete(interaction);
+						break;
+					case "ticketSaveTranscript":
+						await ticketSaveTranscript(interaction);
+						break;
+					case "confirmClose":
+						await ticketClose(interaction);
+						break;
+					case "cancelClose":
+						await ticketCancelClose(interaction);
+						break;
+				}
+			}
+			if (interaction.isSelectMenu()) {
+				if (interaction.customId == "ticketType") ticketType(interaction);
 			}
 		}
-
-		if (interaction.isSelectMenu()) {
-			if (interaction.customId == "ticketType") ticketType(interaction);
-		}
-
-		if (interaction.isContextMenu()) {
-			await interaction.deferReply({ ephemeral: false });
-			const command = commands.get(interaction.commandName);
-			if (!command) return;
-			await command.execute(interaction);
+		catch (error) {
+			const msg = { content: `There was an error with this interaction. Please try again later. If the issue persists, please contact the bot owner\n${error}`, ephemeral: true };
+			try { await interaction.reply(msg); }
+			catch (e) { await interaction.editReply(msg); }
 		}
 	});
 
 	client.login(process.env.TOKEN);
 }
-
