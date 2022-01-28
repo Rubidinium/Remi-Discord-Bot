@@ -48,8 +48,6 @@ export default async function (interaction: ButtonInteraction) {
 
 	resetInactivityTimer(channel, interaction.client);
 
-	channel.send(`<@${interaction.user.id}>`);
-
 	const embed = new MessageEmbed()
 		.setTitle("Select a ticket type")
 		.setDescription(
@@ -71,6 +69,7 @@ export default async function (interaction: ButtonInteraction) {
 		]);
 
 	channel.send({
+		content: `<@${interaction.user.id}>`,
 		embeds: [embed], components: [new MessageActionRow().addComponents(select)],
 	});
 	interaction.reply({ content: `${interaction.user} Ticket created! <#${channel.id}>`, ephemeral: true });
