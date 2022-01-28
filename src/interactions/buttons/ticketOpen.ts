@@ -48,6 +48,8 @@ export default async function (interaction: ButtonInteraction) {
 
 	resetInactivityTimer(channel, interaction.client);
 
+	channel.send(`<@${interaction.user.id}>`);
+
 	const embed = new MessageEmbed()
 		.setTitle("Select a ticket type")
 		.setDescription(
