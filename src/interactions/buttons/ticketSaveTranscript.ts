@@ -53,7 +53,7 @@ export default async function (interaction: ButtonInteraction, logger: Logger) {
 		catch (e) {
 			await interaction.followUp({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner." });
 		}
-		await logger.saveTranscript(channel.name.split('-')[0], url, interaction.user);
+		await logger.saveTranscript(channel.name.split("-")[0], url, interaction.user);
 	}
 
 	catch (e) {
