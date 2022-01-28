@@ -25,11 +25,7 @@ export default function generateTranscript(messages, channel, opts = { returnBuf
 	const dom = new jsdom.JSDOM(template.replace("{{TITLE}}", channel.name));
 	const document = dom.window.document;
 
-	// const xss = new XSS.FilterXSS({
-	//     whiteList: static.xssSettings
-	// }).process;
-
-	// Downside of DOMPurify is that it straight up removes the elements
+	// Downside of DOMPurify is that it straight up removes the elements (way more secure because a lot of IE versions would just straight up ignore escaped tags)
 	// it doesn't escape it
 	// not good for use for stuff like message content.
 	const DOMPurify = purify(dom.window);
@@ -500,7 +496,7 @@ function formatBytes(bytes, decimals = 2) {
 
 	const k = 1024;
 	const dm = decimals < 0 ? 0 : decimals;
-	const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+	const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]; // hmm yes we will be using yottabytes
 
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 

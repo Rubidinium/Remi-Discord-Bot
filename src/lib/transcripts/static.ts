@@ -14,5 +14,5 @@ export const LanguageAliases = {
 	"ts": "typescript",
 	"js": "javascript",
 	"py": "python",
-	"rb": "ruby"
+	"rb": "ruby",
 };
