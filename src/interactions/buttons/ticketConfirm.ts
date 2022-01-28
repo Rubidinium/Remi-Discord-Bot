@@ -8,7 +8,22 @@ export default async function (interaction: ButtonInteraction) {
 		)
 		.setColor(0xA020F0)
 		.setFooter({text:`${interaction.user.tag}`, iconURL: interaction.user.avatarURL()});
-	await interaction.reply({embeds: [embed], components: [new MessageActionRow().addComponents(new MessageButton().setCustomId("confirmClose").setLabel("Confirm").setEmoji("✅").setStyle("SUCCESS"), new MessageButton().setCustomId("cancelClose").setLabel("Cancel").setEmoji("❌").setStyle("DANGER"))]});
+	await interaction.reply({embeds: [embed], components: [
+		new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId("confirmClose")
+					.setLabel("Confirm")
+					.setEmoji("✅")
+					.setStyle("SUCCESS"), 
+				new MessageButton()
+					.setCustomId("cancelClose")
+					.setLabel("Cancel")
+					.setEmoji("❌")
+					.setStyle("DANGER")
+			)
+		]
+	});
 
 	interaction.message.components.forEach((component) => {
 		(component as MessageActionRow).components.forEach((button: MessageButton) => {

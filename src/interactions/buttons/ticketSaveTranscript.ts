@@ -1,9 +1,10 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageAttachment, MessageButton, TextChannel } from "discord.js";
 import { createTranscript } from "discord-transcripts";
 import { createTranscriptNotion } from "../../lib/utils/notion";
+import Logger from "../../lib/utils/logger";
 
 
-export default async function (interaction: ButtonInteraction) {
+export default async function (interaction: ButtonInteraction, logger: Logger) {
 	await interaction.deferReply();
 	let saved = false;
 	interaction.message.components.forEach((component) => {
@@ -52,10 +53,12 @@ export default async function (interaction: ButtonInteraction) {
 		catch (e) {
 			await interaction.followUp({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner." });
 		}
+
+		await logger.saveTranscript(interaction.channelId, url, interaction.user);
 	}
 
 	catch (e) {
 		console.error(e);
 		interaction.followUp({ content: "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner.", ephemeral: true });
 	}
-};
+}

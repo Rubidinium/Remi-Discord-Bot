@@ -2,6 +2,7 @@
 import {
 	Client,
 	Collection,
+	GuildChannel,
 	Intents,
 	TextChannel,
 } from "discord.js";
@@ -21,6 +22,7 @@ import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
 import ticketConfirm from "./interactions/buttons/ticketConfirm";
 import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
 import { config } from "dotenv";
+import Logger from "./lib/utils/logger";
 config();
 
 class Bot extends Client {
@@ -53,6 +55,7 @@ export const timeoutLimit = 1000 * 60 * 60 * 24;
 // export const timeoutLimit = 5000;
 
 async function main() {
+
 	if (hasArg("register", "r")) {
 		console.log("registering");
 
@@ -77,11 +80,10 @@ async function main() {
 
 	const client = new Bot();
 
-
+	const logger = new Logger("main", client);
 
 	client.once("ready", async () => {
 		console.log(`${client.user.tag} is ready!`);
-
 		client.user?.setActivity({
 			name: "/help",
 			type: "LISTENING"
@@ -111,21 +113,24 @@ async function main() {
 				switch (interaction.customId) {
 					case "ticketOpen":
 						await ticketOpen(interaction);
+						logger.ticketOpen((interaction.channel as GuildChannel).id, interaction.user);
 						break;
 					case "ticketReopen":
 						await ticketReopen(interaction);
+						logger.ticketReopen((interaction.channel as GuildChannel).id, interaction.user);
 						break;
 					case "ticketClose":
 						await ticketConfirm(interaction);
 						break;
 					case "ticketDelete":
-						await ticketDelete(interaction);
+						await ticketDelete(interaction, logger);
 						break;
 					case "ticketSaveTranscript":
-						await ticketSaveTranscript(interaction);
+						await ticketSaveTranscript(interaction, logger);
 						break;
 					case "confirmClose":
 						await ticketClose(interaction);
+						logger.ticketClose((interaction.channel as GuildChannel).id, interaction.user);
 						break;
 					case "cancelClose":
 						await ticketCancelClose(interaction);
