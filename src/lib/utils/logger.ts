@@ -6,22 +6,27 @@ const TRANSCRIPT_CHANNEL_ID = "936320323240992799";
 export default class Logger {
 	constructor(private name: string, private client: Client) { }
 
-	ticketClose(id: Snowflake, author: User) {
-		this.send("RED", "Closed", id, author);
+	ticketClose(author: User) {
+		this.send("RED", "Closed", author);
 	}
 
-	ticketOpen(id: Snowflake, author: User) {
-		this.send("BLURPLE", "Opened", id, author);
+	ticketOpen(author: User) {
+		this.send("BLURPLE", "Opened", author);
 	}
 
-	ticketReopen(id: Snowflake, author: User) {
-		this.send("YELLOW", "Reopened", id, author);
+	ticketReopen(author: User) {
+		this.send("YELLOW", "Reopened", author);
 	}
 
-	saveTranscript(id: Snowflake, url: string, author: User) {
+	saveTranscript(category: string, url: string, author: User) {
 		const embed = new MessageEmbed()
-			.setTitle("Ticket Action")
-			.setDescription(`Ticket: <#${id}>\nAction: Transcript Saved\nURL: ${url}`)
+			.setTitle("Transcript Saved")
+			.setFields([
+				{ name: "Ticket Owner", value: `${author.tag}`, inline: true },
+				{ name: "Ticket Category", value: `${category}`, inline: true },
+				{ name: "Action", value: "Transcript Saved", inline: true },
+				{ name: "URL", value: `[View Transcript](${url})`, inline: true }
+			])
 			.setColor("AQUA")
 			.setTimestamp(Date.now())
 			.setAuthor({
@@ -36,10 +41,13 @@ export default class Logger {
 		}
 	}
 
-	send(color: ColorResolvable, action: string, ticketID: Snowflake, author: User) {
+	send(color: ColorResolvable, action: string,  author: User) {
 		const embed = new MessageEmbed()
 			.setTitle("Ticket Action")
-			.setDescription(`Ticket: <#${ticketID}>\nAction: ${action}`)
+			.setFields([
+				{ name: "Ticket Owner", value: `${author.tag}`, inline: true },
+				{ name: "Action", value: `${action}`, inline: true }
+			])
 			.setColor(color)
 			.setTimestamp(Date.now())
 			.setAuthor({

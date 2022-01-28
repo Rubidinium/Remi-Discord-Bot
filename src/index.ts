@@ -113,11 +113,11 @@ async function main() {
 				switch (interaction.customId) {
 					case "ticketOpen":
 						await ticketOpen(interaction);
-						logger.ticketOpen((interaction.channel as GuildChannel).id, interaction.user);
+						logger.ticketOpen(interaction.user);
 						break;
 					case "ticketReopen":
 						await ticketReopen(interaction);
-						logger.ticketReopen((interaction.channel as GuildChannel).id, interaction.user);
+						logger.ticketReopen(interaction.user);
 						break;
 					case "ticketClose":
 						await ticketConfirm(interaction);
@@ -130,7 +130,7 @@ async function main() {
 						break;
 					case "confirmClose":
 						await ticketClose(interaction);
-						logger.ticketClose((interaction.channel as GuildChannel).id, interaction.user);
+						logger.ticketClose(interaction.user);
 						break;
 					case "cancelClose":
 						await ticketCancelClose(interaction);
