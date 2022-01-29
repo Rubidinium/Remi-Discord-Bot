@@ -39,8 +39,8 @@ export default class CommandHandler extends Event {
         try {
             commandData.exec(interaction);
         } catch (error) {
-            const cmdLogger = createLogger(commandData.name);
-            cmdLogger.error(`Failed to run command ${commandData.name}:`, error);
+            const cmdLogger = createLogger(commandData.metaData.name);
+            cmdLogger.error(`Failed to run command ${commandData.metaData.name}:`, error);
             cmdLogger.error(`Command ran by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name ?? "Not in guild"} (${interaction.guild?.id ?? "N/A"})`);
             cmdLogger.error("Command options:", interaction.options.resolved);
         }

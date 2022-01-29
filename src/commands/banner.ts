@@ -1,10 +1,23 @@
 import SlashCommand from "../structures/Command";
 import { CommandInteraction, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 
 export default class BannerCommand extends SlashCommand {
 	constructor() {
-		super("banner", "Returns a custom banner");
+		// @ts-ignore
+		super(new SlashCommandBuilder()
+			.setName("banner")
+			.setDescription("Returns a custom banner.")
+			.addStringOption(option =>
+				option.setName("banner_text")
+					.setDescription("The text that will appear on the banner.")
+					.setRequired(true))
+			.addStringOption(option =>
+				option.setName("banner_type")
+					.setDescription("The banner type to use.")
+					.addChoice("Default", "default"))
+		);
 	}
 
 	exec(interaction: CommandInteraction) {

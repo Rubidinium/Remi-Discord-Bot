@@ -1,10 +1,11 @@
 import SlashCommand from "../structures/Command";
 import { CommandInteraction, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 
 export default class ExampleCommand extends SlashCommand {
     constructor() {
-        super("example", "An example command.");
+        super(new SlashCommandBuilder().setName("example").setDescription("Returns a custom embed."));
     }
 
     exec(interaction: CommandInteraction) {

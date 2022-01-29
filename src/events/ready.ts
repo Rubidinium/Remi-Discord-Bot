@@ -27,13 +27,13 @@ export default class ReadyEvent extends Event {
             discordLogger.info(`${deploy ? "Deploying" : "Registering"} ${commands.size} command${commands.size > 1 ? "s" : ""}...`);
 
             const commandsToDeploy =
-                !deploy ? commands.filter(c => client.application?.commands.cache.some(cmd => cmd.name === c.name) === false).values()
+                !deploy ? commands.filter(c => client.application?.commands.cache.some(cmd => cmd.name === c.metaData.name) === false).values()
                     : commands.values();
 
             for (const command of commandsToDeploy) {
-                discordLogger.debug(`${deploy ? "Deploying" : "Registering"} command ${command.name}...`);
-                await client.application?.commands.create(buildSlashCommand(command));
-                discordLogger.debug(`${deploy ? "Deployed" : "Registered"} command ${command.name}.`);
+                discordLogger.debug(`${deploy ? "Deploying" : "Registering"} command ${command.metaData.name}...`);
+                await client.application?.commands.create(command.build(client));
+                discordLogger.debug(`${deploy ? "Deployed" : "Registered"} command ${command.metaData.name}.`);
             }
 
             discordLogger.info(`${deploy ? "Deployed" : "Registered"} ${commands.size} command${commands.size > 1 ? "s" : ""}.`);
@@ -49,29 +49,22 @@ export default class ReadyEvent extends Event {
             }
 
             discordLogger.info(`Editing ${commandsToEdit.length} commands...`);
-            discordLogger.debug(commandsToEdit.map(cmd => cmd.name).join(", "));
+            discordLogger.debug(commandsToEdit.map(cmd => cmd.metaData.name).join(", "));
 
-            const dataForCommands = commandsToEdit.map(cmd => client.application?.commands.cache.find(c => c.name === cmd.name));
+            const dataForCommands = commandsToEdit.map(cmd => client.application?.commands.cache.find(c => c.name === cmd.metaData.name));
 
             for (const command of commandsToEdit) {
-                const commandData = dataForCommands.find(c => c?.name === command.name);
+                const commandData = dataForCommands.find(c => c?.name === command.metaData.name);
                 if (!commandData) {
-                    discordLogger.warn(`Could not find command ${command.name}, registering it instead.`);
-                    await client.application?.commands.create(buildSlashCommand(command));
-                    discordLogger.info(`Registered command ${command.name}.`);
+                    discordLogger.warn(`Could not find command ${command.metaData.name}, registering it instead.`);
+                    await client.application?.commands.create(command.build(client));
+                    discordLogger.info(`Registered command ${command.metaData.name}.`);
                 } else {
-                    discordLogger.debug(`Editing command ${command.name}...`);
-                    commandData.edit(buildSlashCommand(command) as unknown as ApplicationCommandData);
-                    discordLogger.debug(`Edited command ${command.name}.`);
+                    discordLogger.debug(`Editing command ${command.metaData.name}...`);
+                    commandData.edit(command.build(client) as unknown as ApplicationCommandData);
+                    discordLogger.debug(`Edited command ${command.metaData.name}.`);
                 }
             }
         }
     }
-}
-
-function buildSlashCommand(command: SlashCommand): RESTPostAPIApplicationCommandsJSONBody {
-    let data = command.build(client);
-    if (data instanceof SlashCommandBuilder) data = data.toJSON();
-
-    return data;
 }

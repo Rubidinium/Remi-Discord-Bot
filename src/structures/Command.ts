@@ -7,13 +7,11 @@ export type SlashCommandOptions = {
 };
 
 export default class SlashCommand {
-    name: string;
-    description: string;
+    metaData: SlashCommandBuilder;
     options: SlashCommandOptions | undefined;
 
-    constructor(name: string, description: string, options?: SlashCommandOptions) {
-        this.name = name;
-        this.description = description;
+    constructor(metaData: SlashCommandBuilder, options?: SlashCommandOptions) {
+        this.metaData = metaData;
         this.options = options;
     }
 
@@ -23,9 +21,7 @@ export default class SlashCommand {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    build(client: Client): SlashCommandBuilder | RESTPostAPIApplicationCommandsJSONBody {
-        return new SlashCommandBuilder()
-            .setName(this.name)
-            .setDescription(this.description);
+    build(client: Client): RESTPostAPIApplicationCommandsJSONBody {
+        return this.metaData.toJSON();
     }
 }

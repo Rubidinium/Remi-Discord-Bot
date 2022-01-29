@@ -54,9 +54,9 @@ async function loadCommands(dir = path.resolve(__dirname, "./commands")) {
 		const loadedCommand = await import(dir + "/" + file);
 		const command: Command = new loadedCommand.default();
 
-		commands.set(command.name, command);
+		commands.set(command.metaData.name, command);
 
-		discordLogger.info(`Loaded command ${command.name} from ${file}`);
+		discordLogger.info(`Loaded command ${command.metaData.name} from ${file}`);
 	}
 }
 
