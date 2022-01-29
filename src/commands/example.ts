@@ -8,10 +8,20 @@ export default class ExampleCommand extends SlashCommand {
         super(new SlashCommandBuilder().setName("example").setDescription("Returns a custom embed."));
     }
 
-    exec(interaction: CommandInteraction) {
-        interaction.reply({
+    async exec(interaction: CommandInteraction) {
+        await interaction.reply({
             embeds: [
                 new MessageEmbed().setTitle("Example title").setDescription("Example description here")
+            ]
+        });
+        interaction.reply({
+            embeds: [
+ 
+                    .setTitle("Example title")
+                    .setDescription("Example description here")
+                    .setColor("#0099ff")
+                    .setFooter("Example footer")
+                    .setTimestamp()
             ]
         });
     }

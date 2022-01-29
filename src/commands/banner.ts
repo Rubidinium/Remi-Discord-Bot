@@ -20,7 +20,7 @@ export default class BannerCommand extends SlashCommand {
 		);
 	}
 
-	exec(interaction: CommandInteraction) {
+	async exec(interaction: CommandInteraction) {
 		interaction.reply({
 			embeds: [
 				new MessageEmbed().setTitle("Example title").setDescription("Example description here")
