@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --fix --cache --ext .js,.jsx,.ts,.tsx",
-    "register": "ts-node src/index.ts --register",
+    "deploy": "ts-node src/index.ts deploy",
     "start": "ts-node src/index.ts",
     "dev": "ts-node-dev --watch src/**/*.ts src/index.ts"
   },
@@ -25,6 +25,8 @@
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@notionhq/client": "^0.4.13",
+    "bunyan": "^1.8.15",
+    "bunyan-format": "^0.2.1",
     "discord-api-types": "^0.26.1",
     "discord-transcripts": "^1.0.7",
     "discord.js": "^13.6.0",
@@ -37,6 +39,8 @@
     "ts-results": "^3.3.0"
   },
   "devDependencies": {
+    "@types/bunyan": "^1.8.8",
+    "@types/bunyan-format": "^0.2.4",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",

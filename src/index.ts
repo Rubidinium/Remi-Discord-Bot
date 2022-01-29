@@ -1,152 +1,111 @@
-/* eslint-disable indent */
-import {
-	Client,
-	Collection,
-	GuildChannel,
-	Intents,
-	TextChannel,
-} from "discord.js";
-import { readdirSync } from "fs";
-import BaseCommand from "./commands";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/rest/v9";
-import hasArg from "./lib/utils/hasArg";
-import { RateLimiter } from "discord.js-rate-limiter";
-import { InteractionKind } from "./lib/types/interactionKind";
-import ticketType from "./interactions/selects/ticketType";
-import ticketOpen, { resetInactivityTimer } from "./interactions/buttons/ticketOpen";
-import ticketClose from "./interactions/buttons/ticketClose";
-import ticketReopen from "./interactions/buttons/ticketReopen";
-import ticketDelete from "./interactions/buttons/ticketDelete";
-import ticketSaveTranscript from "./interactions/buttons/ticketSaveTranscript";
-import ticketConfirm from "./interactions/buttons/ticketConfirm";
-import ticketCancelClose from "./interactions/buttons/ticketCancelClose";
+// 		catch (error) {
+// 			const msg = { content: `There was an error with this interaction. Please try again later. If the issue persists, please contact the bot owner\n${error}`, ephemeral: true };
+// 			try { await interaction.reply(msg); }
+// 			catch (e) { await interaction.editReply(msg); }
+// 		}
+
+import Discord from "discord.js";
+
+export const client = new Discord.Client({
+	intents: [Discord.Intents.FLAGS.GUILDS]
+});
+
+import Logger from "./utils/loggerMessage";
+export const logger = new Logger("main", client);
+
+import fs from "fs";
+import path from "path";
+import { discordLogger } from "./utils/logger";
 import { config } from "dotenv";
-import Logger from "./lib/utils/logger";
 config();
 
-class Bot extends Client {
-	constructor() {
-		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
+discordLogger.info("Loading all events...");
+import Event from "./structures/Event";
+async function loadEvents(dir = path.resolve(__dirname, "./events")) {
+	const files = await fs.promises.readdir(dir);
+	for (const file of files) {
+		const fileDesc = fs.statSync(`${dir}/${file}`);
+
+		if (fileDesc.isDirectory()) {
+			await loadEvents(`${dir}/${file}`);
+			continue;
+		}
+
+		const imported = await import(`${dir}/${file}`);
+		const event: Event = new imported.default();
+		event.register(client);
+		discordLogger.info(`Loaded event ${event.name} (${event.event})`);
 	}
 }
 
-const commands = new Collection<string, BaseCommand>();
+discordLogger.info("Loading all commands...");
+import Command from "./structures/Command";
+export const commands = new Discord.Collection<string, Command>();
+async function loadCommands(dir = path.resolve(__dirname, "./commands")) {
+	const files = fs.readdirSync(dir);
+	for (const file of files) {
+		const fileDesc = fs.statSync(dir + "/" + file);
 
-const commandFiles =
-	readdirSync("./src/commands")
-		.filter((file) => file.split(".command").length > 1);
+		if (fileDesc.isDirectory()) {
+			await loadCommands(dir + "/" + file);
+			continue;
+		}
 
-(async () => {
-	for (const file of commandFiles) {
-		const { default: CommandClass } = await import(`./commands/${file}`);
-		const commandInstance: BaseCommand = new CommandClass();
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore THIS IS A VALID USE OF TS-IGNORE
-		if (["MESSAGE", "USER"].includes(commandInstance.metadata.type as string)) delete commandInstance.metadata.description;
-		commands.set(commandInstance.metadata.name, commandInstance);
+		const loadedCommand = await import(dir + "/" + file);
+		const command: Command = new loadedCommand.default();
+
+		commands.set(command.name, command);
+
+		discordLogger.info(`Loaded command ${command.name} from ${file}`);
 	}
-})().then(main);
+}
 
-export const timers = new Collection<string, NodeJS.Timeout>();
-export const rateLimiter = new RateLimiter(2, 1000);
-// 24 hours
-export const timeoutLimit = 1000 * 60 * 60 * 24;
-// export const timeoutLimit = 5000;
+discordLogger.info("Loading all buttons...");
+import Button from "./structures/Button";
+export const buttons = new Discord.Collection<string, Button>();
+async function loadButtons(dir = path.resolve(__dirname, "./buttons")) {
+	const files = fs.readdirSync(dir);
+	for (const file of files) {
+		const fileDesc = fs.statSync(dir + "/" + file);
 
-async function main() {
-
-	if (hasArg("register", "r")) {
-		console.log("registering");
-
-		const cmdDatas = commands.map(cmd => cmd.metadata);
-		const cmdNames = cmdDatas.map(cmdData => cmdData.name);
-
-		console.log(
-			cmdNames.map(cmdName => `'${cmdName}'`).join(", ")
-		);
-
-		try {
-			const rest = new REST({ version: "9" }).setToken(process.env.TOKEN);
-			await rest.put(Routes.applicationGuildCommands("883540250759163975", "924860504302821377"), { body: cmdDatas });
-		} catch (error) {
-			console.error("Error registering commands:", error);
-			return;
+		if (fileDesc.isDirectory()) {
+			await loadButtons(dir + "/" + file);
+			continue;
 		}
 
-		console.log("Successfully registered commands!");
-		process.exit(0);
+		const loadedButton = await import(dir + "/" + file);
+		const button: Button = new loadedButton.default();
+
+		buttons.set(button.customId, button);
+
+		discordLogger.info(`Loaded button ${button.customId} from ${file}`);
 	}
+}
 
-	const client = new Bot();
+discordLogger.info("Loading all Selects...");
+import Select from "./structures/Select";
+export const selects = new Discord.Collection<string, Select>();
+async function loadSelects(dir = path.resolve(__dirname, "./selects")) {
+	const files = fs.readdirSync(dir);
+	for (const file of files) {
+		const fileDesc = fs.statSync(dir + "/" + file);
 
-	const logger = new Logger("main", client);
-
-	client.once("ready", async () => {
-		console.log(`${client.user.tag} is ready!`);
-		client.user?.setActivity({
-			name: "/help",
-			type: "LISTENING"
-		});
-	});
-
-	client.on("messageCreate", (message) => {
-		if (message.author.bot) return;
-		if (timers.has(message.channel.id)) {
-			resetInactivityTimer(message.channel as TextChannel, client);
+		if (fileDesc.isDirectory()) {
+			await loadSelects(dir + "/" + file);
+			continue;
 		}
-	});
 
-	client.on("interactionCreate", async (interaction: InteractionKind) => {
-		try {
-			const limited = rateLimiter.take(interaction.user.id);
+		const loadedSelect = await import(dir + "/" + file);
+		const select: Select = new loadedSelect.default();
 
-			if (limited) return await interaction.reply({ content: "You've been rate limited.", ephemeral: true });
+		selects.set(select.customId, select);
 
-			if (interaction.isCommand()) {
-				const command = commands.get(interaction.commandName);
-				if (!command) return;
-				await command.execute(interaction);
-			}
+		discordLogger.info(`Loaded button ${select.customId} from ${file}`);
+	}
+}
 
-			if (interaction.isButton()) {
-				switch (interaction.customId) {
-					case "ticketOpen":
-						await ticketOpen(interaction);
-						logger.ticketOpen(interaction.user);
-						break;
-					case "ticketReopen":
-						await ticketReopen(interaction);
-						logger.ticketReopen(interaction.user);
-						break;
-					case "ticketClose":
-						await ticketConfirm(interaction);
-						break;
-					case "ticketDelete":
-						await ticketDelete(interaction, logger);
-						break;
-					case "ticketSaveTranscript":
-						await ticketSaveTranscript(interaction, logger);
-						break;
-					case "confirmClose":
-						await ticketClose(interaction);
-						logger.ticketClose(interaction.user);
-						break;
-					case "cancelClose":
-						await ticketCancelClose(interaction);
-						break;
-				}
-			}
-			if (interaction.isSelectMenu()) {
-				if (interaction.customId == "ticketType") ticketType(interaction);
-			}
-		}
-		catch (error) {
-			const msg = { content: `There was an error with this interaction. Please try again later. If the issue persists, please contact the bot owner\n${error}`, ephemeral: true };
-			try { await interaction.reply(msg); }
-			catch (e) { await interaction.editReply(msg); }
-		}
-	});
-
+Promise.all([loadEvents(), loadCommands(), loadButtons(), loadSelects()]).then(() => {
+	discordLogger.info("Finished loading commands and events.");
+	discordLogger.info("Connecting to Discord...");
 	client.login(process.env.TOKEN);
-}
+});

@@ -1,4 +1,4 @@
-import { Client, ColorResolvable, MessageEmbed, Snowflake, User } from "discord.js";
+import { Client, ColorResolvable, MessageEmbed, User } from "discord.js";
 
 const LOG_CHANNEL_ID = "936320222426701844";
 const TRANSCRIPT_CHANNEL_ID = "936320323240992799";
