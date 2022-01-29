@@ -16,7 +16,7 @@ if (!fs.existsSync(logDir)) {
  * @returns {bunyan} 
  */
 export default function createLogger(name: string): bunyan {
-	if (loggers.has(name)) return loggers.get(name)!;
+	if (loggers.has(name)) return loggers.get(name);
 
 	const logger = bunyan.createLogger({
 		name: name,

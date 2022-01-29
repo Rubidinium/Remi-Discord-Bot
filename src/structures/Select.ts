@@ -7,6 +7,7 @@ export default class Select {
 		this.customId = customId;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	exec(interaction: SelectMenuInteraction) {
 		throw new Error("Method not implemented.");
 	}
