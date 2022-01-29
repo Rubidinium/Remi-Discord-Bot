@@ -14,15 +14,5 @@ export default class ExampleCommand extends SlashCommand {
                 new MessageEmbed().setTitle("Example title").setDescription("Example description here")
             ]
         });
-        interaction.reply({
-            embeds: [
- 
-                    .setTitle("Example title")
-                    .setDescription("Example description here")
-                    .setColor("#0099ff")
-                    .setFooter("Example footer")
-                    .setTimestamp()
-            ]
-        });
     }
 }
