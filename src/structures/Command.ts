@@ -1,27 +1,44 @@
-import { Client, Interaction, PermissionResolvable } from "discord.js";
+import {
+  ApplicationCommandPermissionData,
+  Client,
+  Interaction,
+  PermissionResolvable,
+} from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 export type SlashCommandOptions = {
-    requiredPermissions: PermissionResolvable[];
+  requiredPermissions: PermissionResolvable[];
 };
 
 export default class SlashCommand {
-    metaData: SlashCommandBuilder;
-    options: SlashCommandOptions | undefined;
+  metaData:
+    | SlashCommandBuilder
+    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+  userPermissions: ApplicationCommandPermissionData[] | undefined;
+  defaultPermission: boolean;
 
-    constructor(metaData: SlashCommandBuilder, options?: SlashCommandOptions) {
-        this.metaData = metaData;
-        this.options = options;
-    }
+  constructor(
+    metaData:
+      | SlashCommandBuilder
+      | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">,
+    userPermissions?: ApplicationCommandPermissionData[] | undefined
+  ) {
+    this.metaData = metaData;
+    this.userPermissions = userPermissions;
+    this.defaultPermission = userPermissions == undefined;
+  }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    exec(interaction: Interaction) {
-        throw new Error("Method not implemented.");
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  exec(interaction: Interaction) {
+    throw new Error("Method not implemented.");
+  }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    build(client: Client): RESTPostAPIApplicationCommandsJSONBody {
-        return this.metaData.toJSON();
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  build(client: Client): RESTPostAPIApplicationCommandsJSONBody {
+    return {
+      ...this.metaData.toJSON(),
+      default_permission: this.defaultPermission,
+    };
+  }
 }
