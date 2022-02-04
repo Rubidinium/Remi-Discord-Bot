@@ -42,3 +42,4 @@ export default function createLogger(name: string): bunyan {
 }
 
 export const discordLogger = createLogger("discord");
+export const mongoLogger = createLogger("mongo");

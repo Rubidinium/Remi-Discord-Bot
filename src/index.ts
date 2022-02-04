@@ -14,7 +14,6 @@ export const logger = new Logger("main", client);
 
 import fs from "fs";
 import path from "path";
-import mongoose from "mongoose";
 import { discordLogger } from "./utils/logger";
 import { config } from "dotenv";
 config();

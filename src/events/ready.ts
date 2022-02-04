@@ -1,6 +1,7 @@
 import { client, commands } from "..";
 import Event from "../structures/Event";
-import { discordLogger } from "../utils/logger";
+import { discordLogger, mongoLogger } from "../utils/logger";
+import mongoose from "mongoose";
 
 export default class ReadyEvent extends Event {
   constructor() {
@@ -8,6 +9,16 @@ export default class ReadyEvent extends Event {
   }
 
   async exec() {
+    mongoose
+      .connect(process.env.MONGO, {
+        keepAlive: true,
+      })
+      .then(() => {
+        mongoLogger.info("Connected to MongoDB");
+      }).catch((err) => {
+        mongoLogger.error("Failed to connect to MongoDB:", err);
+      });
+
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
     const guild = await client.guilds.fetch("924860504302821377");
 
