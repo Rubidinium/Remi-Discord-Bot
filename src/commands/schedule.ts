@@ -124,7 +124,10 @@ export default class ScheduleCommand extends SlashCommand {
         })
         .then(() => {
           Schedule.deleteOne({
-			
+            tutor: interaction.user.id,
+            student: student.id,
+            date: date2,
+            subject,
           });
         });
     }, date2.getTime() - Date.now());
