@@ -15,7 +15,8 @@ export default class ReadyEvent extends Event {
       })
       .then(() => {
         mongoLogger.info("Connected to MongoDB");
-      }).catch((err) => {
+      })
+      .catch((err) => {
         mongoLogger.error("Failed to connect to MongoDB:", err);
       });
 
