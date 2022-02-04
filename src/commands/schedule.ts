@@ -70,9 +70,8 @@ export default class ScheduleCommand extends SlashCommand {
       );
 
     const date2 = new Date();
-    console.log(month, day);
+
     date2.setMonth(month - 1, day);
-    console.log(hours, minutes);
     date2.setHours(hours, minutes, 0, 0);
 
     const schedule = await Schedule.create({
@@ -87,7 +86,7 @@ export default class ScheduleCommand extends SlashCommand {
       embeds: [embed],
       ephemeral: true,
     });
-    console.log(date2.getTime() - Date.now());
+
     setTimeout(() => {
       const message = {
         embeds: [
