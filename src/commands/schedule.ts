@@ -40,8 +40,8 @@ export default class ScheduleCommand extends SlashCommand {
         ),
       [
         {
-          // id: "tutor_id_here",
-          id: "924860504487366723",
+          // tutor role
+          id: "939246116900319312",
           type: "ROLE",
           permission: true,
         },
