@@ -89,47 +89,48 @@ export default class ScheduleCommand extends SlashCommand {
     });
     console.log(date2.getTime() - Date.now());
     setTimeout(() => {
-      student
-        .send({
-          embeds: [
-            new MessageEmbed()
-              .setColor("GREEN")
-              .setTitle("ALERT: You have a tutoring session coming up!")
-              .setDescription(
-                "Please make sure you both communicate and set up a private voice channel"
-              )
-              .setFields([
-                {
-                  name: "Tutor",
-                  value: interaction.user.toString(),
-                  inline: true,
-                },
-                {
-                  name: "Student",
-                  value: student.toString(),
-                  inline: true,
-                },
-                {
-                  name: "Time",
-                  value: time + " PST",
-                  inline: true,
-                },
-                {
-                  name: "Subject",
-                  value: subject || "N/A",
-                  inline: true,
-                },
-              ]),
-          ],
-        })
-        .then(() => {
+      const message = {
+        embeds: [
+          new MessageEmbed()
+            .setColor("GREEN")
+            .setTitle("ALERT: You have a tutoring session coming up!")
+            .setDescription(
+              "Please make sure you both communicate and set up a private voice channel"
+            )
+            .setFields([
+              {
+                name: "Tutor",
+                value: interaction.user.toString(),
+                inline: true,
+              },
+              {
+                name: "Student",
+                value: student.toString(),
+                inline: true,
+              },
+              {
+                name: "Time",
+                value: time + " PST",
+                inline: true,
+              },
+              {
+                name: "Subject",
+                value: subject || "N/A",
+                inline: true,
+              },
+            ]),
+        ],
+      };
+      Promise.all([student.send(message), interaction.user.send(message)]).then(
+        () => {
           Schedule.deleteOne({
             tutor: interaction.user.id,
             student: student.id,
             date: date2,
             subject,
           });
-        });
+        }
+      );
     }, date2.getTime() - Date.now());
   }
 }
