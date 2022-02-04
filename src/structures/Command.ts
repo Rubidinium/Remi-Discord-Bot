@@ -30,7 +30,7 @@ export default class SlashCommand {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exec(interaction: Interaction) {
+  async exec(interaction: Interaction) {
     throw new Error("Method not implemented.");
   }
 

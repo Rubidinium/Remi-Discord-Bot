@@ -9,7 +9,7 @@ export default class CommandHandler extends Event {
     super("Command", "interactionCreate");
   }
 
-  exec(interaction: discord.Interaction) {
+  async exec(interaction: discord.Interaction) {
     if (!interaction.isCommand()) return;
 
     const commandName = interaction.commandName;
@@ -21,7 +21,7 @@ export default class CommandHandler extends Event {
     }
 
     try {
-      commandData.exec(interaction);
+      await commandData.exec(interaction);
     } catch (error) {
       const cmdLogger = createLogger(commandData.metaData.name);
       cmdLogger.error(

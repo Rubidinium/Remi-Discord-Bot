@@ -70,19 +70,63 @@ export default class ScheduleCommand extends SlashCommand {
       );
 
     const date2 = new Date();
-    date2.setMonth(month, day);
+    console.log(month, day);
+    date2.setMonth(month - 1, day);
+    console.log(hours, minutes);
     date2.setHours(hours, minutes, 0, 0);
 
-    await Schedule.create({
+    const schedule = await Schedule.create({
       tutor: interaction.user.id,
       student: student.id,
       date: date2,
       subject,
     });
+    await schedule.save();
 
     await interaction.reply({
       embeds: [embed],
       ephemeral: true,
     });
+    console.log(date2.getTime() - Date.now());
+    setTimeout(() => {
+      student
+        .send({
+          embeds: [
+            new MessageEmbed()
+              .setColor("GREEN")
+              .setTitle("ALERT: You have a tutoring session coming up!")
+              .setDescription(
+                "Please make sure you both communicate and set up a private voice channel"
+              )
+              .setFields([
+                {
+                  name: "Tutor",
+                  value: interaction.user.toString(),
+                  inline: true,
+                },
+                {
+                  name: "Student",
+                  value: student.toString(),
+                  inline: true,
+                },
+                {
+                  name: "Time",
+                  value: time + " PST",
+                  inline: true,
+                },
+                {
+                  name: "Subject",
+                  value: subject || "N/A",
+                  inline: true,
+                },
+              ]),
+          ],
+        })
+        .then(() => {
+          Schedule.deleteOne({
+			
+          });
+        });
+    }, date2.getTime() - Date.now());
   }
 }
