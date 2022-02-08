@@ -18,11 +18,11 @@ export default class Logger {
     this.send("YELLOW", "Reopened", author);
   }
 
-  saveTranscript(category: string, url: string, author: User) {
+  saveTranscript(category: string, url: string, author: User, ticketOwner: User) {
     const embed = new MessageEmbed()
       .setTitle("Transcript Saved")
       .setFields([
-        { name: "Ticket Owner", value: `${author.tag}`, inline: true },
+        { name: "Ticket Owner", value: `${ticketOwner.tag}`, inline: true },
         { name: "Ticket Category", value: `${category}`, inline: true },
         { name: "Action", value: "Transcript Saved", inline: true },
         { name: "URL", value: `[View Transcript](${url})`, inline: true },

@@ -85,7 +85,12 @@ export default class TicketSaveTranscriptsButton extends Button {
             "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner.",
         });
       }
-      logger.saveTranscript(channel.name.split("-")[0], url, interaction.user);
+      logger.saveTranscript(
+        channel.name.split("-")[0],
+        url,
+        interaction.user,
+        await interaction.client.users.fetch(channel.name.split("-")[1])
+      );
     } catch (e) {
       console.error(e);
       interaction.followUp({
