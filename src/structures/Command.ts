@@ -4,7 +4,10 @@ import {
   Interaction,
   PermissionResolvable,
 } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 export type SlashCommandOptions = {
@@ -14,14 +17,16 @@ export type SlashCommandOptions = {
 export default class SlashCommand {
   metaData:
     | SlashCommandBuilder
-    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">
+    | SlashCommandSubcommandsOnlyBuilder;
   userPermissions: ApplicationCommandPermissionData[] | undefined;
   defaultPermission: boolean;
 
   constructor(
     metaData:
       | SlashCommandBuilder
-      | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">,
+      | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">
+      | SlashCommandSubcommandsOnlyBuilder,
     userPermissions?: ApplicationCommandPermissionData[] | undefined
   ) {
     this.metaData = metaData;
