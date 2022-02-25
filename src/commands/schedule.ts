@@ -116,11 +116,7 @@ export default class ScheduleCommand extends SlashCommand {
         });
 
         await schedule.save();
-        console.log(schedule._id.toString());
-        console.log(interaction.user.toString());
-        console.log(student.toString());
-        console.log(date2.toTimeString());
-        console.log(subject);
+
 
         const embed = new MessageEmbed()
           .setTitle("Tutoring Session Created")
@@ -195,8 +191,6 @@ export default class ScheduleCommand extends SlashCommand {
               date: date2,
               subject,
             });
-            console.log(schedule.date + "|" + date2);
-            console.log(deleteRes);
           });
         }, date2.getTime() - Date.now());
 
