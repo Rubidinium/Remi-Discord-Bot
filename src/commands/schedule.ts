@@ -117,6 +117,12 @@ export default class ScheduleCommand extends SlashCommand {
         date2.setMonth(month - 1, day);
         date2.setHours(hours, minutes, 0, 0);
 
+        if (date2.getTime() < Date.now())
+          return interaction.reply({
+            content: "You cannot schedule a session in the past.",
+            ephemeral: true,
+          });
+
         const schedule = await Schedules.create({
           tutor: interaction.user.id,
           student: student.id,
@@ -266,7 +272,7 @@ function sendSessionReminder(session, client: Client, repeats = false) {
       tutor.send(message);
     });
 
-    const every = 1000 * 60;
+    const every = 1000 * 60 * 60 * 24 * 7;
     if (repeats) {
       session.date = new Date(new Date(session.date).getTime() + every);
       console.log(session.date);
