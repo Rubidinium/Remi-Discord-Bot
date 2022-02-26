@@ -5,6 +5,7 @@ export const scheduleSchema = new Schema({
   student: { type: String, required: true },
   date: { type: Date, required: true },
   subject: { type: String },
+  repeats: { type: Boolean },
 });
 
 export default model("Schedules", scheduleSchema);

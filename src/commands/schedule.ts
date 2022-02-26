@@ -1,7 +1,7 @@
 import SlashCommand from "../structures/Command";
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { Embed, SlashCommandBuilder } from "@discordjs/builders";
-import Schedules, { scheduleSchema } from "../models/schedule";
+import { Client, CommandInteraction, MessageEmbed } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import Schedules from "../models/schedule";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {
@@ -42,6 +42,11 @@ export default class ScheduleCommand extends SlashCommand {
                 .setName("subject")
                 .setDescription("Enter the subject you will be tutoring.")
             )
+            .addBooleanOption((option) =>
+              option
+                .setName("repeats")
+                .setDescription("Will this session repeat?")
+            )
         )
         .addSubcommand((subCommand) =>
           subCommand
@@ -58,7 +63,9 @@ export default class ScheduleCommand extends SlashCommand {
         .addSubcommand((subCommand) =>
           subCommand
             .setName("skip")
-            .setDescription("Skip a scheduled session.")
+            .setDescription(
+              "Skip a scheduled session. (Adds 1 week to the original date)"
+            )
             .addStringOption((option) =>
               option
                 .setName("id")
@@ -103,6 +110,8 @@ export default class ScheduleCommand extends SlashCommand {
         const student = interaction.options.getUser("student");
         const subject = interaction.options.getString("subject") || "N/A";
 
+        const repeats = interaction.options.getBoolean("repeats") || false;
+
         const date2 = new Date();
 
         date2.setMonth(month - 1, day);
@@ -113,87 +122,19 @@ export default class ScheduleCommand extends SlashCommand {
           student: student.id,
           date: date2,
           subject,
+          repeats,
         });
 
         await schedule.save();
 
-
-        const embed = new MessageEmbed()
-          .setTitle("Tutoring Session Created")
-          .addFields([
-            {
-              name: "ID",
-              value: schedule._id.toString(),
-            },
-            {
-              name: "Tutor",
-              value: interaction.user.toString(),
-            },
-            {
-              name: "Student",
-              value: student.toString(),
-            },
-            {
-              name: "Date",
-              value: `<t:${date2.getTime() / 1000}>`,
-            },
-            {
-              name: "Subject",
-              value: subject,
-            },
-          ]);
+        const embed = sessionEmbed(schedule);
 
         await interaction.reply({
           embeds: [embed],
           ephemeral: true,
         });
 
-        setTimeout(() => {
-          const message = {
-            embeds: [
-              new MessageEmbed()
-                .setColor("GREEN")
-                .setTitle("ALERT: You have a tutoring session coming up!")
-                .setDescription(
-                  "Please make sure you both communicate and set up a private voice channel"
-                )
-                .setFields([
-                  {
-                    name: "Tutor",
-                    value: interaction.user.toString(),
-                    inline: true,
-                  },
-                  {
-                    name: "Student",
-                    value: student.toString(),
-                    inline: true,
-                  },
-                  {
-                    name: "Time",
-                    value: time + " PST",
-                    inline: true,
-                  },
-                  {
-                    name: "Subject",
-                    value: subject,
-                    inline: true,
-                  },
-                ]),
-            ],
-          };
-          Promise.all([
-            student.send(message),
-            interaction.user.send(message),
-          ]).then(async () => {
-            const deleteRes = await Schedules.deleteOne({
-              tutor: interaction.user.id,
-              student: student.id,
-              date: date2,
-              subject,
-            });
-          });
-        }, date2.getTime() - Date.now());
-
+        sendSessionReminder(schedule, interaction.client, repeats);
         break;
       }
       case "view": {
@@ -249,7 +190,7 @@ export default class ScheduleCommand extends SlashCommand {
 
         // add 1 week to the date
         schedule.date = new Date(
-          schedule.date.getTime() + 1000 * 60 * 60 * 24 * 7
+          new Date(schedule.date).getTime() + 1000 * 60 * 60 * 24 * 7
         );
 
         await schedule.save();
@@ -304,6 +245,39 @@ export default class ScheduleCommand extends SlashCommand {
   }
 }
 
+function sendSessionReminder(session, client: Client, repeats = false) {
+  setTimeout(() => {
+    const message = {
+      embeds: [
+        sessionEmbed(session)
+          .setColor("GREEN")
+          .setTitle("ALERT: You have a tutoring session coming up!")
+          .setDescription(
+            "Please make sure you both communicate and set up a private voice channel"
+          ),
+      ],
+    };
+
+    client.users.fetch(session.student).then((student) => {
+      student.send(message);
+    });
+
+    client.users.fetch(session.tutor).then((tutor) => {
+      tutor.send(message);
+    });
+
+    const every = 1000 * 60;
+    if (repeats) {
+      session.date = new Date(new Date(session.date).getTime() + every);
+      console.log(session.date);
+      session.save().then(() => sendSessionReminder(session, client, true));
+      return;
+    }
+    Schedules.deleteOne(session);
+    // utc offset
+  }, new Date(session.date).getTime() - Date.now());
+}
+
 export function sessionEmbed(schedule) {
   return new MessageEmbed().setTitle("Tutoring Session").addFields([
     {
@@ -325,6 +299,10 @@ export function sessionEmbed(schedule) {
     {
       name: "Subject",
       value: schedule.subject,
+    },
+    {
+      name: "Repeats",
+      value: schedule.repeats.toString(),
     },
   ]);
 }
