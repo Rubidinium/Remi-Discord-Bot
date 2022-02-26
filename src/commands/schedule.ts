@@ -270,7 +270,8 @@ function sendSessionReminder(session, client: Client, repeats = false) {
     if (repeats) {
       session.date = new Date(new Date(session.date).getTime() + every);
       console.log(session.date);
-      session.save().then(() => sendSessionReminder(session, client, true));
+      sendSessionReminder(session, client, true);
+      session.save();
       return;
     }
     Schedules.deleteOne(session);
