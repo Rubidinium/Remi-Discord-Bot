@@ -1,1 +1,0 @@
-# Programming Simplified Discord Bot
