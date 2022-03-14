@@ -7,7 +7,7 @@ import {
   MessageButton,
   TextChannel,
 } from "discord.js";
-import { createTranscript } from "discord-transcripts";
+import { createTranscript } from "discord-html-transcripts";
 import { createTranscriptNotion } from "../utils/notion";
 import { logger } from "..";
 
@@ -17,7 +17,6 @@ export default class TicketSaveTranscriptsButton extends Button {
   }
 
   async exec(interaction: ButtonInteraction) {
-    // log
     await interaction.deferReply();
     let saved = false;
     interaction.message.components.forEach((component) => {

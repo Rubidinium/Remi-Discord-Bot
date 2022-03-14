@@ -81,7 +81,7 @@ async function loadButtons(dir = path.resolve(__dirname, "./buttons")) {
   }
 }
 
-discordLogger.info("Loading all Selects...");
+discordLogger.info("Loading all selects...");
 import Select from "./structures/Select";
 export const selects = new Discord.Collection<string, Select>();
 async function loadSelects(dir = path.resolve(__dirname, "./selects")) {

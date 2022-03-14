@@ -1,4 +1,5 @@
 import {
+  ApplicationCommandDataResolvable,
   ApplicationCommandPermissionData,
   Client,
   Interaction,
@@ -8,7 +9,6 @@ import {
   SlashCommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 export type SlashCommandOptions = {
   requiredPermissions: PermissionResolvable[];
@@ -40,7 +40,7 @@ export default class SlashCommand {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  build(client: Client): RESTPostAPIApplicationCommandsJSONBody {
+  build(client: Client): ApplicationCommandDataResolvable {
     return {
       ...this.metaData.toJSON(),
       default_permission: this.defaultPermission,
