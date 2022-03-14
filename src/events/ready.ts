@@ -10,31 +10,32 @@ export default class ReadyEvent extends Event {
   }
 
   async exec() {
-//     const arrow = client.emojis.cache.find((emoji) => emoji.name === "parrow");
-//     client.channels.fetch("935078633427570739").then((channel: TextChannel) =>
-//       channel.send({
-//         content: `Our community is here to help students with their programming troubles, not to provide an unfair advantage by answering test questions. In order to maintain a positive environment, we request that you please be courteous to all helpers!
+    //     const arrow = client.emojis.cache.find((emoji) => emoji.name === "parrow");
+    //     client.channels.fetch("935078633427570739").then((channel: TextChannel) =>
+    //       channel.send({
+    //         content: `Our community is here to help students with their programming troubles, not to provide an unfair advantage by answering test questions. In order to maintain a positive environment, we request that you please be courteous to all helpers!
 
-// *Response time may vary for certain periods of the day.*
+    // *Response time may vary for certain periods of the day.*
 
-// **📋 TeXit Bot LaTeX Tutorial**
-// <https://docs.google.com/document/d/1sPgQKmeUr2S8SHI43QAgwiwLmcSb62h08lEyqpTwQsw/edit?usp=sharing>
+    // **📋 TeXit Bot LaTeX Tutorial**
+    // <https://docs.google.com/document/d/1sPgQKmeUr2S8SHI43QAgwiwLmcSb62h08lEyqpTwQsw/edit?usp=sharing>
 
-//  **How to Get Help:**
-// > ${arrow}  Click on the button to start the process.
-// > ${arrow}  Below, select what you need help with.
-// > ${arrow}  Send your question in the ticket that appears.`,
-//         components: [
-//           new MessageActionRow().addComponents(
-//             new MessageButton()
-//               .setCustomId("ticketOpen")
-//               .setLabel("Open Ticket")
-//               .setEmoji("✉️")
-//               .setStyle("SUCCESS")
-//           ),
-//         ],
-//       })
-//     );
+    //  **How to Get Help:**
+    // > ${arrow}  Click on the button to start the process.
+    // > ${arrow}  Below, select what you need help with.
+    // > ${arrow}  Send your question in the ticket that appears.`,
+    //         components: [
+    //           new MessageActionRow().addComponents(
+    //             new MessageButton()
+    //               .setCustomId("ticketOpen")
+    //               .setLabel("Open Ticket")
+    //               .setEmoji("✉️")
+    //               .setStyle("SUCCESS")
+    //           ),
+    //         ],
+    //       })
+    //     );
+    
     mongoose
       .connect(process.env.MONGO, {
         keepAlive: true,
@@ -47,7 +48,7 @@ export default class ReadyEvent extends Event {
       });
 
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
-    const guild = await client.guilds.fetch("924860504302821377");
+    const guild = await client.guilds.fetch("818200489094021170");
 
     if (["deploy", "register"].includes(process.argv[2])) {
       discordLogger.debug("Fetching application...");
