@@ -7,7 +7,8 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-const database_id = "81dd715531a34aa89063179bc427b0b6";
+// const database_id = "81dd715531a34aa89063179bc427b0b6";
+const database_id = "e5b15ef7ef9b4963b0a40b6d6d2d87a9";
 
 export async function createTranscriptEntry(transcript: {
   title: string;
