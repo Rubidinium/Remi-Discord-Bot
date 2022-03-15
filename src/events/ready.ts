@@ -22,10 +22,13 @@ export default class ReadyEvent extends Event {
 **📋 TeXit Bot LaTeX Tutorial**
 <https://docs.google.com/document/d/1sPgQKmeUr2S8SHI43QAgwiwLmcSb62h08lEyqpTwQsw/edit?usp=sharing>
 
-  **How to Get Help:**
-> ${arrow}  Click on the button to start the process.
-> ${arrow}  Below, select what you need help with.
-> ${arrow}  Send your question in the ticket that appears.`,
+**How to Get Help:**
+> Click on the button to start the process.
+> Below, select what you need help with.
+> Send your question in the ticket that appears.`,
+        // > ${arrow}  Click on the button to start the process.
+        // > ${arrow}  Below, select what you need help with.
+        // > ${arrow}  Send your question in the ticket that appears.`,
         components: [
           new MessageActionRow().addComponents(
             new MessageButton()
@@ -38,16 +41,16 @@ export default class ReadyEvent extends Event {
       })
     );
 
-    mongoose
-      .connect(process.env.MONGO, {
-        keepAlive: true,
-      })
-      .then(() => {
-        mongoLogger.info("Connected to MongoDB");
-      })
-      .catch((err) => {
-        mongoLogger.error("Failed to connect to MongoDB:", err);
-      });
+    // mongoose
+    //   .connect(process.env.MONGO, {
+    //     keepAlive: true,
+    //   })
+    //   .then(() => {
+    //     mongoLogger.info("Connected to MongoDB");
+    //   })
+    //   .catch((err) => {
+    //     mongoLogger.error("Failed to connect to MongoDB:", err);
+    //   });
 
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
     const guild = await client.guilds.fetch("818200489094021170");
