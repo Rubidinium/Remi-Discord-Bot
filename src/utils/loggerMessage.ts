@@ -1,7 +1,7 @@
 import { Client, ColorResolvable, MessageEmbed, User } from "discord.js";
 
-const LOG_CHANNEL_ID = "936320222426701844";
-const TRANSCRIPT_CHANNEL_ID = "936320323240992799";
+const LOG_CHANNEL_ID = "953053709909250136";
+const TRANSCRIPT_CHANNEL_ID = "953053709909250137";
 
 export default class Logger {
   constructor(private name: string, private client: Client) {}

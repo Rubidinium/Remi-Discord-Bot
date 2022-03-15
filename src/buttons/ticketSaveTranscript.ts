@@ -60,7 +60,7 @@ export default class TicketSaveTranscriptsButton extends Button {
         components: interaction.message.components as MessageActionRow[],
       });
 
-      const url = `https://transcripts.programmingsimplified.org/${block_id}`;
+      const url = `https://transcripts.apandas.org/${block_id}`;
       interaction.editReply(`The transcript has been saved\n${url}`);
       try {
         const user = await interaction.client.users.fetch(

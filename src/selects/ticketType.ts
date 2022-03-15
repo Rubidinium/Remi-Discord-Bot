@@ -28,28 +28,13 @@ export default class TicketTypeSelect extends Select {
 
     (interaction.message as Message).delete();
 
-    switch (interaction.values[0]) {
-      case "python101":
-        await interaction.channel.send("<@&935091117966385173>");
-        break;
-      case "javascript101":
-        await interaction.channel.send("<@&935091142884724786>");
-        break;
-      case "java101":
-        await interaction.channel.send("<@&935091172672679976>");
-        break;
-      case "webdev":
-        await interaction.channel.send("<@&935091067437584384>");
-        break;
-      case "discordjs":
-        await interaction.channel.send("<@&935091084218998814>");
-        break;
-      case "sql":
-        await interaction.channel.send("<@&935091203198844950>");
-        break;
-      case "other":
-        break;
-    }
+    // switch (interaction.values[0]) {
+    //   case "python101":
+    //     await interaction.channel.send("<@&935091117966385173>");
+    //     break;
+    //   case "other":
+    //     break;
+    // }
 
     (interaction.channel as TextChannel).permissionOverwrites.edit(
       interaction.user.id,
@@ -61,11 +46,14 @@ export default class TicketTypeSelect extends Select {
     interaction.channel.send({
       embeds: [
         new Embed()
-          .setTitle(newTicketName)
+          .setTitle("Steps For Requesting Help")
           .setDescription(
-            "Thank you. Now, please describe your issue in detail, making sure to provide all code/errors necessary."
+            `1. **Say what your question is**, or what you need help with. What don't you understand?
+2. **Post a screenshot of your assignment**. We need to make sure you're not asking for help on an assessment.
+3. **Ping one of the helper roles** according to your question. For example, ping math helpers if you have a question related to math.
+4. Please **be patient**, you will receive a response as soon as one of our helpers is available! 😄`
           )
-          .setColor(0xa020f0),
+          .setFooter({ text: "APandas, A Rad Study Group" }),
       ],
       components: [
         new MessageActionRow().addComponents(

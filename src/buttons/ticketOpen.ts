@@ -17,7 +17,7 @@ export default class TicketOpenButton extends Button {
       `ticket-${interaction.user.id}`,
       {
         type: "GUILD_TEXT",
-        parent: "935085260545339412",
+        parent: "953053710240604185",
       }
     );
 
@@ -36,13 +36,11 @@ export default class TicketOpenButton extends Button {
       .setCustomId("ticketType")
       .setPlaceholder("Select a ticket type")
       .setOptions([
+        { label: "Math", value: "math" },
+        { label: "Science", value: "science" },
+        { label: "Language", value: "language" },
+        { label: "Humanities", value: "humanities" },
         { label: "Other", value: "other" },
-        { label: "WebDev", value: "webdev" },
-        { label: "SQL", value: "sql" },
-        { label: "Python101", value: "python101" },
-        { label: "DiscordJS", value: "discordjs" },
-        { label: "Java101", value: "java101" },
-        { label: "Javascript101", value: "javascript101" },
       ]);
 
     channel.send({

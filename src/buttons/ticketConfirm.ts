@@ -6,7 +6,6 @@ import {
   MessageButton,
   MessageEmbed,
 } from "discord.js";
-import { logger } from "..";
 
 export default class TicketConfirmButton extends Button {
   constructor() {
@@ -54,6 +53,5 @@ export default class TicketConfirmButton extends Button {
       components: interaction.message.components as MessageActionRow[],
     });
 
-    logger.ticketClose(interaction.user);
   }
 }

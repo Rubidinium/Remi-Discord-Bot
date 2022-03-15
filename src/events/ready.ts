@@ -2,6 +2,7 @@ import { client, commands } from "..";
 import Event from "../structures/Event";
 import { discordLogger, mongoLogger } from "../utils/logger";
 import mongoose from "mongoose";
+import { TextChannel, MessageActionRow, MessageButton } from "discord.js";
 // import { MessageActionRow, MessageButton, TextChannel } from "discord.js";
 
 export default class ReadyEvent extends Event {
@@ -10,32 +11,33 @@ export default class ReadyEvent extends Event {
   }
 
   async exec() {
-    //     const arrow = client.emojis.cache.find((emoji) => emoji.name === "parrow");
-    //     client.channels.fetch("935078633427570739").then((channel: TextChannel) =>
-    //       channel.send({
-    //         content: `Our community is here to help students with their programming troubles, not to provide an unfair advantage by answering test questions. In order to maintain a positive environment, we request that you please be courteous to all helpers!
+    const arrow = client.emojis.cache.find(
+      (emoji) => emoji.name === "APSS_PandaBowTie"
+    );
+    client.channels.fetch("953053710240604181").then((channel: TextChannel) =>
+      channel.send({
+        content: `Our community is here to help students with their programming troubles, not to provide an unfair advantage by answering test questions. In order to maintain a positive environment, we request that you please be courteous to all helpers!
+*Response time may vary for certain periods of the day.*
 
-    // *Response time may vary for certain periods of the day.*
+**📋 TeXit Bot LaTeX Tutorial**
+<https://docs.google.com/document/d/1sPgQKmeUr2S8SHI43QAgwiwLmcSb62h08lEyqpTwQsw/edit?usp=sharing>
 
-    // **📋 TeXit Bot LaTeX Tutorial**
-    // <https://docs.google.com/document/d/1sPgQKmeUr2S8SHI43QAgwiwLmcSb62h08lEyqpTwQsw/edit?usp=sharing>
+  **How to Get Help:**
+> ${arrow}  Click on the button to start the process.
+> ${arrow}  Below, select what you need help with.
+> ${arrow}  Send your question in the ticket that appears.`,
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton()
+              .setCustomId("ticketOpen")
+              .setLabel("Open Ticket")
+              .setEmoji("✉️")
+              .setStyle("SUCCESS")
+          ),
+        ],
+      })
+    );
 
-    //  **How to Get Help:**
-    // > ${arrow}  Click on the button to start the process.
-    // > ${arrow}  Below, select what you need help with.
-    // > ${arrow}  Send your question in the ticket that appears.`,
-    //         components: [
-    //           new MessageActionRow().addComponents(
-    //             new MessageButton()
-    //               .setCustomId("ticketOpen")
-    //               .setLabel("Open Ticket")
-    //               .setEmoji("✉️")
-    //               .setStyle("SUCCESS")
-    //           ),
-    //         ],
-    //       })
-    //     );
-    
     mongoose
       .connect(process.env.MONGO, {
         keepAlive: true,
