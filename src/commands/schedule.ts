@@ -88,7 +88,7 @@ export default class ScheduleCommand extends SlashCommand {
       [
         {
           // tutor role
-          id: "939246116900319312",
+          id: "953053708994875523",
           type: "ROLE",
           permission: true,
         },
@@ -132,6 +132,8 @@ export default class ScheduleCommand extends SlashCommand {
         });
 
         await schedule.save();
+
+        
 
         const embed = sessionEmbed(schedule);
 

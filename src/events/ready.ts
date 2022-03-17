@@ -41,16 +41,16 @@ export default class ReadyEvent extends Event {
 //       })
 //     );
 
-    // mongoose
-    //   .connect(process.env.MONGO, {
-    //     keepAlive: true,
-    //   })
-    //   .then(() => {
-    //     mongoLogger.info("Connected to MongoDB");
-    //   })
-    //   .catch((err) => {
-    //     mongoLogger.error("Failed to connect to MongoDB:", err);
-    //   });
+    mongoose
+      .connect(process.env.MONGO, {
+        keepAlive: true,
+      })
+      .then(() => {
+        mongoLogger.info("Connected to MongoDB");
+      })
+      .catch((err) => {
+        mongoLogger.error("Failed to connect to MongoDB:", err);
+      });
 
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
     const guild = await client.guilds.fetch("953053708562870312");
