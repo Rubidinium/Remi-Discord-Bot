@@ -6,7 +6,7 @@ import {
   MessageButton,
   TextChannel,
 } from "discord.js";
-import { logger } from "..";
+import { ticketLogger } from "..";
 
 export default class TicketReopenButton extends Button {
   constructor() {
@@ -49,6 +49,6 @@ export default class TicketReopenButton extends Button {
     (interaction.message as Message).edit({
       components: interaction.message.components as MessageActionRow[],
     });
-    logger.ticketReopen(interaction.user);
+    ticketLogger.ticketReopen(interaction.user);
   }
 }

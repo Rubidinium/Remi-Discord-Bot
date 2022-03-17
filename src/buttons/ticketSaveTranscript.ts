@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import { createTranscript } from "discord-html-transcripts";
 import { createTranscriptNotion } from "../utils/notion";
-import { logger } from "..";
+import { ticketLogger } from "..";
 
 export default class TicketSaveTranscriptsButton extends Button {
   constructor() {
@@ -84,7 +84,7 @@ export default class TicketSaveTranscriptsButton extends Button {
             "There was an error creating the transcript. Please try again later. If this error persists, please contact the bot owner.",
         });
       }
-      logger.saveTranscript(
+      ticketLogger.saveTranscript(
         channel.name.split("-")[0],
         url,
         interaction.user,

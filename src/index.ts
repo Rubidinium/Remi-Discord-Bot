@@ -9,8 +9,11 @@ export const client = new Discord.Client({
   intents: [Discord.Intents.FLAGS.GUILDS],
 });
 
-import Logger from "./utils/loggerMessage";
-export const logger = new Logger("main", client);
+import TicketLogger from "./utils/ticketLogger";
+export const ticketLogger = new TicketLogger(client);
+
+import ModerationLogger from "./utils/moderationLogger";
+export const moderationLogger = new ModerationLogger(client);
 
 import fs from "fs";
 import path from "path";

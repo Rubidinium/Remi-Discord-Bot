@@ -5,7 +5,7 @@ import {
   MessageEmbed,
   MessageSelectMenu,
 } from "discord.js";
-import { logger } from "..";
+import { ticketLogger } from "..";
 
 export default class TicketOpenButton extends Button {
   constructor() {
@@ -54,6 +54,6 @@ export default class TicketOpenButton extends Button {
       ephemeral: true,
     });
 
-    logger.ticketOpen(interaction.user);
+    ticketLogger.ticketOpen(interaction.user);
   }
 }

@@ -6,7 +6,7 @@ import {
   MessageButton,
   TextChannel,
 } from "discord.js";
-import { logger } from "..";
+import { ticketLogger } from "..";
 
 export const staffButtons = new MessageActionRow().addComponents(
   new MessageButton()
@@ -63,6 +63,6 @@ export default class TicketCloseButton extends Button {
       components: interaction.message.components as MessageActionRow[],
     });
 
-    logger.ticketClose(interaction.user);
+    ticketLogger.ticketClose(interaction.user);
   }
 }
