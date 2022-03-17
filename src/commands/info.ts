@@ -19,11 +19,9 @@ export default class InfoCommand extends SlashCommand {
 
   async exec(interaction: CommandInteraction) {
     const guild = interaction.guild;
-    console.log(guild);
     const member = guild.members.cache.get(
       interaction.options.getUser("user")?.id
     );
-    console.log(member);
 
     await interaction.reply({
       embeds: [
@@ -38,24 +36,24 @@ export default class InfoCommand extends SlashCommand {
               inline: true,
             },
             {
-              name: "#️⃣ Discriminator: ",
+              name: "Discriminator: ",
               value: `#${member.user.discriminator}`,
               inline: true,
             },
             {
-              name: "🆔 ID: ",
+              name: "ID: ",
               value: member.user.id,
             },
             {
               name: "Current Status: ",
-              value: member.presence.status,
+              value: member.presence?.status ?? "N/A",
               inline: true,
             },
             {
               name: "Activity: ",
-              value: member.presence.activities[0]
+              value: member.presence?.activities?.[0]
                 ? member.presence.activities[0].name
-                : "User isn't playing a game!",
+                : "N/A",
               inline: true,
             },
             {
