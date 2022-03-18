@@ -111,6 +111,11 @@ export default class BanCommand extends SlashCommand {
 
         await ban.save();
 
+        if (duration)
+          setTimeout(() => {
+            interaction.guild.members.unban(userToBan);
+          }, duration);
+
         await userToBan.send({
           embeds: [
             new MessageEmbed()

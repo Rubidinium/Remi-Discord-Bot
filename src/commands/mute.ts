@@ -1,10 +1,5 @@
 import SlashCommand from "../structures/Command";
-import {
-  CommandInteraction,
-  GuildMember,
-  MessageEmbed,
-  User,
-} from "discord.js";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { moderationLogger } from "..";
 import ms from "ms";
@@ -87,8 +82,6 @@ export default class MuteCommand extends SlashCommand {
       });
     }
 
-    // store the user ban timer
-
     userToMute.roles
       .add("954201144480104458")
       .then(async () => {
@@ -100,6 +93,10 @@ export default class MuteCommand extends SlashCommand {
         });
 
         await mute.save();
+
+        setTimeout(() => {
+          userToMute.roles.remove("954201144480104458");
+        }, duration);
 
         await userToMute.send({
           embeds: [

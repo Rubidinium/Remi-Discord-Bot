@@ -2,6 +2,8 @@ import { client, commands } from "..";
 import Event from "../structures/Event";
 import { discordLogger, mongoLogger } from "../utils/logger";
 import mongoose from "mongoose";
+import Ban from "../models/ban";
+import Mute from "../models/mute";
 // import { MessageActionRow, MessageButton, TextChannel } from "discord.js";
 
 export default class ReadyEvent extends Event {
@@ -53,6 +55,26 @@ export default class ReadyEvent extends Event {
 
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
     const guild = await client.guilds.fetch("953053708562870312");
+
+    {
+      Ban.find().then((bans) => {
+        bans.forEach((ban) => {
+          setTimeout(() => {
+            guild.members.unban(ban.user);
+          }, new Date(ban.createdAt).getTime() - Date.now() + ban.duration);
+        });
+      });
+
+      Mute.find().then((mutes) => {
+        mutes.forEach((mute) => {
+          setTimeout(() => {
+            guild.members.cache
+              .get(mute.user)
+              .roles.remove("954201144480104458");
+          }, new Date(mute.createdAt).getTime() - Date.now() + mute.duration);
+        });
+      });
+    }
 
     {
       if ("deploy".includes(process.argv[2])) {
