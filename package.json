@@ -37,6 +37,7 @@
   "devDependencies": {
     "@types/bunyan": "^1.8.8",
     "@types/bunyan-format": "^0.2.4",
+    "@types/ms": "^0.7.31",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",

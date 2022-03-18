@@ -91,9 +91,6 @@ export default class ExampleCommand extends SlashCommand {
           embeds: [
             new MessageEmbed()
               .setTitle("You have been kicked from APandas.")
-              // .setDescription(
-              //   "To appeal, join the support server: https://discord.gg/VDTdzAaTjE"
-              // )
               .setFields([
                 {
                   name: "Moderator",
@@ -114,7 +111,6 @@ export default class ExampleCommand extends SlashCommand {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setColor("#00ff00")
               .setTitle("User kicked.")
               .setFields([
                 {
@@ -136,7 +132,6 @@ export default class ExampleCommand extends SlashCommand {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setColor("#ff0000")
               .setTitle("Kick")
               .setDescription(
                 `${userToKick.displayName} could not be kicked. ${e}`

@@ -7,7 +7,7 @@ import {
 
 const LOG_CHANNEL_ID = "953053709909250134";
 
-export default class TicketLogger {
+export default class ModerationLogger {
   constructor(private client: Client) {}
 
   ban(user: GuildMember, moderator: User, reason: string) {
@@ -16,6 +16,10 @@ export default class TicketLogger {
 
   kick(user: GuildMember, moderator: User, reason: string) {
     this.log({ action: "Kicked", user, moderator, reason });
+  }
+
+  mute(user: GuildMember, moderator: User, reason: string) {
+    this.log({ action: "Muted", user, moderator, reason });
   }
 
   log({
@@ -34,14 +38,13 @@ export default class TicketLogger {
       channel.send({
         embeds: [
           new MessageEmbed()
-            .setTitle("Moderation Action")
+            .setTitle(action)
             .setFields([
               { name: "User", value: `${user}`, inline: true },
               { name: "Moderator", value: `${moderator}`, inline: true },
-              { name: "Action", value: `${action}`, inline: true },
               { name: "Reason", value: `${reason}`, inline: true },
             ])
-            .setTimestamp(Date.now())
+            .setTimestamp(Date.now()),
         ],
       });
     }
