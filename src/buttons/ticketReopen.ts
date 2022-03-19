@@ -49,6 +49,6 @@ export default class TicketReopenButton extends Button {
     (interaction.message as Message).edit({
       components: interaction.message.components as MessageActionRow[],
     });
-    ticketLogger.ticketReopen(interaction.user);
+    ticketLogger.reopen(interaction.user);
   }
 }

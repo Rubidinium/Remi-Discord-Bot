@@ -63,6 +63,6 @@ export default class TicketCloseButton extends Button {
       components: interaction.message.components as MessageActionRow[],
     });
 
-    ticketLogger.ticketClose(interaction.user);
+    ticketLogger.close(interaction.user);
   }
 }

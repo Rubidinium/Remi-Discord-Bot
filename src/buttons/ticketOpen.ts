@@ -54,6 +54,6 @@ export default class TicketOpenButton extends Button {
       ephemeral: true,
     });
 
-    ticketLogger.ticketOpen(interaction.user);
+    ticketLogger.open(interaction.user);
   }
 }

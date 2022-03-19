@@ -4,15 +4,15 @@ import { configIds } from "..";
 export default class TicketLogger {
   constructor(private client: Client) {}
 
-  ticketClose(author: User) {
+  close(author: User) {
     this.send("RED", "Closed", author);
   }
 
-  ticketOpen(author: User) {
+  open(author: User) {
     this.send("BLURPLE", "Opened", author);
   }
 
-  ticketReopen(author: User) {
+  reopen(author: User) {
     this.send("YELLOW", "Reopened", author);
   }
 
