@@ -93,7 +93,7 @@ export default class MuteCommand extends SlashCommand {
 
     interaction.reply({
       embeds: [
-        new MessageEmbed().setTitle("User warned.").setFields([
+        new MessageEmbed().setTitle("User warned").setFields([
           {
             name: "User",
             value: userToWarn.toString(),

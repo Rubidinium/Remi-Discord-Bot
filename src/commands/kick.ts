@@ -104,7 +104,7 @@ export default class KickCommand extends SlashCommand {
 
         interaction.reply({
           embeds: [
-            new MessageEmbed().setTitle("User kicked.").setFields([
+            new MessageEmbed().setTitle("User kicked").setFields([
               {
                 name: "User",
                 value: userToKick.toString(),

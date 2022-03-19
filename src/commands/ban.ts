@@ -117,7 +117,7 @@ export default class BanCommand extends SlashCommand {
                   ban.duration &&
                   `You will be unbanned on ${new Date(
                     Date.parse(ban.createdAt) + ban.duration
-                  ).toLocaleDateString()}`
+                  ).toDateString()}`
               )
               .setFields([
                 {
@@ -148,7 +148,7 @@ export default class BanCommand extends SlashCommand {
 
         interaction.reply({
           embeds: [
-            new MessageEmbed().setTitle("User Baned.").setFields([
+            new MessageEmbed().setTitle("User Baned").setFields([
               {
                 name: "User",
                 value: userToBan.toString(),

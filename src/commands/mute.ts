@@ -113,7 +113,7 @@ export default class MuteCommand extends SlashCommand {
                 " " + mute.duration &&
                   `You will be un-muted on ${new Date(
                     Date.parse(mute.createdAt) + mute.duration
-                  ).toLocaleDateString()}`
+                  ).toDateString()}`
               )
               .setFields([
                 {
@@ -144,7 +144,7 @@ export default class MuteCommand extends SlashCommand {
 
         interaction.reply({
           embeds: [
-            new MessageEmbed().setTitle("User Muted.").setFields([
+            new MessageEmbed().setTitle("User Muted").setFields([
               {
                 name: "User",
                 value: userToMute.toString(),
