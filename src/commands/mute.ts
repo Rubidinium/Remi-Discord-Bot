@@ -3,7 +3,7 @@ import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { moderationLogger } from "..";
 import ms from "ms";
-import Mute from "../models/mute";
+import Mute from "../models/mutes";
 
 export default class MuteCommand extends SlashCommand {
   constructor() {
@@ -19,17 +19,9 @@ export default class MuteCommand extends SlashCommand {
         )
         .addStringOption((option) =>
           option
-            .setName("duration")
-            .setDescription(
-              "The duration of the mute. EX: (2 days, 1d, 10h, 2.5 hrs, 1m, 5s, 1y)"
-            )
-            .setRequired(true)
-        )
-        .addStringOption((option) =>
-          option
             .setName("reason")
             .setDescription("The reason for the mute.")
-            .setRequired(false)
+            .setRequired(true)
         ),
       [
         {

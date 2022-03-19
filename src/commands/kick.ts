@@ -19,7 +19,7 @@ export default class ExampleCommand extends SlashCommand {
           option
             .setName("reason")
             .setDescription("The reason for the kick.")
-            .setRequired(false)
+            .setRequired(true)
         ),
       [
         {

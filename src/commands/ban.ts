@@ -3,7 +3,7 @@ import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { moderationLogger } from "..";
 import ms from "ms";
-import Ban from "../models/ban";
+import Bans from "../models/bans";
 
 export default class BanCommand extends SlashCommand {
   constructor() {
@@ -19,16 +19,16 @@ export default class BanCommand extends SlashCommand {
         )
         .addStringOption((option) =>
           option
+            .setName("reason")
+            .setDescription("The reason for the ban.")
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
             .setName("duration")
             .setDescription(
               "The duration of the ban. EX: (2 days, 1d, 10h, 2.5 hrs, 1m, 5s, 1y)"
             )
-            .setRequired(false)
-        )
-        .addStringOption((option) =>
-          option
-            .setName("reason")
-            .setDescription("The reason for the ban.")
             .setRequired(false)
         ),
       [
@@ -95,7 +95,7 @@ export default class BanCommand extends SlashCommand {
     userToBan
       .ban({ reason })
       .then(async () => {
-        const ban = await Ban.create({
+        const ban = await Bans.create({
           user: userToBan.id,
           moderator: (interaction.member as GuildMember).id,
           duration,
@@ -107,7 +107,7 @@ export default class BanCommand extends SlashCommand {
         if (duration)
           setTimeout(async () => {
             await interaction.guild.members.unban(userToBan);
-            await Ban.deleteOne(ban);
+            await Bans.deleteOne(ban);
           }, duration);
 
         await userToBan.send({

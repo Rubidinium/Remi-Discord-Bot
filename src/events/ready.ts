@@ -2,8 +2,8 @@ import { client, commands } from "..";
 import Event from "../structures/Event";
 import { discordLogger, mongoLogger } from "../utils/logger";
 import mongoose from "mongoose";
-import Ban from "../models/ban";
-import Mute from "../models/mute";
+import Bans from "../models/bans";
+import Mutes from "../models/mutes";
 // import { MessageActionRow, MessageButton, TextChannel } from "discord.js";
 
 export default class ReadyEvent extends Event {
@@ -57,23 +57,23 @@ export default class ReadyEvent extends Event {
     const guild = await client.guilds.fetch("953053708562870312");
 
     {
-      Ban.find().then((bans) => {
+      Bans.find().then((bans) => {
         bans.forEach((ban) => {
           setTimeout(async () => {
             await guild.members.unban(ban.user);
-            await Ban.deleteOne(ban);
+            await Bans.deleteOne(ban);
           }, new Date(ban.createdAt).getTime() - Date.now() + ban.duration);
         });
       });
 
-      Mute.find().then((mutes) => {
+      Mutes.find().then((mutes) => {
         mutes.forEach((mute) => {
           setTimeout(async () => {
             await guild.members.cache
               .get(mute.user)
               .roles.remove("954201144480104458");
 
-            await Mute.deleteOne({ _id: mute._id });
+            await Mutes.deleteOne({ _id: mute._id });
           }, new Date(mute.createdAt).getTime() - Date.now() + mute.duration);
         });
       });
