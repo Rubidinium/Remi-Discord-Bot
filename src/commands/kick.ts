@@ -1,9 +1,9 @@
-import SlashCommand from "../structures/Command";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { moderationLogger } from "..";
+import SlashCommand from "../structures/Command";
 
-export default class ExampleCommand extends SlashCommand {
+export default class KickCommand extends SlashCommand {
   constructor() {
     super(
       new SlashCommandBuilder()
@@ -33,8 +33,8 @@ export default class ExampleCommand extends SlashCommand {
   }
 
   async exec(interaction: CommandInteraction) {
-    const userToKick = await interaction.guild.members.fetch(
-      interaction.options.getUser("user")
+    const userToKick = interaction.guild.members.cache.get(
+      interaction.options.getUser("user").id
     );
 
     if (!userToKick) {
@@ -76,8 +76,7 @@ export default class ExampleCommand extends SlashCommand {
       });
     }
 
-    const reason =
-      interaction.options.getString("reason") ?? "No reason given.";
+    const reason = interaction.options.getString("reason");
 
     userToKick
       .kick(reason)
@@ -125,7 +124,7 @@ export default class ExampleCommand extends SlashCommand {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setTitle("Kick")
+              .setTitle("Kick Failed")
               .setDescription(
                 `${userToKick.displayName} could not be kicked. ${e}`
               ),

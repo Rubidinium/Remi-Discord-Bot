@@ -1,9 +1,9 @@
-import SlashCommand from "../structures/Command";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { moderationLogger } from "..";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import ms from "ms";
-import Mute from "../models/mutes";
+import { moderationLogger } from "..";
+import Mutes from "../models/mutes";
+import SlashCommand from "../structures/Command";
 
 export default class MuteCommand extends SlashCommand {
   constructor() {
@@ -22,6 +22,14 @@ export default class MuteCommand extends SlashCommand {
             .setName("reason")
             .setDescription("The reason for the mute.")
             .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("duration")
+            .setDescription(
+              "The duration of the ban. EX: (2 days, 1d, 10h, 2.5 hrs, 1m, 5s, 1y)"
+            )
+            .setRequired(true)
         ),
       [
         {
@@ -35,15 +43,14 @@ export default class MuteCommand extends SlashCommand {
   }
 
   async exec(interaction: CommandInteraction) {
-    const userToMute = await interaction.guild.members.fetch(
-      interaction.options.getUser("user")
+    const userToMute = interaction.guild.members.cache.get(
+      interaction.options.getUser("user").id
     );
 
     const durationOption = interaction.options.getString("duration");
-    const duration = durationOption ? ms(durationOption) : null;
+    const duration = ms(durationOption);
 
-    const reason =
-      interaction.options.getString("reason") ?? "No reason given.";
+    const reason = interaction.options.getString("reason");
 
     if (!userToMute) {
       return interaction.reply({
@@ -77,7 +84,7 @@ export default class MuteCommand extends SlashCommand {
     userToMute.roles
       .add("954201144480104458")
       .then(async () => {
-        const mute = await Mute.create({
+        const mute = await Mutes.create({
           user: userToMute.id,
           moderator: (interaction.member as GuildMember).id,
           duration,
@@ -88,7 +95,7 @@ export default class MuteCommand extends SlashCommand {
 
         setTimeout(async () => {
           await userToMute.roles.remove("954201144480104458");
-          await Mute.deleteOne(mute);
+          await Mutes.deleteOne(mute);
         }, duration);
 
         await userToMute.send({
@@ -121,7 +128,7 @@ export default class MuteCommand extends SlashCommand {
           ],
         });
 
-        moderationLogger.mute(userToMute, interaction.user, reason);
+        moderationLogger.mute(userToMute, interaction.user, reason, durationOption);
 
         interaction.reply({
           embeds: [
@@ -150,7 +157,7 @@ export default class MuteCommand extends SlashCommand {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setTitle("Mute Failed.")
+              .setTitle("Mute Failed")
               .setDescription(
                 `${userToMute.displayName} could not be muted. ${e}`
               ),

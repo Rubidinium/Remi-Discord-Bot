@@ -1,25 +1,34 @@
-import {
-  Client,
-  GuildMember,
-  MessageEmbed,
-  User,
-} from "discord.js";
+import { Client, GuildMember, MessageEmbed, User } from "discord.js";
 
 const LOG_CHANNEL_ID = "953053709909250134";
 
 export default class ModerationLogger {
   constructor(private client: Client) {}
 
-  ban(user: GuildMember, moderator: User, reason: string) {
-    this.log({ action: "Banned", user, moderator, reason });
+  ban(
+    user: GuildMember,
+    moderator: User,
+    reason: string,
+    duration: string = undefined
+  ) {
+    this.log({ action: "Banned", user, moderator, reason, duration });
+  }
+
+  mute(
+    user: GuildMember,
+    moderator: User,
+    reason: string,
+    duration: string = undefined
+  ) {
+    this.log({ action: "Muted", user, moderator, reason, duration });
   }
 
   kick(user: GuildMember, moderator: User, reason: string) {
     this.log({ action: "Kicked", user, moderator, reason });
   }
 
-  mute(user: GuildMember, moderator: User, reason: string) {
-    this.log({ action: "Muted", user, moderator, reason });
+  warn(user: GuildMember, moderator: User, reason: string) {
+    this.log({ action: "Warned", user, moderator, reason });
   }
 
   log({
@@ -27,11 +36,13 @@ export default class ModerationLogger {
     user,
     moderator,
     reason,
+    duration,
   }: {
     action: string;
     user: GuildMember;
     moderator: User;
     reason: string;
+    duration?: string;
   }) {
     const channel = this.client.channels.cache.get(LOG_CHANNEL_ID);
     if (channel.isText()) {
@@ -42,7 +53,8 @@ export default class ModerationLogger {
             .setFields([
               { name: "User", value: `${user}`, inline: true },
               { name: "Moderator", value: `${moderator}`, inline: true },
-              { name: "Reason", value: `${reason}`, inline: true },
+              { name: "Reason", value: `${reason}` },
+              duration && { name: "Duration", value: `${duration}` },
             ])
             .setTimestamp(Date.now()),
         ],

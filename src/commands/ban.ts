@@ -1,9 +1,9 @@
-import SlashCommand from "../structures/Command";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { moderationLogger } from "..";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import ms from "ms";
+import { moderationLogger } from "..";
 import Bans from "../models/bans";
+import SlashCommand from "../structures/Command";
 
 export default class BanCommand extends SlashCommand {
   constructor() {
@@ -43,15 +43,14 @@ export default class BanCommand extends SlashCommand {
   }
 
   async exec(interaction: CommandInteraction) {
-    const userToBan = await interaction.guild.members.fetch(
-      interaction.options.getUser("user")
+    const userToBan = interaction.guild.members.cache.get(
+      interaction.options.getUser("user").id
     );
 
     const durationOption = interaction.options.getString("duration");
     const duration = durationOption ? ms(durationOption) : null;
 
-    const reason =
-      interaction.options.getString("reason") ?? "No reason given.";
+    const reason = interaction.options.getString("reason");
 
     if (!userToBan) {
       return interaction.reply({
@@ -141,7 +140,12 @@ export default class BanCommand extends SlashCommand {
           ],
         });
 
-        moderationLogger.ban(userToBan, interaction.user, reason);
+        moderationLogger.ban(
+          userToBan,
+          interaction.user,
+          reason,
+          durationOption
+        );
 
         interaction.reply({
           embeds: [
@@ -170,7 +174,7 @@ export default class BanCommand extends SlashCommand {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setTitle("Ban Failed.")
+              .setTitle("Ban Failed")
               .setDescription(
                 `${userToBan.displayName} could not be baned. ${e}`
               ),

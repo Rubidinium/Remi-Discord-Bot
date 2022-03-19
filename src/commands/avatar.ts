@@ -17,10 +17,11 @@ export default class AvatarCommand extends SlashCommand {
         .addBooleanOption((option) =>
           option
             .setName("private")
-            .setDescription("Whether or not to return an ephemeral message (Only you can see the message).")
+            .setDescription(
+              "Whether or not to return an ephemeral message (Only you can see the message)."
+            )
             .setRequired(false)
         )
-
     );
   }
 
