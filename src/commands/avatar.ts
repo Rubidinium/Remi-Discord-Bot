@@ -14,21 +14,13 @@ export default class AvatarCommand extends SlashCommand {
             .setDescription("The user you want to get the avatar of.")
             .setRequired(true)
         )
-        .addBooleanOption((option) =>
-          option
-            .setName("private")
-            .setDescription(
-              "Whether or not to return an ephemeral message (Only you can see the message)."
-            )
-            .setRequired(false)
-        )
     );
   }
 
   async exec(interaction: CommandInteraction) {
     await interaction.reply({
       content: interaction.options.getUser("user").avatarURL(),
-      ephemeral: interaction.options.getBoolean("private") ?? false,
+      ephemeral: true,
     });
   }
 }

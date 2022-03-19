@@ -77,6 +77,7 @@ export default class InfoCommand extends SlashCommand {
             }
           ),
       ],
+      ephemeral: true,
     });
   }
 }
