@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
-import { moderationLogger } from "..";
+import { configIds, moderationLogger } from "..";
 import SlashCommand from "../structures/Command";
 
 export default class KickCommand extends SlashCommand {
@@ -24,7 +24,7 @@ export default class KickCommand extends SlashCommand {
       [
         {
           // moderator role
-          id: "953053708994875526",
+          id: configIds.moderatorRole,
           type: "ROLE",
           permission: true,
         },

@@ -16,15 +16,7 @@ export default class InfractionsCommand extends SlashCommand {
             .setName("user")
             .setDescription("The user to view infractions for.")
             .setRequired(true)
-        ),
-      [
-        {
-          // moderator role
-          id: "953053708994875526",
-          type: "ROLE",
-          permission: true,
-        },
-      ]
+        )
     );
   }
 

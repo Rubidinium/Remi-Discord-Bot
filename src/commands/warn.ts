@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
-import { moderationLogger } from "..";
+import { configIds, moderationLogger } from "..";
 import SlashCommand from "../structures/Command";
 import Warns from "../models/warns";
 
@@ -25,7 +25,7 @@ export default class MuteCommand extends SlashCommand {
       [
         {
           // moderator role
-          id: "953053708994875526",
+          id: configIds.moderatorRole,
           type: "ROLE",
           permission: true,
         },

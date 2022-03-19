@@ -113,3 +113,14 @@ Promise.all([loadEvents(), loadCommands(), loadButtons(), loadSelects()]).then(
     client.login(process.env.TOKEN);
   }
 );
+
+export const configIds = {
+  guild: "953053708562870312",
+  moderatorLogs: "953053709909250134",
+  ticketLogs: "953053709909250136",
+  ticketLogsClosed: "953053709909250137",
+  ticketChannel: "953053710240604181",
+  ticketCategory: "953053710240604185",
+  moderatorRole: "953053708994875526",
+  mutedRole: "954201144480104458",
+};

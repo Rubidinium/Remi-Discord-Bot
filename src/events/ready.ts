@@ -1,4 +1,4 @@
-import { client, commands } from "..";
+import { client, commands, configIds } from "..";
 import Event from "../structures/Event";
 import { discordLogger, mongoLogger } from "../utils/logger";
 import mongoose from "mongoose";
@@ -15,7 +15,7 @@ export default class ReadyEvent extends Event {
     //     const arrow = client.emojis.cache.find(
     //       (emoji) => emoji.name === "APSS_PandaBowTie"
     //     );
-    //     client.channels.fetch("953053710240604181").then((channel: TextChannel) =>
+    //     client.channels.fetch(configIds.ticketChannel).then((channel: TextChannel) =>
     //       channel.send({
     //         content: `Our community is here to help students with their programming troubles, not to provide an unfair advantage by answering test questions. In order to maintain a positive environment, we request that you please be courteous to all helpers!
     // *Response time may vary for certain periods of the day.*
@@ -54,7 +54,7 @@ export default class ReadyEvent extends Event {
       });
 
     discordLogger.info(`🤖 Logged in as ${client?.user?.tag}!`);
-    const guild = await client.guilds.fetch("953053708562870312");
+    const guild = await client.guilds.fetch(configIds.guild);
 
     {
       Bans.find().then((bans) => {
@@ -72,7 +72,7 @@ export default class ReadyEvent extends Event {
           setTimeout(async () => {
             await guild.members.cache
               .get(mute.user)
-              .roles.remove("954201144480104458");
+              .roles.remove(configIds.mutedRole);
           }, new Date(mute.createdAt).getTime() - Date.now() + mute.duration);
         });
       });
@@ -86,11 +86,19 @@ export default class ReadyEvent extends Event {
       }
 
       if (process.argv[2] === "deploy") {
+        discordLogger.info("Deleting old commands...");
+        await Promise.all(
+          Array.from(guild.commands.cache.values()).map(async (command) => {
+            return command.delete();
+          })
+        );
+        discordLogger.info("Deleted old commands.");
+
         discordLogger.info(
           `Deploying ${commands.size} command${commands.size > 1 ? "s" : ""}...`
         );
-
         for (const command of commands.values()) {
+          if (command.metaData.name === "example") continue;
           discordLogger.debug(`Deploying command ${command.metaData.name}...`);
           const guildCommand = await guild.commands.create(
             command.build(client)

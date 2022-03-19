@@ -1,6 +1,5 @@
 import { Client, GuildMember, MessageEmbed, User } from "discord.js";
-
-const LOG_CHANNEL_ID = "953053709909250134";
+import { configIds } from "..";
 
 export default class ModerationLogger {
   constructor(private client: Client) {}
@@ -44,7 +43,7 @@ export default class ModerationLogger {
     reason: string;
     duration?: string;
   }) {
-    const channel = this.client.channels.cache.get(LOG_CHANNEL_ID);
+    const channel = this.client.channels.cache.get(configIds.moderatorLogs);
     const embed = new MessageEmbed()
       .setTitle(action)
       .setFields([

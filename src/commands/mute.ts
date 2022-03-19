@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import ms from "ms";
-import { moderationLogger } from "..";
+import { configIds, moderationLogger } from "..";
 import Mutes from "../models/mutes";
 import SlashCommand from "../structures/Command";
 
@@ -34,7 +34,7 @@ export default class MuteCommand extends SlashCommand {
       [
         {
           // moderator role
-          id: "953053708994875526",
+          id: configIds.moderatorRole,
           type: "ROLE",
           permission: true,
         },
@@ -82,7 +82,7 @@ export default class MuteCommand extends SlashCommand {
     }
 
     // check if user already has mute role
-    if (userToMute.roles.cache.has("953053708994875526")) {
+    if (userToMute.roles.cache.has(configIds.mutedRole)) {
       return interaction.reply({
         content: "User is already muted.",
         ephemeral: true,
@@ -90,7 +90,7 @@ export default class MuteCommand extends SlashCommand {
     }
 
     userToMute.roles
-      .add("954201144480104458")
+      .add(configIds.mutedRole)
       .then(async () => {
         const mute = await Mutes.create({
           user: userToMute.id,
@@ -102,7 +102,7 @@ export default class MuteCommand extends SlashCommand {
         await mute.save();
 
         setTimeout(async () => {
-          await userToMute.roles.remove("954201144480104458");
+          await userToMute.roles.remove(configIds.mutedRole);
         }, duration);
 
         await userToMute.send({

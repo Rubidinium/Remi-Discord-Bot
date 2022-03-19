@@ -1,7 +1,5 @@
 import { Client, ColorResolvable, MessageEmbed, User } from "discord.js";
-
-const LOG_CHANNEL_ID = "953053709909250136";
-const TRANSCRIPT_CHANNEL_ID = "953053709909250137";
+import { configIds } from "..";
 
 export default class TicketLogger {
   constructor(private client: Client) {}
@@ -39,7 +37,7 @@ export default class TicketLogger {
         url: url,
       });
 
-    const channel = this.client.channels.cache.get(TRANSCRIPT_CHANNEL_ID);
+    const channel = this.client.channels.cache.get(configIds.ticketLogsClosed);
     if (channel.isText()) {
       channel.send({ embeds: [embed] });
     }
@@ -59,7 +57,7 @@ export default class TicketLogger {
         iconURL: author.avatarURL(),
       });
 
-    const channel = this.client.channels.cache.get(LOG_CHANNEL_ID);
+    const channel = this.client.channels.cache.get(configIds.ticketLogs);
     if (channel.isText()) {
       channel.send({ embeds: [embed] });
     }
