@@ -1,10 +1,5 @@
 import SlashCommand from "../structures/Command";
-import {
-  CommandInteraction,
-  GuildMember,
-  MessageEmbed,
-  User,
-} from "discord.js";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { moderationLogger } from "..";
 
@@ -102,7 +97,7 @@ export default class ExampleCommand extends SlashCommand {
                   value: reason,
                   inline: true,
                 },
-              ])
+              ]),
           ],
         });
 
@@ -110,20 +105,18 @@ export default class ExampleCommand extends SlashCommand {
 
         interaction.reply({
           embeds: [
-            new MessageEmbed()
-              .setTitle("User kicked.")
-              .setFields([
-                {
-                  name: "User",
-                  value: userToKick.toString(),
-                  inline: true,
-                },
-                {
-                  name: "Reason",
-                  value: reason,
-                  inline: true,
-                },
-              ])
+            new MessageEmbed().setTitle("User kicked.").setFields([
+              {
+                name: "User",
+                value: userToKick.toString(),
+                inline: true,
+              },
+              {
+                name: "Reason",
+                value: reason,
+                inline: true,
+              },
+            ]),
           ],
           ephemeral: true,
         });

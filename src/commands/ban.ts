@@ -1,10 +1,5 @@
 import SlashCommand from "../structures/Command";
-import {
-  CommandInteraction,
-  GuildMember,
-  MessageEmbed,
-  User,
-} from "discord.js";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { moderationLogger } from "..";
 import ms from "ms";
@@ -97,8 +92,6 @@ export default class BanCommand extends SlashCommand {
       });
     }
 
-    // store the user ban timer
-
     userToBan
       .ban({ reason })
       .then(async () => {
@@ -112,8 +105,9 @@ export default class BanCommand extends SlashCommand {
         await ban.save();
 
         if (duration)
-          setTimeout(() => {
-            interaction.guild.members.unban(userToBan);
+          setTimeout(async () => {
+            await interaction.guild.members.unban(userToBan);
+            await Ban.deleteOne(ban);
           }, duration);
 
         await userToBan.send({

@@ -94,8 +94,9 @@ export default class MuteCommand extends SlashCommand {
 
         await mute.save();
 
-        setTimeout(() => {
-          userToMute.roles.remove("954201144480104458");
+        setTimeout(async () => {
+          await userToMute.roles.remove("954201144480104458");
+          await Mute.deleteOne(mute);
         }, duration);
 
         await userToMute.send({
