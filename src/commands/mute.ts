@@ -128,7 +128,12 @@ export default class MuteCommand extends SlashCommand {
           ],
         });
 
-        moderationLogger.mute(userToMute, interaction.user, reason, durationOption);
+        moderationLogger.mute(
+          userToMute,
+          interaction.user,
+          reason,
+          durationOption
+        );
 
         interaction.reply({
           embeds: [

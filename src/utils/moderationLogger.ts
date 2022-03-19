@@ -45,19 +45,20 @@ export default class ModerationLogger {
     duration?: string;
   }) {
     const channel = this.client.channels.cache.get(LOG_CHANNEL_ID);
+    const embed = new MessageEmbed()
+      .setTitle(action)
+      .setFields([
+        { name: "User", value: `${user}`, inline: true },
+        { name: "Moderator", value: `${moderator}`, inline: true },
+        { name: "Reason", value: `${reason}` },
+      ])
+      .setTimestamp(Date.now());
+
+    duration && embed.addField("Duration", duration);
+
     if (channel.isText()) {
       channel.send({
-        embeds: [
-          new MessageEmbed()
-            .setTitle(action)
-            .setFields([
-              { name: "User", value: `${user}`, inline: true },
-              { name: "Moderator", value: `${moderator}`, inline: true },
-              { name: "Reason", value: `${reason}` },
-              duration && { name: "Duration", value: `${duration}` },
-            ])
-            .setTimestamp(Date.now()),
-        ],
+        embeds: [embed],
       });
     }
   }
