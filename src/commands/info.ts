@@ -72,9 +72,7 @@ export default class InfoCommand extends SlashCommand {
             },
             {
               name: "User Roles: ",
-              value: member.roles.cache
-                .map((role) => role.toString())
-                .join(" ,"),
+              value: member.roles.cache.map((role) => role.toString()).join(""),
               inline: true,
             }
           ),

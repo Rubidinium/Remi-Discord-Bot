@@ -106,7 +106,6 @@ export default class BanCommand extends SlashCommand {
         if (duration)
           setTimeout(async () => {
             await interaction.guild.members.unban(userToBan);
-            await Bans.deleteOne(ban);
           }, duration);
 
         await userToBan.send({
@@ -117,8 +116,8 @@ export default class BanCommand extends SlashCommand {
                 "To appeal, join the support server: https://discord.gg/VDTdzAaTjE\n" +
                   ban.duration &&
                   `You will be unbanned on ${new Date(
-                    ban.createdAt + ban.duration
-                  ).toUTCString()}`
+                    Date.parse(ban.createdAt) + ban.duration
+                  ).toLocaleDateString()}`
               )
               .setFields([
                 {

@@ -81,6 +81,14 @@ export default class MuteCommand extends SlashCommand {
       });
     }
 
+    // check if user already has mute role
+    if (userToMute.roles.cache.has("953053708994875526")) {
+      return interaction.reply({
+        content: "User is already muted.",
+        ephemeral: true,
+      });
+    }
+
     userToMute.roles
       .add("954201144480104458")
       .then(async () => {
@@ -95,7 +103,6 @@ export default class MuteCommand extends SlashCommand {
 
         setTimeout(async () => {
           await userToMute.roles.remove("954201144480104458");
-          await Mutes.deleteOne(mute);
         }, duration);
 
         await userToMute.send({
@@ -105,8 +112,8 @@ export default class MuteCommand extends SlashCommand {
               .setDescription(
                 " " + mute.duration &&
                   `You will be un-muted on ${new Date(
-                    mute.createdAt + mute.duration
-                  ).toUTCString()}`
+                    Date.parse(mute.createdAt) + mute.duration
+                  ).toLocaleDateString()}`
               )
               .setFields([
                 {

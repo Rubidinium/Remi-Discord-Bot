@@ -59,21 +59,20 @@ export default class ReadyEvent extends Event {
     {
       Bans.find().then((bans) => {
         bans.forEach((ban) => {
+          if (Date.parse(ban.createdAt) + ban.duration <= Date.now()) return;
           setTimeout(async () => {
             await guild.members.unban(ban.user);
-            await Bans.deleteOne(ban);
           }, new Date(ban.createdAt).getTime() - Date.now() + ban.duration);
         });
       });
 
       Mutes.find().then((mutes) => {
         mutes.forEach((mute) => {
+          if (Date.parse(mute.createdAt) + mute.duration <= Date.now()) return;
           setTimeout(async () => {
             await guild.members.cache
               .get(mute.user)
               .roles.remove("954201144480104458");
-
-            await Mutes.deleteOne({ _id: mute._id });
           }, new Date(mute.createdAt).getTime() - Date.now() + mute.duration);
         });
       });
